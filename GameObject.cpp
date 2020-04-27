@@ -1,22 +1,40 @@
 #include "GameObject.h"
 
 
+GameObject::GameObject(const sf::Vector2f& pos) : 
+	velocity(sf::Vector2f(MOVABLE_X_VELOCITY, MOVABLE_Y_VELOCITY))
+{
+	dummyShape = new sf::RectangleShape(sf::Vector2f(MOVABLE_WIDTH, MOVABLE_HEIGHT));
+	dummyShape->setPosition(pos);
+}
+
+GameObject::GameObject(const sf::Vector2f& pos, const sf::Vector2f& shapeSize, const sf::Vector2f& dir, float spd)
+{
+	setDirection(dir);
+	setSpeed(spd);
+	dummyShape = new sf::RectangleShape(shapeSize);
+	dummyShape->setPosition(pos);
+}
+
 void GameObject::move()
 {
-	// Call Parent move() method
-	sf::Shape::move(this->getVelocity());
-	update();
+	dummyShape->move(this->getVelocity());
 }
-//
+
+// Move the shape with a given direction
 void GameObject::move(const sf::Vector2f& dir)
 {
-	this->setVelocity(dir);
+	this->setDirection(dir);
 	this->move();
 }
 
-bool GameObject::checkBoundry() const 
+bool GameObject::checkBound() const 
 {
-	return getPosition().y > -100;
+	return dummyShape->getPosition().y > -100;
 }
 
 
+void GameObject::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
+	target.draw(*dummyShape, states);
+}

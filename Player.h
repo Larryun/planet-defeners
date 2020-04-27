@@ -13,15 +13,13 @@ class Player : public GameObject
 
 public:
 
-	Player() : GameObject() {}
 	Player(const sf::Vector2f& pos) :
 		GameObject(pos,
 			sf::Vector2f(PLAYER_WIDTH , PLAYER_HEIGHT),
-			sf::Vector2f(PLAYER_X_VELOCITY, PLAYER_Y_VELOCITY)
+			sf::Vector2f(0, 0),
+			5.0f		// Initial speed
 		)
 	{ }
-	Player(sf::Vector2f pos, sf::Vector2f geometry, sf::Vector2f vel) :
-		GameObject(pos, geometry, vel) {}
 	~Player();
 
 };
