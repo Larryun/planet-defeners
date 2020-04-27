@@ -13,8 +13,12 @@ Sometimes the ```Solution Platforms```  in Visual Studio is set to ```x64```, do
 
 ## TODO
  - [X] Add Projectile Class
- - [X] Add Player and Enemy Class
- - [ ] Add collision checking
+ - [X] Add Player, Projectile, GameObject Class
+ - [ ] Add Game class that handles Menu and initialization
+ - [ ] Add Enemy Class
+ - [ ] Add Textures
+ - [ ] Add Perk feature
+ - [ ] Add collision detection
  - [ ] Replace shape with img
  - [ ] Add background img
  - [ ] Add Perk

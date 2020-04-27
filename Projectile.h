@@ -1,26 +1,32 @@
 #ifndef PROJECTILE_H
 #define PROJECTILE_H
 #include <SFML/Graphics.hpp>
+#include "GameObject.h"
 
-class Projectile : public sf::Drawable
+
+class Projectile : public GameObject
 {
-private:
-	const float X_VELOCITY = 0.0f;
-	const float Y_VELOCITY = -0.09f;
-	// Change to an image later
-	sf::RectangleShape* projectileShape;
-	const sf::Vector2f velocity = sf::Vector2f(X_VELOCITY, Y_VELOCITY);
+	// Default values
+	static const float PROJECTILE_WIDTH;
+	static const float PROJECTILE_HEIGHT;
+	static const float PROJECTILE_X_VELOCITY;
+	static const float PROJECTILE_Y_VELOCITY;
 	
 public:
 	static int PROJECTILE_COUNTER;
-	Projectile(sf::Vector2f);
-	~Projectile();
-	// Inheritated function from Drawable
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
-	virtual void update();
-	bool checkBoundry();
-	sf::Vector2f getPosition();
+	Projectile() : GameObject() {}
+	Projectile(const sf::Vector2f& pos) :
+		GameObject(
+			pos,
+			sf::Vector2f(PROJECTILE_WIDTH, PROJECTILE_HEIGHT),
+			sf::Vector2f(PROJECTILE_X_VELOCITY, PROJECTILE_Y_VELOCITY)
+		)
+	{}
+	Projectile(sf::Vector2f pos, sf::Vector2f geometry, sf::Vector2f vel) :
+		GameObject(pos, geometry, vel)
+	{}
+	~Projectile();
 };
 #endif
 
