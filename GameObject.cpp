@@ -1,4 +1,5 @@
 #include "GameObject.h"
+#include <cmath>
 
 
 GameObject::GameObject(const sf::Vector2f& pos) : 
@@ -18,7 +19,14 @@ GameObject::GameObject(const sf::Vector2f& pos, const sf::Vector2f& shapeSize, c
 
 void GameObject::move()
 {
+	printf("%f %f --\n", dummyShape->getPosition().x, dummyShape->getPosition().y);
 	dummyShape->move(this->getVelocity());
+
+	if (bound != sf::Vector2u(0, 0)) {
+		// bound limit
+		dummyShape->setPosition(sf::Vector2f(fmin(fmax(0, dummyShape->getPosition().x), bound.x - dummyShape->getSize().x),
+			fmin(fmax(0, dummyShape->getPosition().y), bound.y - dummyShape->getSize().y)));
+	}
 }
 
 // Move the shape with a given direction
@@ -28,13 +36,9 @@ void GameObject::move(const sf::Vector2f& dir)
 	this->move();
 }
 
-bool GameObject::checkBound() const 
-{
-	return dummyShape->getPosition().y > -100;
-}
-
 
 void GameObject::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(*dummyShape, states);
 }
+

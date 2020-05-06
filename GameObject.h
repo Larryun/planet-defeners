@@ -18,6 +18,7 @@ protected:
 
 	sf::RectangleShape* dummyShape;
 	sf::Vector2f direction;
+	sf::Vector2u bound;
 	float speed;
 
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
@@ -26,8 +27,6 @@ public:
 	GameObject(const sf::Vector2f&);
 	GameObject(const sf::Vector2f&, const sf::Vector2f&, const sf::Vector2f&, float);
 
-	// Virtual functions
-	bool checkBound() const;
 	void move();
 	void move(const sf::Vector2f&);
 
@@ -39,7 +38,12 @@ public:
 
 	// Setters
 	void setSpeed(float const& spd) { speed = spd; }
-	void setDirection(const sf::Vector2f dir) { direction = dir; }
+	void setDirection(const sf::Vector2f& dir) { direction = dir; }
+	void setBound(const sf::Vector2u& bound_) { bound = bound_; }
+
+	void accelerate(float a) { setSpeed(getSpeed() + a); }
+
+
 };
 
 #endif

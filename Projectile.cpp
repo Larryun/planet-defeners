@@ -15,4 +15,9 @@ Projectile::~Projectile()
 	delete dummyShape;
 }
 
+bool Projectile::isOutOfBound() const
+{
+	return dummyShape->getPosition().y < -100;
+}
+
 

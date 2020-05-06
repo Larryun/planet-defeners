@@ -14,8 +14,20 @@ Game::Game()
 
 void Game::init()
 {
+	player->setBound(window->getSize());
 	window->setFramerateLimit(FRAME_RATE_LIMIT);
 	player->getShape().setFillColor(sf::Color::Green);
+	// demo
+	// build enemies array
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 15; j++) {
+			enemiesArr.push_back(
+				new Enemy(sf::Vector2f(
+					static_cast<float>(50 + 30 * j),
+					static_cast<float>(50 + 30 * i)
+				)));
+		}
+	}
 }
 
 void Game::shoot()
@@ -55,8 +67,8 @@ void Game::handleKeyInput()
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
 	{
 		// Example of using setSpeed() to change speed of a GameObject
-		// press R the change speed
-		player->setSpeed(100.0f);
+		// press R the accerlerate
+		player->accelerate(1.1);
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 	{
@@ -68,7 +80,7 @@ void Game::drawProjectileArray(std::vector<Projectile*>& arr)
 {
 	for (int i = 0; i < arr.size(); i++)
 	{
-		if (projectileArray[i]->checkBound())
+		if (projectileArray[i]->isOutOfBound() == false)
 		{
 			arr[i]->move();
 			window->draw(arr[i]->getShape());
@@ -102,8 +114,13 @@ void Game::gameLoop()
 		// Handle Key press
 		handleKeyInput();
 		window->clear();
+		// Draw all enemies
+		for (int i = 0; i < enemiesArr.size(); i++) {
+			window->draw(enemiesArr[i]->getShape());
+		}
 		// Draw all projectile
 		drawProjectileArray(projectileArray);
+		
 
 		window->draw(player->getShape());
 		window->display();

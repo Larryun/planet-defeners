@@ -11,7 +11,7 @@ class Projectile : public GameObject
 	static const float PROJECTILE_HEIGHT;
 	static const float PROJECTILE_X_VELOCITY;
 	static const float PROJECTILE_Y_VELOCITY;
-	
+
 public:
 	static int PROJECTILE_COUNTER;
 
@@ -25,6 +25,9 @@ public:
 	{}
 
 	~Projectile();
+	
+	bool isOutOfBound() const;
+
 };
 #endif
 

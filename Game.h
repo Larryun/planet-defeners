@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include "Projectile.h"
 #include "Player.h"
+#include "Enemy.h"
 
 class Game
 {
@@ -19,6 +20,7 @@ class Game
 	sf::RenderWindow* window;
 	std::vector<Projectile*> projectileArray;
 	Player* player = new Player(sf::Vector2f(100,100));
+	std::vector<Enemy*> enemiesArr;
 
 public:
 	Game();
