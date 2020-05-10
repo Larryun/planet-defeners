@@ -5,6 +5,29 @@
 #include "Player.h"
 #include "Projectile.h"
 
+template <class T>
+void deleteObjectFromVector(std::vector<T*>&, int);
+template <class T1, class T2>
+bool checkCollision(T1&, T2&);
+
+
+template <class T>
+void deleteObjectFromVector(std::vector<T*>& v, int i)
+{
+	std::swap(v[i], v.back());
+	delete v.back();
+	v.pop_back();
+}
+
+
+// A wrapper function
+template <class T1, class T2>
+bool checkCollision(T1& obj1, T2& obj2)
+{
+	return Collision::PixelPerfectTest(obj1.getSprite(), obj2.getSprite());
+}
+
+
 Game::Game()
 {
 	SPACE_TEXTURE.loadFromFile(TEXTURE_BASE_PATH + "spaceSprites.png");
@@ -14,16 +37,31 @@ Game::Game()
 	init();
 }
 
+Game::~Game() {
+	delete clock;
+	delete window;
+	for (int i = 0; i < projectileArray.size() ; i++)
+	{
+		deleteObjectFromVector(projectileArray, i);
+	}
+	for (int i = 0; i < enemyArr.size() ; i++)
+	{
+		deleteObjectFromVector(enemyArr, i);
+	}
+	delete player;
+}
+
 void Game::init()
 {
-	player->setBound(window->getSize());
+	// set the boundary of player
+	player->setMovingBoundary(window->getSize());
 	window->setFramerateLimit(FRAME_RATE_LIMIT);
-	//player->getShape().setFillColor(sf::Color::Green);
+
 	// demo
 	// build enemies array
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 15; j++) {
-			enemiesArr.push_back(
+			enemyArr.push_back(
 				new Enemy(
 					SPACE_TEXTURE,
 					ENEMY_RECT,
@@ -34,6 +72,8 @@ void Game::init()
 				));
 		}
 	}
+	// demo: scaling the player sprite
+	player->getSprite().scale(sf::Vector2f(1, 1) * 1.5f);
 }
 
 void Game::shoot()
@@ -41,12 +81,13 @@ void Game::shoot()
 	sf::Time elapse_time = clock->getElapsedTime();
 	if (elapse_time >= PROJECTILE_TIME_DELTA)
 	{
-		std::cout << elapse_time.asMilliseconds() << std::endl;
+		//std::cout << elapse_time.asMilliseconds() << std::endl;
 		projectileArray.push_back(
 			new Projectile(
 				SPACE_TEXTURE, 
 				PROJECTILE_RECT, 
-				(player->getSprite().getPosition() + sf::Vector2f(player->getBound().width / 2, 0.0f))
+				// x-axis offset by: 2.0f
+				player->getSprite().getPosition() + sf::Vector2f((player->getBound().width / 2.0f) - 2.0f, 0.0f)
 			)
 		);
 		clock->restart();
@@ -74,7 +115,7 @@ void Game::handleKeyInput()
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
 	{
-		// Example of using setSpeed() to change speed of a GameObject
+		// demo
 		// press R the accerlerate
 		player->accelerate(1.1);
 	}
@@ -84,13 +125,6 @@ void Game::handleKeyInput()
 	}
 }
 
-template <class T>
-void deleteObjectFromVector(std::vector<T*>& v, int i)
-{
-	std::swap(v[i], v.back());
-	delete v.back();
-	v.pop_back();
-}
 
 template <class T>
 void Game::drawGameObjectArray(std::vector<T*>& arr)
@@ -109,11 +143,6 @@ void Game::drawGameObjectArray(std::vector<T*>& arr)
 	}
 }
 
-template <class T>
-bool checkProjectileCollision(T& obj1, Enemy& obj2)
-{
-	return Collision::PixelPerfectTest(obj1.getSprite(), obj2.getSprite());
-}
 
 
 void Game::gameLoop()
@@ -137,14 +166,16 @@ void Game::gameLoop()
 		handleKeyInput();
 		window->clear();
 
+		// check collision between projectile and enemy
+		// delete object if collided
 		for (int i = 0; i < projectileArray.size(); i++)
 		{
-			for (int j = 0; j < enemiesArr.size(); j++)
+			for (int j = 0; j < enemyArr.size(); j++)
 			{
-				if (checkProjectileCollision(*projectileArray[i], *enemiesArr[j]))
+				if (checkCollision(*projectileArray[i], *enemyArr[j]))
 				{
 					deleteObjectFromVector(projectileArray, i);
-					deleteObjectFromVector(enemiesArr, j);
+					deleteObjectFromVector(enemyArr, j);
 					break;
 				}
 			}
@@ -152,9 +183,8 @@ void Game::gameLoop()
 
 		}
 		drawGameObjectArray(projectileArray);
-		drawGameObjectArray(enemiesArr);
+		drawGameObjectArray(enemyArr);
 		
-
 		window->draw(player->getSprite());
 		window->display();
 	}

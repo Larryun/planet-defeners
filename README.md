@@ -1,6 +1,6 @@
 
 # CIS29_Group_Project
-  **A space invader game**
+  **A space-invader-like game?**
 
 # Requirement
 Visual Studio 2019
@@ -15,10 +15,10 @@ Sometimes the ```Solution Platforms```  in Visual Studio is set to ```x64```, do
  - [X] Add Projectile Class
  - [X] Add Player, Projectile, GameObject Class
  - [ ] Add Game class that handles Menu and initialization
- - [ ] Add Enemy Class
- - [ ] Add Textures
+ - [X] Add Enemy Class
+ - [X] Add Textures
  - [ ] Add Perk feature
- - [ ] Add collision detection
- - [ ] Replace shape with img
+ - [X] Add collision detection
+ - [X] Replace shape with sprite
  - [ ] Add background img
- - [ ] Add Perk
+ - [ ] Add sound effects

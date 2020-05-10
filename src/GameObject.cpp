@@ -2,21 +2,21 @@
 #include <cmath>
 
 
-GameObject::GameObject(const sf::Vector2f& pos) : 
-	velocity(sf::Vector2f(MOVABLE_X_VELOCITY, MOVABLE_Y_VELOCITY))
-{
-	speed = 0;
-	objSprite = new sf::Sprite();
-	objSprite->setPosition(pos);
-}
-
-GameObject::GameObject(const sf::Vector2f& pos, const sf::Vector2f& dir, float spd)
-{
-	setDirection(dir);
-	setSpeed(spd);
-	objSprite = new sf::Sprite();
-	objSprite->setPosition(pos);
-}
+//GameObject::GameObject(const sf::Vector2f& pos) : 
+//	velocity(sf::Vector2f(MOVABLE_X_VELOCITY, MOVABLE_Y_VELOCITY))
+//{
+//	speed = 0;
+//	objSprite = new sf::Sprite();
+//	objSprite->setPosition(pos);
+//}
+//
+//GameObject::GameObject(const sf::Vector2f& pos, const sf::Vector2f& dir, float spd)
+//{
+//	setDirection(dir);
+//	setSpeed(spd);
+//	objSprite = new sf::Sprite();
+//	objSprite->setPosition(pos);
+//}
 
 GameObject::GameObject(const sf::Texture& texture, const sf::IntRect& rect, const sf::Vector2f& pos, const sf::Vector2f& dir, float spd)
 {
@@ -32,10 +32,11 @@ void GameObject::move()
 	//printf("%f %f --\n", dummyShape->getPosition().x, dummyShape->getPosition().y);
 	objSprite->move(this->getVelocity());
 
-	if (bound != sf::Vector2u(0, 0)) {
+	// if movingBound == (0, 0) that means no movingBound
+	if (movingBound != sf::Vector2u(0, 0)) {
 		// bound limit
-		objSprite->setPosition(sf::Vector2f(fmin(fmax(0, objSprite->getPosition().x), bound.x - getBound().width),
-			fmin(fmax(0, objSprite->getPosition().y), bound.y - getBound().height)));
+		objSprite->setPosition(sf::Vector2f(fmin(fmax(0, objSprite->getPosition().x), movingBound.x - getBound().width),
+			fmin(fmax(0, objSprite->getPosition().y), movingBound.y - getBound().height)));
 	}
 }
 
