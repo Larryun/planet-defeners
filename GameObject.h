@@ -16,7 +16,7 @@ class GameObject
 
 protected:
 
-	sf::RectangleShape* dummyShape;
+	sf::Sprite* objSprite;
 	sf::Vector2f direction;
 	sf::Vector2u bound;
 	float speed;
@@ -25,21 +25,24 @@ protected:
 
 public:
 	GameObject(const sf::Vector2f&);
-	GameObject(const sf::Vector2f&, const sf::Vector2f&, const sf::Vector2f&, float);
+	GameObject(const sf::Vector2f&, const sf::Vector2f&, float);
+	GameObject(const sf::Texture&, const sf::IntRect&, const sf::Vector2f&, const sf::Vector2f&, float);
 
 	void move();
 	void move(const sf::Vector2f&);
 
 	// Getters
 	const sf::Vector2f getVelocity() const { return speed * direction;  }
-	sf::RectangleShape& getShape() { return *dummyShape; }
-	sf::Vector2f getSize() { return dummyShape->getSize(); }
+	//sf::RectangleShape& getShape() { return *dummyShape; }
+	sf::Sprite& getSprite() { return *objSprite; }
+	sf::FloatRect getBound() { return objSprite->getGlobalBounds(); }
 	float getSpeed() { return speed; }
 
 	// Setters
 	void setSpeed(float const& spd) { speed = spd; }
 	void setDirection(const sf::Vector2f& dir) { direction = dir; }
 	void setBound(const sf::Vector2u& bound_) { bound = bound_; }
+	void setSpriteTexture(sf::Texture& texture) { getSprite().setTexture(texture); }
 
 	void accelerate(float a) { setSpeed(getSpeed() + a); }
 

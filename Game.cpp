@@ -1,13 +1,15 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include "Collision.h"
 #include "Game.h"
 #include "Player.h"
 #include "Projectile.h"
 
 Game::Game()
 {
+	SPACE_TEXTURE.loadFromFile(TEXTURE_BASE_PATH + "spaceSprites.png");
 	window= new sf::RenderWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), GAME_TITLE, sf::Style::Close | sf::Style::Resize);
-	player = new Player(sf::Vector2f(100,100));
+	player = new Player(SPACE_TEXTURE, SHIP_1_TEXTURE_RECT, sf::Vector2f(100,100));
 	clock = new sf::Clock();
 	init();
 }
@@ -16,16 +18,20 @@ void Game::init()
 {
 	player->setBound(window->getSize());
 	window->setFramerateLimit(FRAME_RATE_LIMIT);
-	player->getShape().setFillColor(sf::Color::Green);
+	//player->getShape().setFillColor(sf::Color::Green);
 	// demo
 	// build enemies array
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 15; j++) {
 			enemiesArr.push_back(
-				new Enemy(sf::Vector2f(
-					static_cast<float>(50 + 30 * j),
-					static_cast<float>(50 + 30 * i)
-				)));
+				new Enemy(
+					SPACE_TEXTURE,
+					ENEMY_RECT,
+					sf::Vector2f(
+						static_cast<float>(50 + 30 * j),
+						static_cast<float>(50 + 30 * i)
+					)
+				));
 		}
 	}
 }
@@ -38,7 +44,9 @@ void Game::shoot()
 		std::cout << elapse_time.asMilliseconds() << std::endl;
 		projectileArray.push_back(
 			new Projectile(
-				player->getShape().getPosition() + sf::Vector2f(player->getSize().x / 2, 0.0f)
+				SPACE_TEXTURE, 
+				PROJECTILE_RECT, 
+				(player->getSprite().getPosition() + sf::Vector2f(player->getBound().width / 2, 0.0f))
 			)
 		);
 		clock->restart();
@@ -76,23 +84,37 @@ void Game::handleKeyInput()
 	}
 }
 
-void Game::drawProjectileArray(std::vector<Projectile*>& arr)
+template <class T>
+void deleteObjectFromVector(std::vector<T*>& v, int i)
+{
+	std::swap(v[i], v.back());
+	delete v.back();
+	v.pop_back();
+}
+
+template <class T>
+void Game::drawGameObjectArray(std::vector<T*>& arr)
 {
 	for (int i = 0; i < arr.size(); i++)
 	{
-		if (projectileArray[i]->isOutOfBound() == false)
+		if (arr[i]->isOutOfBound() == false)
 		{
 			arr[i]->move();
-			window->draw(arr[i]->getShape());
+			window->draw(arr[i]->getSprite());
 		}
 		else
 		{
-			std::swap(arr[i], arr.back());
-			delete arr.back();
-			arr.pop_back();
+			deleteObjectFromVector(arr, i);
 		}
 	}
 }
+
+template <class T>
+bool checkProjectileCollision(T& obj1, Enemy& obj2)
+{
+	return Collision::PixelPerfectTest(obj1.getSprite(), obj2.getSprite());
+}
+
 
 void Game::gameLoop()
 {
@@ -114,15 +136,26 @@ void Game::gameLoop()
 		// Handle Key press
 		handleKeyInput();
 		window->clear();
-		// Draw all enemies
-		for (int i = 0; i < enemiesArr.size(); i++) {
-			window->draw(enemiesArr[i]->getShape());
+
+		for (int i = 0; i < projectileArray.size(); i++)
+		{
+			for (int j = 0; j < enemiesArr.size(); j++)
+			{
+				if (checkProjectileCollision(*projectileArray[i], *enemiesArr[j]))
+				{
+					deleteObjectFromVector(projectileArray, i);
+					deleteObjectFromVector(enemiesArr, j);
+					break;
+				}
+			}
+
+
 		}
-		// Draw all projectile
-		drawProjectileArray(projectileArray);
+		drawGameObjectArray(projectileArray);
+		drawGameObjectArray(enemiesArr);
 		
 
-		window->draw(player->getShape());
+		window->draw(player->getSprite());
 		window->display();
 	}
 }

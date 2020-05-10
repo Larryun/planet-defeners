@@ -11,7 +11,7 @@ const float Player::PLAYER_Y_VELOCITY = 0;
 Player::~Player()
 {
 	std::cout << "Player removed" << std::endl;
-	delete dummyShape;
+	delete objSprite;
 }
 
 
