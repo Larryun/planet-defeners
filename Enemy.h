@@ -4,17 +4,19 @@ class Enemy :
 	public GameObject
 {	
 
-
-
 public:
-	Enemy(const sf::Vector2f& pos) :
+	Enemy(const sf::Texture& texture, const sf::IntRect& rect, const sf::Vector2f& pos) :
 		GameObject(
+			texture,
+			rect,
 			pos,
-			sf::Vector2f(10.0f, 10.0f),
 			sf::Vector2f(0, 0.0f),
 			0
 		)
 	{}
+	~Enemy();
+
+	bool isOutOfBound() { return false; }
 
 	
 };

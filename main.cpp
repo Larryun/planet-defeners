@@ -10,7 +10,6 @@
 int main()
 {
 	Game* spaceinvader = new Game();
-	spaceinvader->init();
 	spaceinvader->gameLoop();
 	return 0;
 }

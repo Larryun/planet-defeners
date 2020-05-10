@@ -13,9 +13,11 @@ class Player : public GameObject
 
 public:
 
-	Player(const sf::Vector2f& pos) :
-		GameObject(pos,
-			sf::Vector2f(PLAYER_WIDTH , PLAYER_HEIGHT),
+	Player(const sf::Texture& texture, const sf::IntRect& rect, const sf::Vector2f& pos) :
+		GameObject(
+			texture,
+			rect,
+			pos,
 			sf::Vector2f(0, 0),
 			5.0f		// Initial speed
 		)

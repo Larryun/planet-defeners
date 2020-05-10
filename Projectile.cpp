@@ -12,12 +12,12 @@ Projectile::~Projectile()
 {
 	PROJECTILE_COUNTER--;
 	std::cout << "Projectile removed" << std::endl;
-	delete dummyShape;
+	delete objSprite;
 }
 
 bool Projectile::isOutOfBound() const
 {
-	return dummyShape->getPosition().y < -100;
+	return objSprite->getPosition().y < -100;
 }
 
 
