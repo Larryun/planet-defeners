@@ -14,24 +14,26 @@ class Game
 	const unsigned int FRAME_RATE_LIMIT = 65;
 
 	const int MAX_PROJECTILE_NUM = 500;
+	// frequency of how often can a player shoot
 	const int PROJECTILE_TIME_INTERVAL = 200;
 	const sf::Time PROJECTILE_TIME_DELTA = sf::milliseconds(PROJECTILE_TIME_INTERVAL);
-	// For different type of ship textures
+
+	// the base texture
 	sf::Texture SPACE_TEXTURE;
-	sf::IntRect SHIP_1_TEXTURE_RECT = sf::IntRect(18, 6, 93, 90);
-	sf::IntRect PROJECTILE_RECT = sf::IntRect(30, 105, 15, 33);
-	sf::IntRect ENEMY_RECT = sf::IntRect(51, 114, 12, 12);
-
-
+	// then crop the texture according to the IntRect given
+	sf::IntRect SHIP_1_TEXTURE_RECT = sf::IntRect(6, 2, 31, 30);
+	sf::IntRect PROJECTILE_RECT = sf::IntRect(10, 35, 5, 11);
+	sf::IntRect ENEMY_RECT = sf::IntRect(11, 52, 10, 10);
 
 	sf::Clock* clock;
 	sf::RenderWindow* window;
 	std::vector<Projectile*> projectileArray;
-	std::vector<Enemy*> enemiesArr;
+	std::vector<Enemy*> enemyArr;
 	Player* player;
 
 public:
 	Game();
+	~Game();
 	void init();
 	void gameLoop();
 	void handleKeyInput();
