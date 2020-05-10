@@ -19,7 +19,7 @@ GameObject::GameObject(const sf::Vector2f& pos, const sf::Vector2f& shapeSize, c
 
 void GameObject::move()
 {
-	printf("%f %f --\n", dummyShape->getPosition().x, dummyShape->getPosition().y);
+	//printf("%f %f --\n", dummyShape->getPosition().x, dummyShape->getPosition().y);
 	dummyShape->move(this->getVelocity());
 
 	if (bound != sf::Vector2u(0, 0)) {
