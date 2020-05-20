@@ -2,10 +2,6 @@
 #include <iostream>
 
 int Projectile::PROJECTILE_COUNTER = 0;
-const float Projectile::PROJECTILE_WIDTH = 5.0f;
-const float Projectile::PROJECTILE_HEIGHT = 10.0f;
-const float Projectile::PROJECTILE_X_VELOCITY = 0.0f;
-const float Projectile::PROJECTILE_Y_VELOCITY = -5.0f;
 
 
 Projectile::~Projectile()
@@ -15,9 +11,5 @@ Projectile::~Projectile()
 	delete objSprite;
 }
 
-bool Projectile::isOutOfBound() const
-{
-	return objSprite->getPosition().y < -100;
-}
 
 
