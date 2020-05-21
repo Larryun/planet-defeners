@@ -16,7 +16,7 @@ public:
             rect,
             pos,
             sf::Vector2f(0, -1.0f),
-            5.0f		// Initial speed
+            10.0f		// Initial speed
         )
     {}
 
