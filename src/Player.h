@@ -5,11 +5,6 @@
 
 class Player : public GameObject
 {
-	// Default values
-	static const float PLAYER_WIDTH;
-	static const float PLAYER_HEIGHT;
-	static const float PLAYER_X_VELOCITY;
-	static const float PLAYER_Y_VELOCITY;
 
 public:
 
