@@ -1,7 +1,7 @@
 #ifndef PROJECTILE_H
 #define PROJECTILE_H
 #include <SFML/Graphics.hpp>
-#include "GameObject.h"
+#include "GameObject.hpp"
 
 
 class Projectile : public GameObject
