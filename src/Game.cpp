@@ -33,7 +33,6 @@ bool Game::isOutOfBound(GameObject* obj1)
         obj1->getSprite().getPosition().x > window->getSize().x + 100 ||
         obj1->getSprite().getPosition().y > window->getSize().y + 100 ||
         obj1->getSprite().getPosition().y < -100;
-
 }
 
 void Game::loadAllMusic()
@@ -42,8 +41,6 @@ void Game::loadAllMusic()
         std::cout << "Music not loaded" << std::endl;
     else
         backgroundMusic.setBuffer(backgroundBuffer);
-
-
     if (!laserSoundBuffer.loadFromFile(AUDIO_BASE_PATH + "laser.ogg"))
         std::cout << "LaserSound not loaded" << std::endl;
     else
@@ -82,7 +79,7 @@ Game::Game()
     clock = new sf::Clock();
     BACKGROUND_TEXTURE.loadFromFile(TEXTURE_BASE_PATH + "menuIdea.png");
     tool = new ToolBar(BACKGROUND_TEXTURE, sf::IntRect(0, 0, 300, 720), sf::Vector2f(980, 0));
-    if(tool == nullptr)
+    if (tool == nullptr)
         std::cout << "null" << std::endl;
     tool->setTextObject();
     tool->setSprites();
@@ -226,31 +223,30 @@ void Game::updateGame()
         }
 
 
-        }
-        // Check colliision between enemy and player
-        for (int i = 0; i < enemyArr.size(); i++)
+    }
+    // Check colliision between enemy and player
+    for (int i = 0; i < enemyArr.size(); i++)
+    {
+        if (checkCollision(player, enemyArr[i]))
         {
-            if (checkCollision(player, enemyArr[i]))
-            {
-                std::cout << "PLAYER COLIDED" << std::endl;
-                //hp--; // hp update
-            }
+            std::cout << "PLAYER COLIDED" << std::endl;
+            //hp--; // hp update
         }
-        tool->updateTime();
-        tool->updateScore(count);
-        tool->updateHpBarSize(hp);
-        window->draw(tool->getSprite());
-        tool->drawTo(*window);
+    }
+    tool->updateTime();
+    tool->updateScore(count);
+    tool->updateHpBarSize(hp);
+    window->draw(tool->getSprite());
+    tool->drawTo(*window);
+
 
     window->draw(background);
     updateGameObjectArray(projectileArray);
     updateGameObjectArray(enemyArr);
     drawGameObjectArray(projectileArray);
     drawGameObjectArray(enemyArr);
-
     window->draw(player->getSprite());
     window->display();
-
 
 }
 
@@ -285,7 +281,5 @@ void Game::gameLoop() {
             updateGame();
         }
 
-        // check collision between projectile and enemy
-        // delete object if collided
     }
 }
