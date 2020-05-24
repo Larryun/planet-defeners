@@ -1,7 +1,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 #include <SFML/Graphics.hpp>
-#include "GameObject.h"
+#include "GameObject.hpp"
 
 class Player : public GameObject
 {

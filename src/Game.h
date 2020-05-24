@@ -5,6 +5,7 @@
 #include "Projectile.h"
 #include "Player.h"
 #include "Enemy.h"
+#include "ToolBar.hpp"
 
 class Game
 {
@@ -57,6 +58,9 @@ class Game
     std::vector<GameObject*> projectileArray;
     std::vector<GameObject*> enemyArr;
     Player* player;
+    ToolBar* tool;
+    int count = 0;
+    int hp = 10;
 
 public:
     Game();

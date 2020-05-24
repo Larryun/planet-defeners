@@ -5,6 +5,7 @@
 #include "Game.h"
 #include "Player.h"
 #include "Projectile.h"
+#include "ToolBar.hpp"
 
 template <class T>
 void deleteObjectFromVector(std::vector<T*>&, int);
@@ -32,7 +33,6 @@ bool Game::isOutOfBound(GameObject* obj1)
         obj1->getSprite().getPosition().x > window->getSize().x + 100 ||
         obj1->getSprite().getPosition().y > window->getSize().y + 100 ||
         obj1->getSprite().getPosition().y < -100;
-
 }
 
 void Game::loadAllMusic()
@@ -41,8 +41,6 @@ void Game::loadAllMusic()
         std::cout << "Music not loaded" << std::endl;
     else
         backgroundMusic.setBuffer(backgroundBuffer);
-
-
     if (!laserSoundBuffer.loadFromFile(AUDIO_BASE_PATH + "laser.ogg"))
         std::cout << "LaserSound not loaded" << std::endl;
     else
@@ -79,6 +77,13 @@ Game::Game()
     window = new sf::RenderWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), GAME_TITLE, sf::Style::Close | sf::Style::Resize);
     player = new Player(SPACE_TEXTURE, SHIP_1_TEXTURE_RECT, sf::Vector2f(100, 100));
     clock = new sf::Clock();
+    BACKGROUND_TEXTURE.loadFromFile(TEXTURE_BASE_PATH + "menuIdea.png");
+    tool = new ToolBar(BACKGROUND_TEXTURE, sf::IntRect(0, 0, 300, 720), sf::Vector2f(980, 0));
+    if (tool == nullptr)
+        std::cout << "null" << std::endl;
+    tool->setTextObject();
+    tool->setSprites();
+    tool->setHpBar(hp, sf::Color::Red, sf::Vector2f(20.f, (float)hp * 20.f), sf::Vector2f(528.f, 150.f));
     init();
 }
 
@@ -96,7 +101,7 @@ Game::~Game() {
     delete player;
 }
 
-void Game::initEnemy(const sf::Vector2u windowSize, unsigned int row = 3, unsigned int col = 15)
+void Game::initEnemy(const sf::Vector2u windowSize, unsigned int row = 3, unsigned int col = 12)
 {
     sf::Vector2f offset(50.0, 50.0);
     float paddingRight = 30;
@@ -225,18 +230,23 @@ void Game::updateGame()
         if (checkCollision(player, enemyArr[i]))
         {
             std::cout << "PLAYER COLIDED" << std::endl;
+            //hp--; // hp update
         }
     }
+    tool->updateTime();
+    tool->updateScore(count);
+    tool->updateHpBarSize(hp);
+    window->draw(tool->getSprite());
+    tool->drawTo(*window);
+
 
     window->draw(background);
     updateGameObjectArray(projectileArray);
     updateGameObjectArray(enemyArr);
     drawGameObjectArray(projectileArray);
     drawGameObjectArray(enemyArr);
-
     window->draw(player->getSprite());
     window->display();
-
 
 }
 
@@ -271,7 +281,5 @@ void Game::gameLoop() {
             updateGame();
         }
 
-        // check collision between projectile and enemy
-        // delete object if collided
     }
 }
