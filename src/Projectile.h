@@ -10,13 +10,14 @@ class Projectile : public GameObject
 public:
     static int PROJECTILE_COUNTER;
 
-    Projectile(const sf::Texture& texture, const sf::IntRect& rect, const sf::Vector2f& pos) :
+    Projectile(const sf::Texture& texture, const sf::IntRect& rect, 
+        const sf::Vector2f& pos, sf::Vector2f dir = sf::Vector2f(0, -1.0f), float spd = 10) :
         GameObject(
             texture,
             rect,
             pos,
-            sf::Vector2f(0, -1.0f),
-            10.0f		// Initial speed
+            dir,
+            spd
         )
     {}
 

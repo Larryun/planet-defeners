@@ -30,7 +30,7 @@ void ToolBar::setHpBar(int hp, sf::Color color, sf::Vector2f size, sf::Vector2f 
 
 void ToolBar::setSprites(){
     if(!texture.loadFromFile(TEXTURE_BASE_PATH + "spaceSprites.png"))
-        std::cout << "cannot laod .pngx" << std::endl;
+        std::cout << "cannot laod .png" << std::endl;
     scoreSp = new GameObject(texture, sf::IntRect(0, 47, 100, 22), sf::Vector2f(990.f,30.0f), sf::Vector2f(0, 0), 0);
     scoreSp->setScale(sf::Vector2f(1.5f, 1.5f));
     timeSp = new GameObject(texture, sf::IntRect(0, 96, 80, 22), sf::Vector2f(1020.0f,100.0f), sf::Vector2f(0, 0), 0);

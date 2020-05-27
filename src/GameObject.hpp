@@ -4,6 +4,7 @@
 #ifndef MOVABLE_H
 #define MOVABLE_H
 #include <SFML/Graphics.hpp>
+#include <iostream>
 
 class GameObject
 {
@@ -31,6 +32,7 @@ public:
     // Vector2f for initial dir (may remove that)
     // float for the speed
     GameObject(const sf::Texture&, const sf::IntRect&, const sf::Vector2f&, const sf::Vector2f&, float);
+    virtual ~GameObject() {}
 
     void move();
     void move(const sf::Vector2f&);
@@ -45,8 +47,9 @@ public:
     // Setters
     void setSpeed(float const& spd) { speed = spd; }
     void setDirection(const sf::Vector2f& dir) { direction = dir; }
-    void setPosition(const sf::Vector2f& p) { objSprite->setPosition(p); }
-    void setScale(const sf::Vector2f& scale) { objSprite->setScale(scale); }
+    void setPosition(const sf::Vector2f& p) { getSprite().setPosition(p); }
+    void setScale(const sf::Vector2f& scale) { getSprite().setScale(scale); }
+    // bound_: pos from top left corner
     void setMovingBoundary(const sf::Vector2u& bound_) { movingBound = bound_; }
     void setSpriteTexture(sf::Texture& texture) { getSprite().setTexture(texture); }
     void accelerate(float a) { setSpeed(getSpeed() + a); }
