@@ -158,6 +158,8 @@
     <ClInclude Include="src\GameText.hpp" />
     <ClInclude Include="src\HealthRestore.h" />
     <ClInclude Include="src\PlanetDefenders.h" />
+    <ClInclude Include="src\GameObject.h" />
+    <ClInclude Include="src\GameText.hpp" />
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\PowerUp.h" />
     <ClInclude Include="src\Projectile.h" />

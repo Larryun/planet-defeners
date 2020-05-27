@@ -76,6 +76,7 @@ public:
     void updateHpBarSize(int hp) {
         hpBar.setSize(sf::Vector2f(30.f, hp * 2.0f));
     }
+
     void drawTo(sf::RenderWindow &window);
     int getShipCount() { return shipCount; }
 };

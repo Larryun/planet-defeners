@@ -6,6 +6,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
+
 class GameObject
 {
     // Default values
@@ -34,6 +35,7 @@ public:
     GameObject(const sf::Texture&, const sf::IntRect&, const sf::Vector2f&, const sf::Vector2f&, float);
     virtual ~GameObject() {}
 
+
     void move();
     void move(const sf::Vector2f&);
 
@@ -49,6 +51,7 @@ public:
     void setDirection(const sf::Vector2f& dir) { direction = dir; }
     void setPosition(const sf::Vector2f& p) { getSprite().setPosition(p); }
     void setScale(const sf::Vector2f& scale) { getSprite().setScale(scale); }
+    
     // bound_: pos from top left corner
     void setMovingBoundary(const sf::Vector2u& bound_) { movingBound = bound_; }
     void setSpriteTexture(sf::Texture& texture) { getSprite().setTexture(texture); }

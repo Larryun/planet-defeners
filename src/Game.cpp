@@ -12,6 +12,7 @@
 
 using namespace PlanetDefenders;
 
+
 void Game::loadAllMusic()
 {
     if (!backgroundBuffer.loadFromFile(AUDIO_BASE_PATH + "game_music.ogg"))
@@ -258,6 +259,12 @@ void Game::updateGame()
             break;
         }
     }
+    tool->updateTime();
+    tool->updateScore(count);
+    tool->updateHpBarSize(hp);
+    window->draw(tool->getSprite());
+    tool->drawTo(*window);
+
 
 
     window->draw(background);
@@ -273,6 +280,7 @@ void Game::updateGame()
     drawGameObjectArray(projectileArray);
     drawGameObjectArray(enemyArr);
     drawGameObjectArray(powerUpArr);
+
     window->draw(player->getSprite());
 
     // draw shield if player has SHIELD power up
