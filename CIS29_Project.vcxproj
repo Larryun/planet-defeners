@@ -141,19 +141,29 @@
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
     <ClCompile Include="src\GameText.cpp" />
+    <ClCompile Include="src\HealthRestore.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\PlanetDefenders.cpp" />
     <ClCompile Include="src\Player.cpp" />
+    <ClCompile Include="src\PowerUp.cpp" />
     <ClCompile Include="src\Projectile.cpp" />
+    <ClCompile Include="src\Shield.cpp" />
     <ClCompile Include="src\ToolBar.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Collision.h" />
     <ClInclude Include="src\Enemy.h" />
     <ClInclude Include="src\Game.h" />
+    <ClInclude Include="src\GameObject.hpp" />
+    <ClInclude Include="src\GameText.hpp" />
+    <ClInclude Include="src\HealthRestore.h" />
+    <ClInclude Include="src\PlanetDefenders.h" />
     <ClInclude Include="src\GameObject.h" />
     <ClInclude Include="src\GameText.hpp" />
     <ClInclude Include="src\Player.h" />
+    <ClInclude Include="src\PowerUp.h" />
     <ClInclude Include="src\Projectile.h" />
+    <ClInclude Include="src\Shield.h" />
     <ClInclude Include="src\ToolBar.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

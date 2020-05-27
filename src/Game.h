@@ -11,17 +11,7 @@ class Game
 {
     bool GAME_PAUSED = 0;
 
-    const std::string TEXTURE_BASE_PATH = "resourses/texture/";
-    const std::string AUDIO_BASE_PATH = "resourses/sound/";
-    const unsigned int WINDOW_WIDTH = 1280;
-    const unsigned int WINDOW_HEIGHT = 720;
-    const std::string GAME_TITLE = "Space Invaders?";
-    const unsigned int FRAME_RATE_LIMIT = 65;
-
-    const int MAX_PROJECTILE_NUM = 500;
     // frequency of how often can a player shoot
-    const int PROJECTILE_TIME_INTERVAL = 100;
-    const sf::Time PROJECTILE_TIME_DELTA = sf::milliseconds(PROJECTILE_TIME_INTERVAL);
 
     sf::Sprite background;
     //background music
@@ -34,6 +24,10 @@ class Game
     sf::SoundBuffer enemyHurtSoundBuffer;
     sf::Sound enemyHurtSound;
     sf::Texture SPACE_TEXTURE;
+
+
+    // Put these into namespace ??
+
     //background texture
     sf::Texture BACKGROUND_TEXTURE;
     // then crop the texture according to the IntRect given
@@ -53,19 +47,38 @@ class Game
     sf::IntRect SHIP_4_TEXTURE_RECT = sf::IntRect(103, 0, 29, 30);
     sf::IntRect SHIP_4_LASER_RECT = sf::IntRect(103, 33, 3, 12);
 
+    // PowerUp
+    // health restore
+    sf::IntRect HEALTH_RESTORE_RECT = sf::IntRect(100, 48, 20, 20);
+    // shield powerup
+    sf::IntRect SHIELD_POWERUP_RECT = sf::IntRect(122, 48, 20, 20);
+
+    // shield
+    sf::IntRect SHIELD_RECT = sf::IntRect(132, 0, 47, 46);
+
     sf::Clock* clock;
     sf::RenderWindow* window;
     std::vector<GameObject*> projectileArray;
     std::vector<GameObject*> enemyArr;
+    std::vector<GameObject*> powerUpArr;
+
     Player* player;
     ToolBar* tool;
+
     int count = 0;
+    // move that to player member later
     int hp = 10;
+
+    // for test
+    PowerUp* healPower;
+    PowerUp* shield;
+    sf::Sprite shieldSprite;
+
 
 public:
     Game();
     ~Game();
-    void init();
+    void init() = delete;
     void gameLoop();
     void updateGame();
     void handleKeyInput();
@@ -73,7 +86,6 @@ public:
     void updateGameObjectArray(std::vector<GameObject*>&);
     void drawGameObjectArray(std::vector<GameObject*>&);
     void initEnemy(const sf::Vector2u, unsigned int, unsigned int);
-    bool isOutOfBound(GameObject*);
     void loadAllMusic();
     void pauseGame();
 

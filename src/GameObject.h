@@ -14,6 +14,7 @@ protected:
 
 	sf::Sprite* objSprite;
 	sf::Vector2f direction;
+    sf::Vector2f pos;
 	sf::Vector2u movingBound;
 	float speed;
 

@@ -73,7 +73,10 @@ public:
     void addProtection(int num1);
     void setHpBar(int hp, sf::Color color, sf::Vector2f size, sf::Vector2f pos);
     //void addHp() { hp += 3;}
-    void updateHpBarSize(int hp) { hpBar.setSize(sf::Vector2f(30.f, (float)hp * 20.f)); }
+    void updateHpBarSize(int hp) {
+        hpBar.setSize(sf::Vector2f(30.f, hp * 2.0f));
+    }
+
     void drawTo(sf::RenderWindow &window);
     int getShipCount() { return shipCount; }
 };
