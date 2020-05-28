@@ -155,7 +155,6 @@
     <ClInclude Include="src\Enemy.h" />
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\GameObject.hpp" />
-    <ClInclude Include="src\GameText.hpp" />
     <ClInclude Include="src\HealthRestore.h" />
     <ClInclude Include="src\PlanetDefenders.h" />
     <ClInclude Include="src\GameObject.h" />
