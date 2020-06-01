@@ -43,6 +43,106 @@ void Game::pauseGame()
         backgroundMusic.play();
 }
 
+void Game::collisionPlayerProjAndEnemy()
+{
+    // Collision between playerProjectile and enemy
+    for (int i = 0; i < playerProjectileArray.size(); i++)
+    {
+        for (int j = 0; j < enemyArr.size(); j++)
+        {
+            if (checkCollision(playerProjectileArray[i], enemyArr[j]))
+            {
+                tool->addScore(1);
+                enemyHurtSound.play();
+                deleteObjectFromVector(playerProjectileArray, i);
+                deleteObjectFromVector(enemyArr, j);
+                std::cout << "PROJECTILE COLIDED ENEMY" << std::endl;
+                break;
+            }
+        }
+    }
+}
+
+void Game::collisionPlayerAndShield()
+{
+    // Collision between enemyProjectile and player shield
+    for (int i = 0; i < enemyProjectileArray.size(); i++)
+    {
+        if (checkCollision(&enemyProjectileArray[i]->getSprite(), &shieldSprite))
+        {
+            player->takeDamage(1);
+            tool->updateHpBarSize(player->getHp());
+            deleteObjectFromVector(enemyProjectileArray, i);
+            break;
+        }
+    }
+}
+
+void Game::collisionEnemyProjAndPlayer()
+{
+    for (int i = 0; i < enemyProjectileArray.size(); i++)
+    {
+        if (checkCollision(enemyProjectileArray[i], player))
+        {
+            player->takeDamage(1);
+            tool->updateHpBarSize(player->getHp());
+            deleteObjectFromVector(enemyProjectileArray, i);
+            break;
+        }
+    }
+
+}
+
+
+void Game::collisionEnemyAndPlayer()
+{
+    for (int i = 0; i < enemyArr.size(); i++)
+    {
+        if (checkCollision(player, enemyArr[i]))
+        {
+            std::cout << "PLAYER COLIDED ENEMY" << std::endl;
+            player->takeDamage(1);
+            tool->updateHpBarSize(player->getHp());
+            break;
+        }
+    }
+
+}
+
+void Game::collisionPowerUpAndPlayer()
+{
+    for (int i = 0; i < powerUpArr.size(); i++)
+    {
+        if (checkCollision(player, powerUpArr[i]))
+        {
+            std::cout << "PLAYER COLIDED POWERUP" << std::endl;
+            // do not delete powerUp in GameLoop
+            player->addPowerUp(dynamic_cast<PowerUp*>(powerUpArr[i]));
+            tool->setPowerUp(
+                dynamic_cast<PowerUp*>(powerUpArr[i])->getType(),
+                dynamic_cast<PowerUp*>(powerUpArr[i])->getDuration()
+            );
+            std::swap(powerUpArr[i], powerUpArr.back());
+            powerUpArr.pop_back();
+            tool->updateHpBarSize(player->getHp());
+            break;
+        }
+    }
+
+}
+
+void Game::enemyRandomShoot() {
+    for (int i = 0; i < enemyArr.size(); i++)
+    {
+        Projectile* newProjectile = dynamic_cast<Enemy*>(enemyArr[i])->shoot();
+        if (newProjectile)
+        {
+            enemyProjectileArray.push_back(newProjectile);
+        }
+    }
+
+}
+
 void Game::initEnemy(const sf::Vector2u windowSize, unsigned int row = 3, unsigned int col = 12)
 {
     sf::Vector2f offset(50.0, 50.0);
@@ -67,76 +167,51 @@ void Game::initEnemy(const sf::Vector2u windowSize, unsigned int row = 3, unsign
 
 Game::Game()
 {
+
+    // window setup
+    window = new sf::RenderWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), GAME_TITLE, sf::Style::Close | sf::Style::Resize);
+    window->setFramerateLimit(FRAME_RATE_LIMIT);
+
+
     // sounds setup
     loadAllMusic();
     backgroundMusic.play();
     backgroundMusic.setVolume(20.0f);
 
-    // texture setup
+    // base texture setup
     SPACE_TEXTURE.loadFromFile(TEXTURE_BASE_PATH + "spaceSprites.png");
-    BACKGROUND_TEXTURE.loadFromFile(TEXTURE_BASE_PATH + "spaceBackground.png");
-    background = sf::Sprite(BACKGROUND_TEXTURE);
-    background.setScale(1.3, 1.3);
+    BackgroundTexture.loadFromFile(TEXTURE_BASE_PATH + "spaceBackground.png");
 
-    // window setup
-    window = new sf::RenderWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), GAME_TITLE, sf::Style::Close | sf::Style::Resize);
-    window->setFramerateLimit(FRAME_RATE_LIMIT);
-    //BACKGROUND_TEXTURE.loadFromFile(TEXTURE_BASE_PATH + "menuIdea.png");
-    tool = new ToolBar(BACKGROUND_TEXTURE, sf::IntRect(0, 0, 300, 720), sf::Vector2f(980, 0));
-    assert(tool);
-    //if (tool == nullptr)
-    //    std::cout << "null" << std::endl;
-    tool->setTextObject();
-    tool->setSprites();
-    tool->setHpBar(hp, sf::Color::Red, sf::Vector2f(20.f, (float)hp * 20.f), sf::Vector2f(528.f, 150.f));
+    GameBackground = sf::Sprite(BackgroundTexture);
+    GameBackground.setScale(1.3, 1.3);
 
-    // play backgound music
-    // set the boundary of player
+    // ToolBar
+    ToolBarBackgroundTexture.loadFromFile(TEXTURE_BASE_PATH + "toolbar.png");
+    ToolBarBackground = sf::Sprite(ToolBarBackgroundTexture, sf::IntRect(0, 0, 204, 720));
+    ToolBarBackground.setPosition(sf::Vector2f(1076, 0));
+    tool = new ToolBar(sf::Vector2f(980, 0));
+    assert(tool);           // Make sure tool is not null
+
     player = new Player(SPACE_TEXTURE, SHIP_1_TEXTURE_RECT, sf::Vector2f(100, 100));
-    
-    // set moving bound so that it wont go over to ToolBar
-    player->setMovingBoundary(sf::Vector2u(980, 720));
+    player->setMovingBoundary(sf::Vector2u(1076, 720));      // set moving bound so that it wont go over to ToolBar
     player->getSprite().scale(sf::Vector2f(1, 1) * 1.5f);
 
     // demo
     // build enemies array
     initEnemy(window->getSize());
-    // demo: scaling the player sprite
-
-    clock = new sf::Clock();
-
-
-    // for test
-    healPower = new HealthRestore(
-        SPACE_TEXTURE,
-        HEALTH_RESTORE_RECT,
-        sf::Vector2f(500, 200),
-        HEAL
-    );
-
-    shield = new Shield(
-        SPACE_TEXTURE,
-        SHIELD_POWERUP_RECT,
-        sf::Vector2f(500, 400),
-        SHIELD
-    );
-    powerUpArr.push_back(healPower);
-    powerUpArr.push_back(shield);
 
     shieldSprite = sf::Sprite(SPACE_TEXTURE);
-    shieldSprite.setTextureRect(SHIELD_RECT);
-    shieldSprite.setScale(1.5, 1.5);
-
+    shieldSprite.setTextureRect(sf::IntRect(134, 0, 45, 45));
+    shieldSprite.setScale(1.4, 1.4);
 }
 
 Game::~Game() {
-    delete clock;
     delete window;
     delete player;
     delete tool;
-    for (int i = 0; i < projectileArray.size(); i++)
+    for (int i = 0; i < playerProjectileArray.size(); i++)
     {
-        deleteObjectFromVector(projectileArray, i);
+        deleteObjectFromVector(playerProjectileArray, i);
     }
     for (int i = 0; i < enemyArr.size(); i++)
     {
@@ -149,23 +224,7 @@ Game::~Game() {
 }
 
 
-void Game::shoot()
-{
-    sf::Time elapse_time = clock->getElapsedTime();
-    if (elapse_time >= PROJECTILE_TIME_DELTA)
-    {
-        projectileArray.push_back(
-            new Projectile(
-                SPACE_TEXTURE,
-                PROJECTILE_RECT,
-                // x-axis offset by: 2.0f
-                player->getSprite().getPosition() + sf::Vector2f((player->getBound().width / 2.0f) - 2.0f, 0.0f)
-            )
-        );
-        clock->restart();
-        laserSound.play();
-    }
-}
+
 
 void Game::handleKeyInput()
 {
@@ -193,7 +252,36 @@ void Game::handleKeyInput()
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
     {
-        shoot();
+        Projectile* newProjectile = player->shoot();
+        if (newProjectile)
+            playerProjectileArray.push_back(newProjectile);
+        laserSound.play();
+    }
+}
+
+void Game::generatePowerUp()
+{
+    int numberOfPowerUpTypes = 2;
+    if (genPowerUpClock.getElapsedTime().asSeconds() > 2)
+    {
+        PowerUpEnum randomPowerUpType = static_cast<PowerUpEnum>(rand() % numberOfPowerUpTypes);
+        float randX = rand() % (1076 - 30);
+        float randY = -50;
+        genPowerUpClock.restart();
+        switch (randomPowerUpType)
+        {
+        case HEAL:
+            powerUpArr.push_back(new HealthRestore(SPACE_TEXTURE, sf::Vector2f(randX, randY)));
+            break;
+        case SHIELD:
+            powerUpArr.push_back(new Shield(SPACE_TEXTURE, sf::Vector2f(randX, randY)));
+            break;
+        default:
+            break;
+        }
+        // set the direction and speed of the newly added powerup
+        powerUpArr.back()->setDirection(sf::Vector2f(0, 1));
+        powerUpArr.back()->setSpeed(7);
     }
 }
 
@@ -222,74 +310,45 @@ void Game::drawGameObjectArray(std::vector<GameObject*>& arr)
 
 void Game::updateGame()
 {
-    for (int i = 0; i < projectileArray.size(); i++)
+    collisionPlayerProjAndEnemy();
+
+    if (player->hasPowerUp(SHIELD))
     {
-        for (int j = 0; j < enemyArr.size(); j++)
-        {
-            if (checkCollision(projectileArray[i], enemyArr[j]))
-            {
-                enemyHurtSound.play();
-                deleteObjectFromVector(projectileArray, i);
-                deleteObjectFromVector(enemyArr, j);
-                std::cout << "PROJECTILE COLIDED ENEMY" << std::endl;
-                break;
-            }
-        }
-    }
-    // Check colliision between enemy and player
-    for (int i = 0; i < enemyArr.size(); i++)
-    {
-        if (checkCollision(player, enemyArr[i]))
-        {
-            std::cout << "PLAYER COLIDED ENEMY" << std::endl;
-            std::cout << hp << std::endl;
-            player->takeDamage(1);
-            //hp--; // hp update
-        }
+        collisionPlayerAndShield();
     }
 
-    for (int i = 0; i < powerUpArr.size(); i++)
-    {
-        if (checkCollision(player, powerUpArr[i]))
-        {
-            std::cout << "PLAYER COLIDED POWERUP" << std::endl;
-            // do not delete powerUp in GameLoop
-            player->addPowerUp(dynamic_cast<PowerUp*>(powerUpArr[i]));
-            powerUpArr.pop_back();
-            break;
-        }
-    }
-    tool->updateTime();
-    tool->updateScore(count);
-    tool->updateHpBarSize(hp);
-    window->draw(tool->getSprite());
-    tool->drawTo(*window);
+    collisionEnemyProjAndPlayer();
 
+    collisionEnemyAndPlayer();
+    collisionPowerUpAndPlayer();
+    enemyRandomShoot();
 
-
-    window->draw(background);
-    tool->updateTime();
-    tool->updateScore(count);
-    tool->updateHpBarSize(player->getHp());
-    window->draw(tool->getSprite());
-    tool->drawTo(*window);
-
-    updateGameObjectArray(projectileArray);
+    tool->update();
+    updateGameObjectArray(enemyProjectileArray);
+    updateGameObjectArray(playerProjectileArray);
     updateGameObjectArray(enemyArr);
+    updateGameObjectArray(powerUpArr);
+    generatePowerUp();
+}
 
-    drawGameObjectArray(projectileArray);
+void Game::drawGame() {
+    window->draw(GameBackground);
+    window->draw(ToolBarBackground);
+    tool->drawTo(*window);
+    window->draw(player->getSprite());
+    drawGameObjectArray(enemyProjectileArray);
+    drawGameObjectArray(playerProjectileArray);
     drawGameObjectArray(enemyArr);
     drawGameObjectArray(powerUpArr);
 
-    window->draw(player->getSprite());
-
+    // Demo, put to a function later
     // draw shield if player has SHIELD power up
     if (player->hasPowerUp(SHIELD))
     {
         shieldSprite.setPosition(
             player->getSprite().getPosition() +
             sf::Vector2f(
-                -14, -7
+                -9, -7         // offset
             )
         );
         window->draw(shieldSprite);
@@ -302,12 +361,12 @@ void Game::updateGame()
     window->display();
 }
 
+
 void Game::gameLoop() {
 
     while (window->isOpen())
     {
         sf::Event e;
-
         while (window->pollEvent(e))
         {
             switch (e.type)
@@ -328,7 +387,12 @@ void Game::gameLoop() {
             handleKeyInput();
             window->clear();
             updateGame();
+            drawGame();
         }
-
+        else
+        {
+            // prevent drawing TOO MUCH CPU power while pause
+            sf::sleep(sf::milliseconds(100));
+        }
     }
 }

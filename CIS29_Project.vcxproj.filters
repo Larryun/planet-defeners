@@ -29,6 +29,15 @@
     <Image Include="resourses\texture\spaceSprites.png">
       <Filter>Resource Files\texture</Filter>
     </Image>
+    <Image Include="resourses\texture\menuIdea.png">
+      <Filter>Resource Files\texture</Filter>
+    </Image>
+    <Image Include="resourses\texture\spaceBackground.png">
+      <Filter>Resource Files\texture</Filter>
+    </Image>
+    <Image Include="resourses\texture\toolbar.png">
+      <Filter>Resource Files\texture</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Collision.cpp">

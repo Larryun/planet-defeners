@@ -30,12 +30,14 @@ public:
     }
 
     ~PowerUp() {
+        std::cout << "PowerUp Removed" << std::endl;
         delete powerUpClock;
     }
 
     void setDuration(float t) { powerUpDuration = t; }
     void setType(const PowerUpEnum& s) { powerUpType = s; }
-    void setClock(sf::Clock* c) { powerUpClock = c; }
+    //void setClock(sf::Clock* c) { powerUpClock = c; }
+    void startClock() { powerUpClock = new sf::Clock(); }
 
     const sf::Clock& getClock() { return *powerUpClock; }
     const PowerUpEnum& getType() const { return powerUpType; }

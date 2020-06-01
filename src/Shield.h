@@ -4,15 +4,13 @@
 class Shield : public PowerUp
 {
 public:
-    Shield(const sf::Texture& texture, const sf::IntRect& rect,
-        const sf::Vector2f& pos, PowerUpEnum type,
-        float duration = 5) :
+    Shield(const sf::Texture& texture, const sf::Vector2f& pos, float duration = 5) :
         PowerUp(
             texture,
-            rect,
+            SHIELD_POWERUP_RECT,
             pos,
             duration,
-            type
+            SHIELD
         )
     {}
 
