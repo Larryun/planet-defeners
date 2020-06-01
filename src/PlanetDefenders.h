@@ -72,6 +72,7 @@ namespace PlanetDefenders
     const sf::Time EnemyShootTimeDelta = sf::milliseconds(200);
     const sf::IntRect PROJECTILE_RECT = sf::IntRect(0, 32, 5, 11);
 
+
     // Game Window size
     const unsigned int WINDOW_WIDTH = 1280;
     const unsigned int WINDOW_HEIGHT = 720;
@@ -101,6 +102,7 @@ namespace PlanetDefenders
         return Collision::PixelPerfectTest(*sp1, *sp2);
     }
 
+
     // check if obj is out of a certain bound
     // can be used to check if obj should be deleted
     inline bool isOutOfBound(GameObject* obj1)
@@ -111,6 +113,6 @@ namespace PlanetDefenders
             obj1->getSprite().getPosition().y > WINDOW_HEIGHT + 100 ||
             obj1->getSprite().getPosition().x > WINDOW_WIDTH + 100;
     }
-    
 }
 #endif
+

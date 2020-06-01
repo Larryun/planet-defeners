@@ -85,6 +85,7 @@ bool Player::hasPowerUp(PowerUpEnum type) {
         it++;
     }
 
+
     return false;
 }
 

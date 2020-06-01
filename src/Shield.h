@@ -11,6 +11,7 @@ public:
             pos,
             duration,
             SHIELD
+
         )
     {}
 
