@@ -4,6 +4,8 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "GameObject.hpp"
+#include "Projectile.h"
+
 #include "PowerUp.h"
 
 
@@ -11,6 +13,8 @@ class Player : public GameObject
 {
 
     float hp;
+    sf::Clock shootClock;
+
     std::set<PowerUp*> activePowerUp;
 
     // apply power up effect to player
@@ -48,6 +52,9 @@ public:
     // add PowerUp to activePowerUp set
     // and call applyPowerUp
     void addPowerUp(PowerUp* p);
+
+    Projectile* shoot();
+
 
 };
 

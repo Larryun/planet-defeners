@@ -13,7 +13,8 @@ class Game
 
     // frequency of how often can a player shoot
 
-    sf::Sprite background;
+    sf::Sprite GameBackground;
+    sf::Sprite ToolBarBackground;
     //background music
     sf::SoundBuffer backgroundBuffer;
     sf::Sound backgroundMusic;
@@ -26,12 +27,12 @@ class Game
     sf::Texture SPACE_TEXTURE;
 
 
-    // Put these into namespace ??
+    // background texture
+    sf::Texture BackgroundTexture;
+    sf::Texture ToolBarBackgroundTexture;
 
-    //background texture
-    sf::Texture BACKGROUND_TEXTURE;
     // then crop the texture according to the IntRect given
-    //sf::IntRect SHIP_1_TEXTURE_RECT = sf::IntRect(6, 2, 31, 30);
+    // Put these into namespace ??
     sf::IntRect PROJECTILE_RECT = sf::IntRect(0, 32, 5, 11);
     sf::IntRect ENEMY_RECT = sf::IntRect(33, 0, 27, 21);
     // ship1
@@ -47,32 +48,21 @@ class Game
     sf::IntRect SHIP_4_TEXTURE_RECT = sf::IntRect(103, 0, 29, 30);
     sf::IntRect SHIP_4_LASER_RECT = sf::IntRect(103, 33, 3, 12);
 
-    // PowerUp
-    // health restore
-    sf::IntRect HEALTH_RESTORE_RECT = sf::IntRect(100, 48, 20, 20);
-    // shield powerup
-    sf::IntRect SHIELD_POWERUP_RECT = sf::IntRect(122, 48, 20, 20);
-
     // shield
     sf::IntRect SHIELD_RECT = sf::IntRect(132, 0, 47, 46);
 
-    sf::Clock* clock;
     sf::RenderWindow* window;
-    std::vector<GameObject*> projectileArray;
+    std::vector<GameObject*> playerProjectileArray;
+    std::vector<GameObject*> enemyProjectileArray;
     std::vector<GameObject*> enemyArr;
     std::vector<GameObject*> powerUpArr;
 
     Player* player;
     ToolBar* tool;
 
-    int count = 0;
-    // move that to player member later
-    int hp = 10;
-
-    // for test
-    PowerUp* healPower;
-    PowerUp* shield;
     sf::Sprite shieldSprite;
+  
+    sf::Clock genPowerUpClock;
 
 
 public:
@@ -80,15 +70,30 @@ public:
     ~Game();
     void init() = delete;
     void gameLoop();
-    void updateGame();
     void handleKeyInput();
-    void shoot();
-    void updateGameObjectArray(std::vector<GameObject*>&);
-    void drawGameObjectArray(std::vector<GameObject*>&);
+    void generatePowerUp();
     void initEnemy(const sf::Vector2u, unsigned int, unsigned int);
     void loadAllMusic();
+    void updateGame();
+    void drawGame();
     void pauseGame();
 
+    void updateGameObjectArray(std::vector<GameObject*>&);
+    void drawGameObjectArray(std::vector<GameObject*>&);
+
+    // collision detection
+    void collisionPlayerProjAndEnemy();
+    void collisionPlayerAndShield();
+    // Collision between enemyProjectile and player
+    void collisionEnemyProjAndPlayer();
+    // Check colliision between enemy and player
+    void collisionEnemyAndPlayer();
+    // Check colliision between powerup and player
+    void collisionPowerUpAndPlayer();
+
+    // for demonstration
+    // enemy shoot
+    void enemyRandomShoot();
 };
 #endif
 

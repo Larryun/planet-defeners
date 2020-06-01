@@ -5,178 +5,182 @@
 //  Created by rich_chan on 5/20/20.
 //  Copyright © 2020 rich_chan. All rights reserved.
 //
+//  Modified by Larry on 5/30/20
 
 #include "ToolBar.hpp"
 #include "GameText.hpp"
+#include "PlanetDefenders.h"
 #include <iostream>
+#include <sstream>
+#include <iomanip>
+
+using namespace PlanetDefenders;
 
 
-template <class T>
-void deleteObjectFromVector(std::vector<T*>&, int);
-
-template <class T>
-void deleteObjectFromVector(std::vector<T*>& v, int i)
+void ToolBar::initializeHpBar(int hp)
 {
-    std::swap(v[i], v.back());
-    delete v.back();
-    v.pop_back();
+    hpBar.setFillColor(HpBarColor);
+    hpBar.setSize(sf::Vector2f(30.f, (float)hp * 20.f));
+    hpBar.setOrigin(0, hpBar.getSize().y);
+    hpBar.setPosition(sf::Vector2f(1145.f, 161.f));
 }
 
-void ToolBar::setHpBar(int hp, sf::Color color, sf::Vector2f size, sf::Vector2f pos){
-    hpBar.setFillColor(sf::Color::Red);
-    hpBar.setSize(sf::Vector2f(20.f, (float)hp * 20.f));
-    hpBar.setPosition(1050.f, 250.f);
+void ToolBar::updateHpBarSize(int hp) {
+    hpBar.setSize(sf::Vector2f(30.f, hp * 2.0f));
 }
 
-void ToolBar::setSprites(){
-    if(!texture.loadFromFile(TEXTURE_BASE_PATH + "spaceSprites.png"))
-        std::cout << "cannot laod .png" << std::endl;
-    scoreSp = new GameObject(texture, sf::IntRect(0, 47, 100, 22), sf::Vector2f(990.f,30.0f), sf::Vector2f(0, 0), 0);
-    scoreSp->setScale(sf::Vector2f(1.5f, 1.5f));
-    timeSp = new GameObject(texture, sf::IntRect(0, 96, 80, 22), sf::Vector2f(1020.0f,100.0f), sf::Vector2f(0, 0), 0);
-    timeSp->setScale(sf::Vector2f(1.5f, 1.5f));
-    cureSp = new GameObject(texture, sf::IntRect(100, 47, 22, 20), sf::Vector2f(1.f,1.f), sf::Vector2f(0, 0), 0);
-    cureSp->setScale(sf::Vector2f(1.5f, 1.5f));
-    protectSp = new GameObject(texture, sf::IntRect(122, 47, 22, 20), sf::Vector2f(1.f,1.f), sf::Vector2f(0, 0), 0);
-    protectSp->setScale(sf::Vector2f(1.5f, 1.5f));
-    shipSp = new GameObject(texture, sf::IntRect(0, 0, 31, 30), sf::Vector2f(100.f,100.f), sf::Vector2f(0, 0), 0);
-    shipSp->setScale(sf::Vector2f(1.5f, 1.5f));
-    addProtect = new GameObject(texture, sf::IntRect(132, 0, 48, 48), sf::Vector2f(100.f,100.f), sf::Vector2f(0, 0), 0);
-    addProtect->setScale(sf::Vector2f(1.5f, 1.5f));
-    deleteProtect = new GameObject(texture, sf::IntRect(500, 0, 48, 48), sf::Vector2f(100.f,100.f), sf::Vector2f(0, 0), 0);
-    deleteProtect->setScale(sf::Vector2f(1.5f, 1.5f));
-    for(int i = 0; i < shipCount; i++){
-        shipNum.push_back(new GameObject(texture, sf::IntRect(0, 0, 31, 30), sf::Vector2f(100.f ,100.f), sf::Vector2f(0, 0), 0));
-        shipNum[i]->setScale(sf::Vector2f(1.5f, 1.5f));
+
+/*
+    set the activated PowerUp in the toolbar
+*/
+void ToolBar::setPowerUp(PowerUpEnum type, unsigned int duration)
+{
+    powerUpDuration = duration;
+    drawPowerUp = true;
+    delete powerUpClock;                    
+    powerUpClock = new sf::Clock();         // "restart" the clock, don't forgot delete the clock when stop
+    switch (type)
+    {
+    case SHIELD:
+        activatedPowerUpSp.setTextureRect(ToolBarShieldPowerUp);
+        break;
+    case HEAL:
+        activatedPowerUpSp.setTextureRect(ToolBarHealPowerUp);
+        powerUpDuration = 1;                       // show it for 1 sec
+        break;
+    // add more case here if you have more PowerUps
+    }
+}
+
+void ToolBar::generateDigitRects()
+{
+    for (int i = 1; i < 10; i++)
+    {
+        digitRects[i] = sf::IntRect(208, 24 + (i) * 24, 20, 22);
+    }
+    digitRects[0] = sf::IntRect(208, 264, 20, 22);
+}
+
+void ToolBar::initializeSprites() {
+    initializeHpBar(0);
+    // TODO use Game variable texture
+
+    hpBorderSp = sf::Sprite(ToolBarTexture, PlanetDefenders::HpBorderRect);
+    hpBorderSp.setPosition(sf::Vector2f(1140, 151));
+
+    scoreSp = sf::Sprite(ToolBarTexture, PlanetDefenders::ScoreRect);
+    scoreSp.setPosition(sf::Vector2f(1110, 30));
+
+    timeSp = sf::Sprite(ToolBarTexture, PlanetDefenders::TimeRect);
+    timeSp.setPosition(sf::Vector2f(1110, 90));
+
+    activatedPowerUpSp = sf::Sprite(ToolBarTexture);
+    activatedPowerUpSp.setPosition(sf::Vector2f(1210, 365));
+
+    activatedPowerUpContainerSp = sf::Sprite(ToolBarTexture, TheThingThatLooksLikeaTV);
+    activatedPowerUpContainerSp.setPosition(sf::Vector2f(1200, 350));
+
+    generateDigitRects();
+
+    // initialize score Sprites without IntRect first,
+    // call lsetTextureRect() later to update the texture
+    for (int i = 0; i < 3; i++)
+    {
+        scoreSprites[i] = sf::Sprite(ToolBarTexture);
+        scoreSprites[i].setPosition(sf::Vector2f(1110 + i * 30, 60));
     }
 
+    // initialize time Sprites without IntRect first,
+    // call lsetTextureRect() later to update the texture
+    for (int i = 0; i < 3; i++)
+    {
+        timeSprites[i] = sf::Sprite(ToolBarTexture);
+        timeSprites[i].setPosition(sf::Vector2f(1110 + i * 30, 120));
+    }
 }
 
-void ToolBar::addProtection(int num1){
-    if(isProtect){
-        if((num1 - 30) % 10 == 0){
+void ToolBar::addProtection(int num1) {
+    if (isProtect) {
+        if ((num1 - 30) % 10 == 0) {
             isProtect = false;
         }
     }
 }
 
-void ToolBar::updateShip(){
+/*********/
+void ToolBar::updateShip() {
     shipCount--;
     deleteObjectFromVector(shipNum, shipCount);
 }
 
-void ToolBar::addThings(int num){
-    if(num == 1){
-        thingNum.push_back(cureSp);
-    }else{
-        isProtect = true;
-        thingNum.push_back(protectSp);
-    }
-    //std::cout << "added!" << std::endl;
+/*
+    it will update the activatedPowerUpEnded variable to true if the it's ended
+    if activatedPowerEnded == true, it won't be drawn in the drawTo function
+*/
+void ToolBar::updateActivatedPowerUp()
+{
+    // powerUpClock is uninitalized
+    if (powerUpClock == nullptr)
+        drawPowerUp = false;
+    else
+        drawPowerUp = powerUpClock->getElapsedTime().asSeconds() < powerUpDuration;
+        
 }
 
-void ToolBar::updateScore(int score){
-    int hundreds = 0, decade = 0, unit = 0;;
-    unit = score % 10;
-    decade = score / 10 % 10;
-    if(unit == 0){
-        unit = 10;
+
+void ToolBar::updateScore() {
+    std::stringstream ss;
+        ss << std::setw(3) << std::setfill('0') << scoreCounter;
+    // format the string to fill with zeros e.g. "009", "024"
+    std::string scoreString = ss.str();
+    for (int i = 0; i < 3; i++)
+    {
+        scoreSprites[i].setTextureRect(digitRects[scoreString[i] - '0']);
     }
-    hundreds = score / 100 % 10;
-    if(decade == 0){
-        decade = 10;
-    }
-    if(score < 10){
-        decade = 10;
-        hundreds = 10;
-    }
-    if(score < 100){
-        hundreds = 10;
-    }
-    scoreHundred = new GameObject(texture, sf::IntRect((hundreds-1) * 20, 72, 20, 22), sf::Vector2f(1160.0f, 30.0f), sf::Vector2f(0, 0), 0);
-    scoreHundred->setScale(sf::Vector2f(1.5f, 1.5f));
-    scoreDecade = new GameObject(texture, sf::IntRect((decade-1) * 20, 72, 20, 22), sf::Vector2f(1193.0f, 30.0f), sf::Vector2f(0, 0), 0);
-    scoreDecade->setScale(sf::Vector2f(1.5f, 1.5f));
-    scoreUnit = new GameObject(texture, sf::IntRect((unit-1) * 20, 72, 20, 22), sf::Vector2f(1231.0f, 30.0f), sf::Vector2f(0, 0), 0);
-    scoreUnit->setScale(sf::Vector2f(1.5f, 1.5f));
 }
 
-void ToolBar::updateTime(){
-    sf::Time elapsed = clock.getElapsedTime();
-    time = static_cast<double>(elapsed.asSeconds());
-    int hundreds = 0, decade = 0, unit = 0;;
-    unit = time % 10;
-    decade = time / 10 % 10;
-    if(unit == 0){
-        unit = 10;
+void ToolBar::updateTime() {
+    int time = static_cast<unsigned int>(timeClock.getElapsedTime().asSeconds());
+    std::stringstream ss;
+    // format the string to fill with zeros e.g. "009", "024"
+    ss << std::setw(3) << std::setfill('0') << time;
+    //std::cout << ss.str() << std::endl;
+    std::string timeString = ss.str();
+    for (int i = 0; i < 3; i++)
+    {
+        timeSprites[i].setTextureRect(digitRects[timeString[i] - '0']);
     }
-    hundreds = time / 100 % 10;
-    if(decade == 0){
-        decade = 10;
-    }
-    if(time < 10){
-        decade = 10;
-        hundreds = 10;
-    }
-    if(time < 100){
-        hundreds = 10;
-    }
-    timeHundred = new GameObject(texture, sf::IntRect((hundreds-1) * 20, 72, 20, 22), sf::Vector2f(1160.0f,102.0f), sf::Vector2f(0, 0), 0);
-    timeHundred->setScale(sf::Vector2f(1.5f, 1.5f));
-    timeDecade = new GameObject(texture, sf::IntRect((decade-1) * 20, 72, 20, 22), sf::Vector2f(1193.0f,102.0f), sf::Vector2f(0, 0), 0);
-    timeDecade->setScale(sf::Vector2f(1.5f, 1.5f));
-    timeUnit = new GameObject(texture, sf::IntRect((unit-1) * 20, 72, 20, 22), sf::Vector2f(1231.0f,102.0f), sf::Vector2f(0, 0), 0);
-    timeUnit->setScale(sf::Vector2f(1.5f, 1.5f));
-
 }
 
-void ToolBar::setTextObject(){
-    if(!font.loadFromFile("/Users/rich_chan/Downloads/arial.ttf")){
-        std::cout << "cannot laod .png" << std::endl;
-    }
-    hpText = new GameText(sf::Vector2f(1050.f, 210.f), "HP", sf::Color::Red, 24, font);
-    dronText = new GameText(sf::Vector2f(1180.f, 210.f), "Things", sf::Color::Green, 24, font);
-    hpCountText = new GameText(sf::Vector2f(975.f, 640.f), "ShipCount", sf::Color::Red, 24, font);
+/*
+    Put all update functions in here
+*/
+void ToolBar::update()
+{
+    updateScore();
+    updateTime();
+    updateActivatedPowerUp();
 }
 
-void ToolBar::drawTo(sf::RenderWindow &window){
-    if(isProtect){
-        window.draw(addProtect->getSprite());
-    }else{
-        window.draw(deleteProtect->getSprite());
-    }
-//    if(time - 5 != 0)
-//        window.draw(addProtect->getSprite());
-//    if(time - 5 == 0)
-//        window.draw(deleteProtect->getSprite());
-
-    hpText->drawTo(window);
-    dronText->drawTo(window);
-    hpCountText->drawTo(window);
-
-    window.draw(scoreSp->getSprite());
-    window.draw(timeSp->getSprite());
-    //window.draw(cureSp->getSprite());
-    //window.draw(protectSp->getSprite());
-
-    for(int i = 0; i < shipNum.size(); i++){
-        shipNum[i]->setPosition(sf::Vector2f(1100.f + 60.f * i, 630.f));
-        window.draw(shipNum[i]->getSprite());
+/*
+    Put all draw functions in here
+*/
+void ToolBar::drawTo(sf::RenderWindow& window) {
+    for (int i = 0; i < 3; i++)
+    {
+        window.draw(scoreSprites[i]);
     }
 
-    for(int i = 0; i < thingNum.size(); i++){
-        //std::cout << "size: "<< thingNum.size() << std::endl;
-        thingNum[i]->setPosition(sf::Vector2f(1200.f, 250.f + 40.f * i));
-        window.draw(thingNum[i]->getSprite());
+    for (int i = 0; i < 3; i++)
+    {
+        window.draw(timeSprites[i]);
     }
 
-    window.draw(timeUnit->getSprite());
-    window.draw(timeDecade->getSprite());
-    window.draw(timeHundred->getSprite());
-
-    window.draw(scoreUnit->getSprite());
-    window.draw(scoreDecade->getSprite());
-    window.draw(scoreHundred->getSprite());
-
+    window.draw(scoreSp);
+    window.draw(timeSp);
+    window.draw(hpBorderSp);
     window.draw(hpBar);
+    if (drawPowerUp)
+        window.draw(activatedPowerUpSp);
+    window.draw(activatedPowerUpContainerSp);
 }

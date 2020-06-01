@@ -1,0 +1,12 @@
+#include "Powerup.hpp"
+#include <iostream>
+
+Powerup::~Powerup()
+{
+    //std::cout << "Player removed" << std::endl;
+    delete objSprite;
+}
+
+
+
+

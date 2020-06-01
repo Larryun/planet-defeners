@@ -133,7 +133,10 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="resourses\texture\menuIdea.png" />
+    <Image Include="resourses\texture\spaceBackground.png" />
     <Image Include="resourses\texture\spaceSprites.png" />
+    <Image Include="resourses\texture\toolbar.png" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Collision.cpp" />
@@ -158,7 +161,6 @@
     <ClInclude Include="src\GameText.hpp" />
     <ClInclude Include="src\HealthRestore.h" />
     <ClInclude Include="src\PlanetDefenders.h" />
-    <ClInclude Include="src\GameObject.h" />
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\PowerUp.h" />
     <ClInclude Include="src\Projectile.h" />

@@ -10,74 +10,78 @@
 #define ToolBar_hpp
 #include <SFML/Graphics.hpp>
 #include <stdio.h>
-#include "GameText.hpp"
 #include "GameObject.hpp"
+#include "PlanetDefenders.h"
+#include "PowerUp.h"
 
-class ToolBar : public GameObject{
+using namespace PlanetDefenders;
+
+
+class ToolBar 
+{
     const unsigned int BAR_WIDTH = 300;
     const unsigned int BAR_HEIGHT = 720;
-    const std::string TEXTURE_BASE_PATH = "resourses/texture/";
 
-    GameObject *scoreSp;
-    GameObject *timeSp;
-    GameObject *timeHundred;
-    GameObject *timeDecade;
-    GameObject *timeUnit;
-    GameObject *cureSp;
-    GameObject *protectSp;
-    GameObject *shipSp;
-    GameObject *addProtect;
-    GameObject *deleteProtect;
+    sf::IntRect digitRects[10];
+    sf::Sprite scoreSprites[3];
+    sf::Sprite timeSprites[3];
 
-    GameObject *scoreHundred;
-    GameObject *scoreDecade;
-    GameObject *scoreUnit;
+    sf::Sprite hpBorderSp;
+    sf::Sprite scoreSp;
+    sf::Sprite timeSp;
+    sf::Sprite activatedPowerUpContainerSp;
+    sf::Sprite activatedPowerUpSp;
+    PowerUp* activatedPowerUp;
+
+    // Unused
+    sf::Sprite cureSp;
+    sf::Sprite protectSp;
+    sf::Sprite shipSp;
+    sf::Sprite addProtect;
+    sf::Sprite deleteProtect;
 
     std::vector<GameObject*> shipNum;
     std::vector<GameObject*> thingNum;
 
-    sf::Texture texture;
+    sf::Texture ToolBarTexture;
     sf::RectangleShape hpBar;
-    sf::Clock clock;
-    sf::Time elapsed;
+    sf::Clock timeClock;
+    sf::Clock* powerUpClock;
+    unsigned int powerUpDuration;
     sf::Font font;
 
     std::string countdownString;
-    std::ostringstream convert1;
-    GameText *hpText; //= new GameText(sf::Vector2f(1050.f, 50.f), "HP", sf::Color::Red, 17);
-    GameText *dronText; //= new GameText(sf::Vector2f(1050.f, 70.f), "Drones", sf::Color::Red, 17);
-    GameText *hpCountText;
     //GameText *timeText;
     int shipCount = 3;
     int protectTime;
-    int time;
     bool isProtect = false;
+    unsigned int scoreCounter = 0;
+    bool drawPowerUp = false;
+
+    void generateDigitRects();
+    void initializeHpBar(int hp);
+    void updateScore();
+    void updateTime();
+    void updateShip();
+    void updateActivatedPowerUp();
+    void initializeSprites();
 
 public:
-    ToolBar(const sf::Texture& texture, const sf::IntRect& rect, const sf::Vector2f& pos) :
-        GameObject(
-            texture,
-            rect,
-            pos,
-            sf::Vector2f(0, 0),
-            0
-        )
-    { time = static_cast<double>(elapsed.asSeconds()); }
-    ToolBar(sf::Vector2f pos); //const sf::Texture& texture,
-    void setTextObject();
-    void setSprites();
-    void updateTime();
-    void updateScore(int score);
-    void updateShip();
-    void addThings(int num);
-    void addProtection(int num1);
-    void setHpBar(int hp, sf::Color color, sf::Vector2f size, sf::Vector2f pos);
-    //void addHp() { hp += 3;}
-    void updateHpBarSize(int hp) {
-        hpBar.setSize(sf::Vector2f(30.f, hp * 2.0f));
-    }
+    ToolBar(const sf::Vector2f& pos)
+    {
+        if(!ToolBarTexture.loadFromFile(TEXTURE_BASE_PATH + "toolbar.png"))
+            std::cout << "cannot laod toolbar.png" << std::endl;
+        initializeSprites();
 
-    void drawTo(sf::RenderWindow &window);
+    }
     int getShipCount() { return shipCount; }
+    void addProtection(int num1);
+
+    void addScore(unsigned int x) { scoreCounter += x; }
+    void minusScore(int x) { scoreCounter -= x; }
+    void updateHpBarSize(int hp);
+    void setPowerUp(PowerUpEnum type, unsigned int duration);
+    void update();
+    void drawTo(sf::RenderWindow& window);
 };
 #endif /* ToolBar_hpp */
