@@ -6,6 +6,8 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "ToolBar.hpp"
+#include "Menu.h"
+#include "Options.h"
 
 class Game
 {
@@ -59,6 +61,8 @@ class Game
 
     Player* player;
     ToolBar* tool;
+    Menu* menu;
+    Options* options;
 
     sf::Sprite shieldSprite;
   
@@ -77,6 +81,11 @@ public:
     void updateGame();
     void drawGame();
     void pauseGame();
+
+    bool menuHandleKeyboard(sf::Event& event);
+    bool menuHandleMouseClicked(sf::Event& event);
+    bool menuHandleMouseMove(sf::Event& event);
+    bool displayMenu();
 
     void updateGameObjectArray(std::vector<GameObject*>&);
     void drawGameObjectArray(std::vector<GameObject*>&);

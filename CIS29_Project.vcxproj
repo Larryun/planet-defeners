@@ -146,6 +146,8 @@
     <ClCompile Include="src\GameText.cpp" />
     <ClCompile Include="src\HealthRestore.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Menu.cpp" />
+    <ClCompile Include="src\Options.cpp" />
     <ClCompile Include="src\PlanetDefenders.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\PowerUp.cpp" />
@@ -160,6 +162,8 @@
     <ClInclude Include="src\GameObject.hpp" />
     <ClInclude Include="src\GameText.hpp" />
     <ClInclude Include="src\HealthRestore.h" />
+    <ClInclude Include="src\Menu.h" />
+    <ClInclude Include="src\Options.h" />
     <ClInclude Include="src\PlanetDefenders.h" />
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\PowerUp.h" />
