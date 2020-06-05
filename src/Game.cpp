@@ -9,6 +9,8 @@
 #include "ToolBar.hpp"
 #include "HealthRestore.h"
 #include "Shield.h"
+#include "Menu.h"
+#include "Options.h"
 
 using namespace PlanetDefenders;
 
@@ -41,6 +43,106 @@ void Game::pauseGame()
         backgroundMusic.pause();
     else
         backgroundMusic.play();
+}
+
+bool Game::menuHandleKeyboard(sf::Event& event)
+{
+    //using left and right keys to switch between the options
+    switch (event.key.code) {
+    case sf::Keyboard::Left:
+        menu->MoveLeft();
+        break;
+    case sf::Keyboard::Right:
+        menu->MoveRight();
+        break;
+    case sf::Keyboard::Return:
+        switch (menu->getPressedItem()) {
+        case 0:
+            std::cout << "Play button has been pressed" << std::endl;
+            return true;
+            break;
+        case 1:
+            std::cout << "Options button has been pressed" << std::endl;
+            // to options view
+            options->work(*window, event, *options, GameBackground, backgroundMusic);
+            break;
+        case 2:
+            std::cout << "Exit button has been pressed" << std::endl;
+            window->close();
+            return true;
+            break;
+        }
+    }
+    return false;
+}
+
+bool Game::menuHandleMouseClicked(sf::Event& event)
+{
+    if (menu->inY(event, *window)) {
+        if (menu->inXPlay(event, *window)) {
+            std::cout << "PLAY";
+            return true;
+        }
+        else if (menu->inXOptions(event, *window)) {
+            std::cout << "Options";
+            // to options view
+            options->work(*window, event, *options, GameBackground, backgroundMusic);
+        }
+        else if (menu->inXExit(event, *window)) {
+            std::cout << "Exit";
+            window->close();
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Game::menuHandleMouseMove(sf::Event& event)
+{
+    if (menu->inYHover(event, *window)) {
+        if (menu->inXPlayHover(event, *window)) {
+            menu->clickMenu();
+        }
+        else if (menu->inXOptionsHover(event, *window)) {
+            menu->clickOptions();
+        }
+        else if (menu->inXExitHover(event, *window)) {
+            menu->clickExit();
+        }
+    }
+    return false;
+}
+
+
+/*
+    return true to leave the menu and go back to main game loop
+    return false keep showing menu
+*/
+bool Game::displayMenu()
+{
+    sf::Event event;
+    while (window->pollEvent(event)) {
+        switch (event.type) {
+        case sf::Event::KeyReleased:
+            if (menuHandleKeyboard(event))
+                return true;
+            //Clicking on a button
+        case sf::Event::MouseButtonReleased:
+            if (menuHandleMouseClicked(event))
+                return true;
+            //Changing colors when hovering over the buttons
+        case sf::Event::MouseMoved:
+            menuHandleMouseMove(event);
+            break;
+        case sf::Event::Closed:
+            window->close();
+            return true;
+            break;
+        }
+        window->draw(GameBackground);
+        menu->draw(*window);
+    }
+    return false;
 }
 
 void Game::collisionPlayerProjAndEnemy()
@@ -167,6 +269,8 @@ void Game::initEnemy(const sf::Vector2u windowSize, unsigned int row = 3, unsign
 
 Game::Game()
 {
+    menu = new Menu(WINDOW_WIDTH, WINDOW_HEIGHT);
+    options = new Options(WINDOW_WIDTH, WINDOW_WIDTH);
 
     // window setup
     window = new sf::RenderWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), GAME_TITLE, sf::Style::Close | sf::Style::Resize);
@@ -329,6 +433,10 @@ void Game::updateGame()
     updateGameObjectArray(enemyArr);
     updateGameObjectArray(powerUpArr);
     generatePowerUp();
+    // check all powerup 
+    // remove from activePowerUp set 
+    // if it passes the duration
+    player->removeAllEndedPowerUp();
 }
 
 void Game::drawGame() {
@@ -354,16 +462,15 @@ void Game::drawGame() {
         window->draw(shieldSprite);
     }
 
-    // check all powerup 
-    // remove from activePowerUp set 
-    // if it passes the duration
-    player->removeAllEndedPowerUp();
     window->display();
 }
 
 
 void Game::gameLoop() {
 
+    // display menu
+    while (!displayMenu()) {}
+    // main game loop
     while (window->isOpen())
     {
         sf::Event e;
