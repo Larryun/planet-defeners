@@ -145,6 +145,7 @@ bool Game::displayMenu()
     return false;
 }
 
+
 void Game::collisionPlayerProjAndEnemy()
 {
     // Collision between playerProjectile and enemy
@@ -434,6 +435,7 @@ void Game::updateGame()
     // remove from activePowerUp set 
     // if it passes the duration
     player->removeAllEndedPowerUp();
+
 }
 
 void Game::drawGame() {
