@@ -233,7 +233,8 @@ void Game::collisionPowerUpAndPlayer()
 
 }
 
-void Game::enemyRandomShoot() {
+void Game::enemyRandomShoot() 
+{
     for (int i = 0; i < enemyArr.size(); i++)
     {
         Projectile* newProjectile = dynamic_cast<Enemy*>(enemyArr[i])->shoot();
@@ -244,6 +245,7 @@ void Game::enemyRandomShoot() {
     }
 
 }
+
 
 void Game::initEnemy(const sf::Vector2u windowSize, unsigned int row = 3, unsigned int col = 12)
 {
@@ -275,7 +277,6 @@ Game::Game()
     // window setup
     window = new sf::RenderWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), GAME_TITLE, sf::Style::Close | sf::Style::Resize);
     window->setFramerateLimit(FRAME_RATE_LIMIT);
-
 
     // sounds setup
     loadAllMusic();
@@ -326,9 +327,6 @@ Game::~Game() {
         deleteObjectFromVector(powerUpArr, i);
     }
 }
-
-
-
 
 void Game::handleKeyInput()
 {
@@ -422,7 +420,6 @@ void Game::updateGame()
     }
 
     collisionEnemyProjAndPlayer();
-
     collisionEnemyAndPlayer();
     collisionPowerUpAndPlayer();
     enemyRandomShoot();

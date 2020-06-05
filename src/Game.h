@@ -50,7 +50,6 @@ class Game
     sf::IntRect SHIP_4_TEXTURE_RECT = sf::IntRect(103, 0, 29, 30);
     sf::IntRect SHIP_4_LASER_RECT = sf::IntRect(103, 33, 3, 12);
 
-
     // shield
     sf::IntRect SHIELD_RECT = sf::IntRect(132, 0, 47, 46);
 
@@ -66,8 +65,9 @@ class Game
     Options* options;
 
     sf::Sprite shieldSprite;
-
+  
     sf::Clock genPowerUpClock;
+
 
 public:
     Game();
