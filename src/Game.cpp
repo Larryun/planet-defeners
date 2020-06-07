@@ -13,6 +13,7 @@
 #include "Options.h"
 #include "TextureNotLoaded.h"
 
+
 using namespace PlanetDefenders;
 
 
@@ -276,7 +277,6 @@ Game::Game()
 {
     menu = new Menu(WINDOW_WIDTH, WINDOW_HEIGHT);
     options = new Options(WINDOW_WIDTH, WINDOW_HEIGHT);
-    // oh shit
 
     // window setup
     window = new sf::RenderWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), GAME_TITLE, sf::Style::Close | sf::Style::Resize);

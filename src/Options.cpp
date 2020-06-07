@@ -17,7 +17,6 @@ Options::Options(float width, float height) {
 	instructions.setString(ins);
 	instructions.setPosition(sf::Vector2f(width / 20, height / 1.8));
 
-
 	back.setFont(font);
 	back.setCharacterSize(80);
 	back.setFillColor(sf::Color::White);
