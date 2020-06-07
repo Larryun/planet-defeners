@@ -2,13 +2,16 @@
 #define GAME_H
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
+#include <vector>
 #include "Projectile.h"
 #include "Player.h"
 #include "Enemy.h"
 #include "ToolBar.hpp"
 #include "Menu.h"
 #include "Options.h"
-
+#include "ShipSelection.hpp"
+#include "Boss.hpp"
+#include "Projectile.h"
 class Game
 {
     bool GAME_PAUSED = 0;
@@ -36,7 +39,10 @@ class Game
     // then crop the texture according to the IntRect given
     // Put these into namespace ??
     sf::IntRect PROJECTILE_RECT = sf::IntRect(0, 32, 5, 11);
-    sf::IntRect ENEMY_RECT = sf::IntRect(33, 0, 27, 21);
+    sf::IntRect ENEMY_RECTEYE = sf::IntRect(0, 48, 23, 28);
+    sf::IntRect ENEMY_RECTBLUE = sf::IntRect(25, 48, 30, 28);
+    sf::IntRect ENEMY_RECTBOSS = sf::IntRect(0, 76, 182, 235);
+
     // ship1
     sf::IntRect SHIP_1_TEXTURE_RECT = sf::IntRect(0, 0, 31, 30);
     sf::IntRect SHIP_1_LASER_RECT = sf::IntRect(0, 33, 5, 11);
@@ -56,19 +62,28 @@ class Game
     sf::RenderWindow* window;
     std::vector<GameObject*> playerProjectileArray;
     std::vector<GameObject*> enemyProjectileArray;
+    std::vector<Projectile*> bossProjectileArray;
     std::vector<GameObject*> enemyArr;
     std::vector<GameObject*> powerUpArr;
-
+    std::vector<sf::IntRect> enemyRectArr;
+    
     Player* player;
     ToolBar* tool;
     Menu* menu;
     Options* options;
-
+    Boss* boss;
+    
+    ShipSelection* shipSelect;
     sf::Sprite shieldSprite;
   
     sf::Clock genPowerUpClock;
-
-
+    sf::Clock genEnemyClock;
+    
+    int numEnemy;
+    int randomEnemy;
+    sf::Vector2f initialPos; //where should the layout start
+    sf::Vector2f direction; //they all move in the same direction
+    
 public:
     Game();
     ~Game();
@@ -76,7 +91,7 @@ public:
     void gameLoop();
     void handleKeyInput();
     void generatePowerUp();
-    void initEnemy(const sf::Vector2u, unsigned int, unsigned int);
+    //void initEnemy(const sf::Vector2u, unsigned int, unsigned int);
     void loadAllMusic();
     void updateGame();
     void drawGame();
@@ -87,9 +102,11 @@ public:
     bool menuHandleMouseMove(sf::Event& event);
     bool displayMenu();
 
+    //void loadEnemyRectArray();
     void updateGameObjectArray(std::vector<GameObject*>&);
     void drawGameObjectArray(std::vector<GameObject*>&);
-
+//    void updateProjectile(std::vector<Projectile*>&);
+    
     // collision detection
     void collisionPlayerProjAndEnemy();
     void collisionPlayerAndShield();
@@ -100,9 +117,15 @@ public:
     // Check colliision between powerup and player
     void collisionPowerUpAndPlayer();
 
+    void generateEnemy();
+    void generateDiagonalEnemy(int n, sf::Vector2f initialPos, sf::Vector2f direction);
+    void generateSquqreEnemy( int row, int col, sf::Vector2f initialPos, sf::Vector2f direction);
+    //void generateLineEnemy(int n, sf::Vector2f initialPos, sf::Vector2f direction, int speed);
+        
     // for demonstration
     // enemy shoot
     void enemyRandomShoot();
+    void bossRandomShoot();
 };
 #endif
 

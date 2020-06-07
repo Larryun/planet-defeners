@@ -37,6 +37,7 @@ public:
 
 	// Getters
 	const sf::Vector2f getVelocity() const { return speed * direction;  }
+    const sf::Vector2f getPosition() const { return objSprite->getPosition(); }
 	sf::Sprite& getSprite() { return *objSprite; }
 	// Get size of sprite
 	sf::FloatRect getBound() { return objSprite->getGlobalBounds(); }

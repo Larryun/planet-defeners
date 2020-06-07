@@ -3,6 +3,7 @@
 #include <iostream>
 #include <algorithm>
 #include <set>
+#include <cmath>
 #include <SFML/Graphics.hpp>
 #include "GameObject.hpp"
 #include "Projectile.h"

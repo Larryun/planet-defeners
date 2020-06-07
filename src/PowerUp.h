@@ -1,6 +1,6 @@
 #ifndef POWERUP_H
 #define POWERUP_H
-#include "GameObject.h"
+#include "GameObject.hpp"
 #include "PlanetDefenders.h"
 using namespace PlanetDefenders; // for PowerUpEnum
 

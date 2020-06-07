@@ -1,8 +1,8 @@
 /*
     GameObject class definition that handle collision detection(TODO) and other logic
 */
-#ifndef MOVABLE_H
-#define MOVABLE_H
+#ifndef GAMEOBJECT_HPP
+#define GAMEOBJECT_HPP
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
@@ -45,7 +45,8 @@ public:
     // Get size of sprite
     sf::FloatRect getBound() { return objSprite->getGlobalBounds(); }
     float getSpeed() { return speed; }
-
+    const sf::Vector2f getPosition() { return objSprite->getPosition();  }
+    
     // Setters
     void setSpeed(float const& spd) { speed = spd; }
     void setDirection(const sf::Vector2f& dir) { direction = dir; }
