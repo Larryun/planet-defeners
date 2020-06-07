@@ -124,7 +124,6 @@ void ToolBar::updateActivatedPowerUp()
         drawPowerUp = false;
     else
         drawPowerUp = powerUpClock->getElapsedTime().asSeconds() < powerUpDuration;
-        
 }
 
 

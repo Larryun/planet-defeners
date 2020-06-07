@@ -139,6 +139,7 @@
     <Image Include="resourses\texture\toolbar.png" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\BaseException.cpp" />
     <ClCompile Include="src\Collision.cpp" />
     <ClCompile Include="src\Enemy.cpp" />
     <ClCompile Include="src\Game.cpp" />
@@ -153,9 +154,11 @@
     <ClCompile Include="src\PowerUp.cpp" />
     <ClCompile Include="src\Projectile.cpp" />
     <ClCompile Include="src\Shield.cpp" />
+    <ClCompile Include="src\TextureNotLoaded.cpp" />
     <ClCompile Include="src\ToolBar.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\BaseException.h" />
     <ClInclude Include="src\Collision.h" />
     <ClInclude Include="src\Enemy.h" />
     <ClInclude Include="src\Game.h" />
@@ -169,6 +172,7 @@
     <ClInclude Include="src\PowerUp.h" />
     <ClInclude Include="src\Projectile.h" />
     <ClInclude Include="src\Shield.h" />
+    <ClInclude Include="src\TextureNotLoaded.h" />
     <ClInclude Include="src\ToolBar.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
