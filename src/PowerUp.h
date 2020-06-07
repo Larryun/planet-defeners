@@ -1,7 +1,7 @@
 #ifndef POWERUP_H
 #define POWERUP_H
 #include "GameObject.h"
-#include "PlanetDefenders.cpp"
+#include "PlanetDefenders.h"
 using namespace PlanetDefenders; // for PowerUpEnum
 
 class PowerUp : public GameObject

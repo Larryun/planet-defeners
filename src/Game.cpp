@@ -11,12 +11,14 @@
 #include "Shield.h"
 #include "Menu.h"
 #include "Options.h"
+#include "TextureNotLoaded.h"
 
 using namespace PlanetDefenders;
 
 
 void Game::loadAllMusic()
 {
+    // add exception handling here
     if (!backgroundBuffer.loadFromFile(AUDIO_BASE_PATH + "game_music.ogg"))
         std::cout << "Music not loaded" << std::endl;
     else
@@ -273,10 +275,12 @@ void Game::initEnemy(const sf::Vector2u windowSize, unsigned int row = 3, unsign
 Game::Game()
 {
     menu = new Menu(WINDOW_WIDTH, WINDOW_HEIGHT);
-    options = new Options(WINDOW_WIDTH, WINDOW_WIDTH);
+    options = new Options(WINDOW_WIDTH, WINDOW_HEIGHT);
+    // oh shit
 
     // window setup
     window = new sf::RenderWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), GAME_TITLE, sf::Style::Close | sf::Style::Resize);
+    //std::cout << window->getSize().x << " " << window->getSize().y << std::endl;
     window->setFramerateLimit(FRAME_RATE_LIMIT);
 
     // sounds setup
@@ -285,14 +289,17 @@ Game::Game()
     backgroundMusic.setVolume(20.0f);
 
     // base texture setup
-    SPACE_TEXTURE.loadFromFile(TEXTURE_BASE_PATH + "spaceSprites.png");
-    BackgroundTexture.loadFromFile(TEXTURE_BASE_PATH + "spaceBackground.png");
+    if(!SPACE_TEXTURE.loadFromFile(TEXTURE_BASE_PATH + "spaceSprites.png"))
+        throw TextureNotLoaded("spaceSprites.png");
+    if (!BackgroundTexture.loadFromFile(TEXTURE_BASE_PATH + "spaceBackground.png"))
+        throw TextureNotLoaded("spaceBackground.png");
 
     GameBackground = sf::Sprite(BackgroundTexture);
     GameBackground.setScale(1.3, 1.3);
 
     // ToolBar
-    ToolBarBackgroundTexture.loadFromFile(TEXTURE_BASE_PATH + "toolbar.png");
+    if (!ToolBarBackgroundTexture.loadFromFile(TEXTURE_BASE_PATH + "toolbar.png"))
+        throw TextureNotLoaded("toolbar.png");
     ToolBarBackground = sf::Sprite(ToolBarBackgroundTexture, sf::IntRect(0, 0, 204, 720));
     ToolBarBackground.setPosition(sf::Vector2f(1076, 0));
     tool = new ToolBar(sf::Vector2f(980, 0));

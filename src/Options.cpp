@@ -17,6 +17,7 @@ Options::Options(float width, float height) {
 	instructions.setString(ins);
 	instructions.setPosition(sf::Vector2f(width / 20, height / 1.8));
 
+
 	back.setFont(font);
 	back.setCharacterSize(80);
 	back.setFillColor(sf::Color::White);
@@ -167,8 +168,7 @@ void Options::work(sf::RenderWindow& window, sf::Event& event, Options& options,
 
 // store the window size as you member variable, then you dont need to call getSize() and window parameter
 bool Options::inY(sf::Event& event, sf::RenderWindow& window) {
-	//return event.mouseButton.y > window.getSize().y / 2.8 && event.mouseButton.y < window.getSize().y / 2.45;
-    return event.mouseButton.y > 300 && event.mouseButton.y < window.getSize().y;
+	return event.mouseButton.y > window.getSize().y / 2.8 && event.mouseButton.y < window.getSize().y / 2.45;
 }
 
 // you need x position only
@@ -189,8 +189,7 @@ bool Options::inX100(sf::Event& event, sf::RenderWindow& window) {
 }
 
 bool Options::inYHover(sf::Event& event, sf::RenderWindow& window) {
-	//return event.mouseMove.y > window.getSize().y / 2.8 && event.mouseMove.y < window.getSize().y / 2.45;
-    return event.mouseMove.y > 300 && event.mouseMove.y < window.getSize().y;
+	return event.mouseMove.y > window.getSize().y / 2.8 && event.mouseMove.y < window.getSize().y / 2.45;
 }
 bool Options::inX0Hover(sf::Event& event, sf::RenderWindow& window) {
 	return event.mouseMove.x > window.getSize().x / ((soundButtons + 1.00) * .43) && event.mouseMove.x < window.getSize().x / ((soundButtons + 1.00) * .38);
