@@ -1,8 +1,8 @@
 #ifndef PLAYER_H
 #define PLAYER_H
-#include <iostream>
-#include <algorithm>
 #include <set>
+#include <iostream>
+#include <cmath>
 #include <SFML/Graphics.hpp>
 #include "GameObject.hpp"
 #include "Projectile.h"
@@ -35,8 +35,8 @@ public:
 
     float getHp() { return hp; }
 
-    void heal(float amt) { hp = std::min(std::max(static_cast<int>(hp + amt), 0), 100); }
-    void takeDamage(float amt) { hp = std::min(std::max(static_cast<int>(hp - amt), 0), 100); }
+    void heal(float amt) { hp = fmin(fmax(static_cast<int>(hp + amt), 0), 100); }
+    void takeDamage(float amt) { hp = fmin(fmax(static_cast<int>(hp - amt), 0), 100); }
     bool isDead() { return hp <= 0; }
     bool isAlive() { return hp > 0; }
 
@@ -55,6 +55,8 @@ public:
     void addPowerUp(PowerUp* p);
 
     Projectile* shoot();
+
+
 };
 
 

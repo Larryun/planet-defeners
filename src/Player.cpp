@@ -18,8 +18,10 @@ void Player::applyPowerUp(PowerUp& powerUp)
         std::cout << "HEAL POWERUPPP" << std::endl;
         if (activePowerUp.erase(&powerUp) >= 1)
             std::cout << "HEAL POWERUPPP ERASED" << std::endl;
+        break;
     case (PlanetDefenders::SHIELD):
         std::cout << "SHIELD POWERUPPP" << std::endl;
+        break;
     }
 }
 

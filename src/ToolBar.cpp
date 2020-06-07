@@ -8,7 +8,6 @@
 //  Modified by Larry on 5/30/20
 
 #include "ToolBar.hpp"
-#include "GameText.hpp"
 #include "PlanetDefenders.h"
 #include <iostream>
 #include <sstream>
@@ -37,7 +36,7 @@ void ToolBar::setPowerUp(PowerUpEnum type, unsigned int duration)
 {
     powerUpDuration = duration;
     drawPowerUp = true;
-    delete powerUpClock;                    
+    //delete powerUpClock;                    
     powerUpClock = new sf::Clock();         // "restart" the clock, don't forgot delete the clock when stop
     switch (type)
     {
@@ -122,8 +121,9 @@ void ToolBar::updateActivatedPowerUp()
     // powerUpClock is uninitalized
     if (powerUpClock == nullptr)
         drawPowerUp = false;
-    else
-        drawPowerUp = powerUpClock->getElapsedTime().asSeconds() < powerUpDuration;
+    //else
+        //drawPowerUp = powerUpClock->getElapsedTime().asSeconds() < powerUpDuration;
+        
 }
 
 

@@ -1,7 +1,7 @@
 #ifndef PLANET_DEFENDERS_H
 #define PLANET_DEFENDERS_H
 #include "Collision.h"
-#include "GameObject.h"
+#include "GameObject.hpp"
 #include <iostream>
 #include <vector>
 /*
@@ -70,12 +70,14 @@ namespace PlanetDefenders
     const int MAX_PROJECTILE_NUM = 500;
     const sf::Time PlayerShootTimeDelta = sf::milliseconds(100);
     const sf::Time EnemyShootTimeDelta = sf::milliseconds(200);
+    const sf::Time BossShootTimeDelta = sf::milliseconds(300);
     const sf::IntRect PROJECTILE_RECT = sf::IntRect(0, 32, 5, 11);
 
 
     // Game Window size
     const unsigned int WINDOW_WIDTH = 1280;
     const unsigned int WINDOW_HEIGHT = 720;
+
 
     // utilites functions
     // put these into a libarary?
