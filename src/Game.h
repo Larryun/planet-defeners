@@ -108,8 +108,10 @@ public:
     
     // collision detection
     void collisionPlayerProjAndBoss();
+    void collisionBossProjAndPlayer();
     void collisionPlayerProjAndEnemy();
-    void collisionPlayerAndShield();
+    void collisionEnemyProjAndShield();
+    void collisionBossProjAndShield();
     // Collision between enemyProjectile and player
     void collisionEnemyProjAndPlayer();
     // Check colliision between enemy and player

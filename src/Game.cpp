@@ -158,8 +158,26 @@ void Game::collisionPlayerProjAndBoss()
         {
             tool->addScore(1);
             enemyHurtSound.play();
-            bossHp++;
+            //bossHp++;
+            bossHp--;
             std::cout << "PROJECTILE COLIDED BOSS" << std::endl;
+            deleteObjectFromVector(playerProjectileArray, i);
+            break;
+        }
+    }
+}
+
+void Game::collisionBossProjAndPlayer()
+{
+    for (int i = 0; i < bossProjectileArray.size(); i++)
+    {
+        if (checkCollision(bossProjectileArray[i], player))
+        {
+            //enemyHurtSound.play();  playerHurSound?
+            player->takeDamage(1);
+            tool->updateHpBarSize(player->getHp());
+            std::cout << "BOSS PROJECTILE COLIDED PLAYER" << std::endl;
+            deleteObjectFromVector(bossProjectileArray, i);
             break;
         }
     }
@@ -185,16 +203,28 @@ void Game::collisionPlayerProjAndEnemy()
     }
 }
 
-void Game::collisionPlayerAndShield()
+void Game::collisionEnemyProjAndShield()
 {
-    // Collision between enemyProjectile and player shield
+    // Collision between enemyProjectile player shield
     for (int i = 0; i < enemyProjectileArray.size(); i++)
     {
         if (checkCollision(&enemyProjectileArray[i]->getSprite(), &shieldSprite))
         {
-            player->takeDamage(1);
-            tool->updateHpBarSize(player->getHp());
+            //player->takeDamage(1);
+            //tool->updateHpBarSize(player->getHp());
             deleteObjectFromVector(enemyProjectileArray, i);
+            break;
+        }
+    }
+}
+
+void Game::collisionBossProjAndShield()
+{
+    for (int i = 0; i < bossProjectileArray.size(); i++)
+    {
+        if (checkCollision(&bossProjectileArray[i]->getSprite(), &shieldSprite))
+        {
+            deleteObjectFromVector(bossProjectileArray, i);
             break;
         }
     }
@@ -272,8 +302,8 @@ void Game::bossRandomShoot()
     //int randShoot = random() % 4;
     int randShoot = 0;
     std::vector<Projectile*> newProjectile;
-    const static sf::Vector2f offset = 
-        sf::Vector2f(boss->getBound().width/2.0f - 10, boss->getBound().height - 10 ) + 
+    const static sf::Vector2f offset =
+        sf::Vector2f(boss->getBound().width / 2.0f - 10, boss->getBound().height - 10) +
         boss->getPosition();
     switch (randShoot) {
     case 0:
@@ -393,6 +423,7 @@ Game::Game()
     player = new Player(SPACE_TEXTURE, SHIP_1_TEXTURE_RECT, sf::Vector2f(100, 100));
     player->setMovingBoundary(sf::Vector2u(1076, 720));      // set moving bound so that it wont go over to ToolBar
     player->getSprite().scale(sf::Vector2f(1, 1) * 1.5f);
+    tool->updateHpBarSize(player->getHp());
 
     // demo
     // build enemies array
@@ -400,10 +431,10 @@ Game::Game()
 
     enemyRectArr.push_back(ENEMY_RECTEYE);
     enemyRectArr.push_back(ENEMY_RECTBLUE);
-    
-    boss = new Boss(SPACE_TEXTURE, ENEMY_RECTBOSS, sf::Vector2f((window->getSize().x-tool->getSize().x)/2, 0));
+
+    boss = new Boss(SPACE_TEXTURE, ENEMY_RECTBOSS, sf::Vector2f((window->getSize().x - tool->getSize().x) / 2, 0));
     //bossHp = -100;
-    boss->setBossHpBar(bossHp, sf::Color::Red, sf::Vector2f(33.f,(float)bossHp * 7.2f), sf::Vector2f(0, 720.f));
+    boss->setBossHpBar(bossHp, sf::Color::Red, sf::Vector2f(33.f, (float)bossHp * 7.2f), sf::Vector2f(0, 720.f));
     shieldSprite = sf::Sprite(SPACE_TEXTURE);
     shieldSprite.setTextureRect(sf::IntRect(134, 0, 45, 45));
     shieldSprite.setScale(1.4, 1.4);
@@ -501,40 +532,34 @@ void Game::drawGameObjectArray(std::vector<T*>& arr)
     }
 }
 
-void Game::drawBossShot(){
-    for(int i = 0; i < bossProjectileArray.size(); i++){
-        //bossProjectileArray[i]->setDirection(sf::Vector2f(0, 1));
-        float randX = rand() % 10;
-        float randY = rand() % 10;
-        bossProjectileArray[i]->setSpeed(1);
-        window->draw(bossProjectileArray[i]->getSprite());
-    }
-}
-
 void Game::updateGame()
 {
     collisionPlayerProjAndEnemy();
     collisionPlayerProjAndBoss();
     if (player->hasPowerUp(SHIELD))
     {
-        collisionPlayerAndShield();
+        collisionEnemyProjAndShield();
+        collisionBossProjAndShield();
     }
-
-    collisionEnemyProjAndPlayer();
-    collisionEnemyAndPlayer();
+    else
+    {
+        collisionBossProjAndPlayer();
+        collisionEnemyProjAndPlayer();
+        collisionEnemyAndPlayer();
+    }
     collisionPowerUpAndPlayer();
-    enemyRandomShoot();
 
     tool->update();
     updateGameObjectArray(enemyProjectileArray);
     updateGameObjectArray(playerProjectileArray);
+    updateGameObjectArray(bossProjectileArray);
     //if(tool->getScore() == 0){
     //    updateGameObjectArray(enemyArr);
     //    generateEnemy();
     //}
     updateGameObjectArray(enemyArr);
-    generateEnemy();
     updateGameObjectArray(powerUpArr);
+    generateEnemy();
     generatePowerUp();
     // check all powerup 
     // remove from activePowerUp set 
@@ -542,15 +567,10 @@ void Game::updateGame()
     player->removeAllEndedPowerUp();
     boss->updateBossHpBarSize(bossHp);
 
-    updateGameObjectArray(bossProjectileArray);
+    // demostration
+    enemyRandomShoot();
     if (tool->getScore() == 0) {
         bossRandomShoot();
-        //for (int i = 0; i < bossProjectileArray.size(); i++) {
-        //    bossProjectileArray[i]->setDirection(sf::Vector2f(0, 1));
-        //    bossProjectileArray[i]->setSpeed(7);
-        //    bossProjectileArray[i]->move();
-        //    window->draw(bossProjectileArray[i]->getSprite());
-        //}
     }
 }
 
