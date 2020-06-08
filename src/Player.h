@@ -7,7 +7,6 @@
 #include <SFML/Graphics.hpp>
 #include "GameObject.hpp"
 #include "Projectile.h"
-
 #include "PowerUp.h"
 
 
@@ -31,10 +30,13 @@ public:
             sf::Vector2f(0, 0),
             5.0f		// Initial speed
         ), hp(PlanetDefenders::PLAYER_INITIAL_HEALTH)
-    { }
+    {
+        hp = 100;
+    }
     ~Player();
 
     float getHp() { return hp; }
+    void setHp(float _hp) { hp = _hp; }
 
     void heal(float amt) { hp = std::min(std::max(static_cast<int>(hp + amt), 0), 100); }
     void takeDamage(float amt) { hp = std::min(std::max(static_cast<int>(hp - amt), 0), 100); }
@@ -44,7 +46,6 @@ public:
     // check if PowerUp p is in activePowerUp
     bool hasPowerUp(PowerUp* p);
     bool hasPowerUp(PowerUpEnum type);
-
 
     // check all powerup 
     // remove from activePowerUp set 
