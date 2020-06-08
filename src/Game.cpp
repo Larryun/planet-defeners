@@ -149,6 +149,21 @@ bool Game::displayMenu()
     return false;
 }
 
+void Game::collisionPlayerProjAndBoss()
+{
+    // Collision between playerProjectile and enemy
+    for (int i = 0; i < playerProjectileArray.size(); i++)
+    {
+        if (checkCollision(playerProjectileArray[i], boss))
+        {
+            tool->addScore(1);
+            enemyHurtSound.play();
+            bossHp++;
+            std::cout << "PROJECTILE COLIDED BOSS" << std::endl;
+            break;
+        }
+    }
+}
 
 void Game::collisionPlayerProjAndEnemy()
 {
@@ -314,7 +329,7 @@ int Game::generateSquqreEnemy(int row, int col, sf::Vector2f initialPos, sf::Vec
 
 void Game::generateEnemy() {
     int time = genEnemyClock.getElapsedTime().asSeconds();
-    randomEnemy = 1 + rand() % 5;
+    randomEnemy = 1 + rand() % 5;       // num of enemy
     //initialPos = sf::Vector2f(rand() % 900, -100);
     initialPos = sf::Vector2f(-100, 200);
     float randX = rand() % 8 - 4;
@@ -385,9 +400,10 @@ Game::Game()
 
     enemyRectArr.push_back(ENEMY_RECTEYE);
     enemyRectArr.push_back(ENEMY_RECTBLUE);
-
-    boss = new Boss(SPACE_TEXTURE, ENEMY_RECTBOSS, sf::Vector2f((window->getSize().x - tool->getSize().x) / 2, 0));
-
+    
+    boss = new Boss(SPACE_TEXTURE, ENEMY_RECTBOSS, sf::Vector2f((window->getSize().x-tool->getSize().x)/2, 0));
+    //bossHp = -100;
+    boss->setBossHpBar(bossHp, sf::Color::Red, sf::Vector2f(33.f,(float)bossHp * 7.2f), sf::Vector2f(0, 720.f));
     shieldSprite = sf::Sprite(SPACE_TEXTURE);
     shieldSprite.setTextureRect(sf::IntRect(134, 0, 45, 45));
     shieldSprite.setScale(1.4, 1.4);
@@ -485,10 +501,20 @@ void Game::drawGameObjectArray(std::vector<T*>& arr)
     }
 }
 
+void Game::drawBossShot(){
+    for(int i = 0; i < bossProjectileArray.size(); i++){
+        //bossProjectileArray[i]->setDirection(sf::Vector2f(0, 1));
+        float randX = rand() % 10;
+        float randY = rand() % 10;
+        bossProjectileArray[i]->setSpeed(1);
+        window->draw(bossProjectileArray[i]->getSprite());
+    }
+}
+
 void Game::updateGame()
 {
     collisionPlayerProjAndEnemy();
-
+    collisionPlayerProjAndBoss();
     if (player->hasPowerUp(SHIELD))
     {
         collisionPlayerAndShield();
@@ -514,6 +540,7 @@ void Game::updateGame()
     // remove from activePowerUp set 
     // if it passes the duration
     player->removeAllEndedPowerUp();
+    boss->updateBossHpBarSize(bossHp);
 
     updateGameObjectArray(bossProjectileArray);
     if (tool->getScore() == 0) {

@@ -26,14 +26,28 @@ std::vector<Projectile*>* Boss::shoot(int num)
         if (betweenZeroAndOne < shootProbability)        // shoot
             //std::cout << elapse_time.asSeconds() << std::endl;
             for (int i = 0; i < num; i++) {
+                float randomPos = rand() % 100 - 50;
                 shootArr->push_back(new Projectile(
                     *objSprite->getTexture(),
                     PROJECTILE_RECT,
-                    getSprite().getPosition() + sf::Vector2f(getSprite().getGlobalBounds().width/2, getSprite().getGlobalBounds().height),
+                    sf::Vector2f(
+                        getSprite().getPosition().x + getSprite().getGlobalBounds().width / 2 + i * randomPos, getSprite().getGlobalBounds().height),
                     sf::Vector2f(0, 1.0f),
                     5
                 ));
             }
     }
     return shootArr;
+}
+
+void Boss::setBossHpBar(int hp, sf::Color color, sf::Vector2f size, sf::Vector2f pos) {
+    bossHpBar.setFillColor(color);
+    bossHpBar.setSize(size);
+    bossHpBar.setPosition(pos);
+}
+
+void Boss::drawTo(sf::RenderWindow& window) {
+
+    window.draw(bossHpBar);
+
 }
