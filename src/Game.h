@@ -35,14 +35,7 @@ class Game
     // background texture
     sf::Texture BackgroundTexture;
     sf::Texture ToolBarBackgroundTexture;
-
-    // then crop the texture according to the IntRect given
-    // Put these into namespace ??
-    sf::IntRect PROJECTILE_RECT = sf::IntRect(0, 32, 5, 11);
-    sf::IntRect ENEMY_RECTEYE = sf::IntRect(0, 48, 23, 28);
-    sf::IntRect ENEMY_RECTBLUE = sf::IntRect(25, 48, 30, 28);
-    sf::IntRect ENEMY_RECTBOSS = sf::IntRect(0, 76, 182, 235);
-
+    //for ships
     // ship1
     sf::IntRect SHIP_1_TEXTURE_RECT = sf::IntRect(0, 0, 31, 30);
     sf::IntRect SHIP_1_LASER_RECT = sf::IntRect(0, 33, 5, 11);
@@ -55,6 +48,7 @@ class Game
     // ship4
     sf::IntRect SHIP_4_TEXTURE_RECT = sf::IntRect(103, 0, 29, 30);
     sf::IntRect SHIP_4_LASER_RECT = sf::IntRect(103, 33, 3, 12);
+
 
     // shield
     sf::IntRect SHIELD_RECT = sf::IntRect(132, 0, 47, 46);
@@ -81,6 +75,7 @@ class Game
     
     int numEnemy;
     int randomEnemy;
+    int bossHp;
     sf::Vector2f initialPos; //where should the layout start
     sf::Vector2f direction; //they all move in the same direction
     
@@ -105,9 +100,11 @@ public:
     //void loadEnemyRectArray();
     void updateGameObjectArray(std::vector<GameObject*>&);
     void drawGameObjectArray(std::vector<GameObject*>&);
+    void drawBossShot();
 //    void updateProjectile(std::vector<Projectile*>&);
     
     // collision detection
+    void collisionPlayerProjAndBoss();
     void collisionPlayerProjAndEnemy();
     void collisionPlayerAndShield();
     // Collision between enemyProjectile and player
