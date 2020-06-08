@@ -1,7 +1,7 @@
 #ifndef PLANET_DEFENDERS_H
 #define PLANET_DEFENDERS_H
 #include "Collision.h"
-#include "GameObject.h"
+#include "GameObject.hpp"
 #include <iostream>
 #include <vector>
 /*
@@ -40,7 +40,7 @@ namespace PlanetDefenders
     const sf::IntRect ShieldRect = sf::IntRect(132, 0, 48, 48);
     // Unused ^^^^^^^
 
-
+    
     // hp bar color
     const sf::Color HpBarColor(159, 245, 78);
 
@@ -70,8 +70,15 @@ namespace PlanetDefenders
     const int MAX_PROJECTILE_NUM = 500;
     const sf::Time PlayerShootTimeDelta = sf::milliseconds(100);
     const sf::Time EnemyShootTimeDelta = sf::milliseconds(200);
-    const sf::IntRect PROJECTILE_RECT = sf::IntRect(0, 32, 5, 11);
+    const sf::Time BossShootTimeDelta = sf::milliseconds(300);
 
+    const sf::IntRect ENEMY_RECTEYE = sf::IntRect(0, 48, 23, 28);
+    const sf::IntRect ENEMY_RECTBLUE = sf::IntRect(25, 48, 30, 28);
+    const sf::IntRect ENEMY_RECTBOSS = sf::IntRect(0, 76, 182, 235);
+
+    const sf::IntRect PROJECTILE_RECT = sf::IntRect(0, 32, 5, 11);
+    const sf::IntRect PROJECTILE_RECTEYE = sf::IntRect(60, 48, 16, 16);
+    const sf::IntRect PROJECTILE_RECTBLUE = sf::IntRect(80, 48, 7, 29);
 
     // Game Window size
     const unsigned int WINDOW_WIDTH = 1280;
@@ -80,7 +87,6 @@ namespace PlanetDefenders
     // utilites functions
     // put these into a libarary?
 
-    // delete object from vector 
     template <class T>
     inline void deleteObjectFromVector(std::vector<T*>& v, int i)
     {
@@ -111,6 +117,15 @@ namespace PlanetDefenders
             obj1->getSprite().getPosition().x < -100 ||
             obj1->getSprite().getPosition().y > WINDOW_HEIGHT + 100 ||
             obj1->getSprite().getPosition().x > WINDOW_WIDTH + 100;
+    }
+
+    inline sf::Vector2f normalize(const sf::Vector2f& v)
+    {
+        float length = sqrt((v.x * v.x) + (v.y * v.y));
+        if (length != 0)
+            return sf::Vector2f(v.x / length, v.y / length);
+        else
+            return v;
     }
 }
 #endif

@@ -74,9 +74,13 @@ public:
         initializeSprites();
 
     }
+    
+    const sf::Clock getTime() { return timeClock; }
     int getShipCount() { return shipCount; }
+    const sf::Vector2f getSize() { return sf::Vector2f(BAR_WIDTH, BAR_HEIGHT); }
+    const unsigned int getScore() { return scoreCounter; }
+    
     void addProtection(int num1);
-
     void addScore(unsigned int x) { scoreCounter += x; }
     void minusScore(int x) { scoreCounter -= x; }
     void updateHpBarSize(int hp);

@@ -17,7 +17,7 @@ public:
 		)
 	{}
 	~Enemy();
-
+    //sf::Vector2f getPosition
 	bool isOutOfBound() { return false; }
 
     Projectile* shoot();

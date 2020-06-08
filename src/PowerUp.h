@@ -1,6 +1,6 @@
 #ifndef POWERUP_H
 #define POWERUP_H
-#include "GameObject.h"
+#include "GameObject.hpp"
 #include "PlanetDefenders.h"
 using namespace PlanetDefenders; // for PowerUpEnum
 
@@ -36,7 +36,6 @@ public:
 
     void setDuration(float t) { powerUpDuration = t; }
     void setType(const PowerUpEnum& s) { powerUpType = s; }
-    //void setClock(sf::Clock* c) { powerUpClock = c; }
     void startClock() { powerUpClock = new sf::Clock(); }
 
 
