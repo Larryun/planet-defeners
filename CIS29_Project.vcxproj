@@ -142,12 +142,13 @@
     <ClCompile Include="src\BaseException.cpp" />
     <ClCompile Include="src\Boss.cpp" />
     <ClCompile Include="src\Collision.cpp" />
+    <ClCompile Include="src\Date.cpp" />
+    <ClCompile Include="src\Endscreen.cpp" />
     <ClCompile Include="src\Enemy.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
-    <ClCompile Include="src\GameText.cpp" />
-    <ClCompile Include="src\GameWindow.cpp" />
     <ClCompile Include="src\HealthRestore.cpp" />
+    <ClCompile Include="src\InputHighscore.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Menu.cpp" />
     <ClCompile Include="src\Options.cpp" />
@@ -155,8 +156,8 @@
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\PowerUp.cpp" />
     <ClCompile Include="src\Projectile.cpp" />
+    <ClCompile Include="src\Score.cpp" />
     <ClCompile Include="src\Shield.cpp" />
-    <ClCompile Include="src\ShipSelection.cpp" />
     <ClCompile Include="src\TextureNotLoaded.cpp" />
     <ClCompile Include="src\ToolBar.cpp" />
   </ItemGroup>
@@ -164,20 +165,23 @@
     <ClInclude Include="src\BaseException.h" />
     <ClInclude Include="src\Boss.hpp" />
     <ClInclude Include="src\Collision.h" />
+    <ClInclude Include="src\Date.h" />
+    <ClInclude Include="src\Endscreen.h" />
     <ClInclude Include="src\Enemy.h" />
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\GameObject.hpp" />
-    <ClInclude Include="src\GameText.hpp" />
-    <ClInclude Include="src\GameWindow.hpp" />
     <ClInclude Include="src\HealthRestore.h" />
+    <ClInclude Include="src\InputHighscore.h" />
     <ClInclude Include="src\Menu.h" />
     <ClInclude Include="src\Options.h" />
     <ClInclude Include="src\PlanetDefenders.h" />
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\PowerUp.h" />
     <ClInclude Include="src\Projectile.h" />
+    <ClInclude Include="src\Score.h" />
     <ClInclude Include="src\Shield.h" />
     <ClInclude Include="src\ShipSelection.hpp" />
+    <ClInclude Include="src\ShowHighscore.h" />
     <ClInclude Include="src\TextureNotLoaded.h" />
     <ClInclude Include="src\ToolBar.hpp" />
   </ItemGroup>
