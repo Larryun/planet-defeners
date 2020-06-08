@@ -245,6 +245,7 @@ void Game::enemyRandomShoot()
         Projectile* newProjectile = dynamic_cast<Enemy*>(enemyArr[i])->shoot();
         if (newProjectile)
         {
+            newProjectile->roateToDirection();
             enemyProjectileArray.push_back(newProjectile);
         }
     }
@@ -255,74 +256,90 @@ void Game::bossRandomShoot()
 {
     //int randShoot = random() % 4;
     int randShoot = 0;
+    std::vector<Projectile*> newProjectile;
+    const static sf::Vector2f offset = 
+        sf::Vector2f(boss->getBound().width/2.0f - 10, boss->getBound().height - 10 ) + 
+        boss->getPosition();
     switch (randShoot) {
-        case 0:
-            for(int i = 0; i < 4; i++){
-                bossProjectileArray = boss->shoot(i);
+    case 0:
+        for (int i = 0; i < 4; i++) {
+            newProjectile = *boss->shoot(i);
+            for (auto it = newProjectile.begin(); it != newProjectile.end(); it++)
+            {
+                (*it)->setDirection(normalize(player->getPosition() - offset));
+                (*it)->roateToDirection();
             }
-            break;
-            
-        default:
-            break;
+            bossProjectileArray.insert(
+                bossProjectileArray.end(),
+                newProjectile.begin(),
+                newProjectile.end()
+            );
+        }
+        break;
+    default:
+        break;
     }
-
 }
 
-void Game::generateDiagonalEnemy(int n, sf::Vector2f initialPos, sf::Vector2f direction){
-    for(int i = 0; i < n; i++){
+//void Game::generateDiagonalEnemy(int n, sf::Vector2f initialPos, sf::Vector2f direction) {
+int Game::generateDiagonalEnemy(int n, sf::Vector2f initialPos, sf::Vector2f direction) {
+    int startIndex = enemyArr.size();
+    for (int i = 0; i < n; i++) {
         enemyArr.push_back(new Enemy(
-        SPACE_TEXTURE,
-        enemyRectArr[rand()%2],
-        sf::Vector2f(
-            initialPos.x + i * direction.x * 20.f,
-            initialPos.y + i * direction.y * 26.f)
-                                 ));
-        
+            SPACE_TEXTURE,
+            enemyRectArr[rand() % 2],
+            sf::Vector2f(
+                initialPos.x + i * direction.x * 20.f,
+                initialPos.y + i * direction.y * 26.f)
+        ));
     }
+    return startIndex;
 }
 
-void Game::generateSquqreEnemy( int row, int col, sf::Vector2f initialPos, sf::Vector2f direction){
-    for(int i = 0; i < row; i++){
-        for(int j = 0; j < col; j++){
+int Game::generateSquqreEnemy(int row, int col, sf::Vector2f initialPos, sf::Vector2f direction) {
+    int startIndex = enemyArr.size();
+    for (int i = 0; i < row; i++) {
+        for (int j = 0; j < col; j++) {
             enemyArr.push_back(new Enemy(
-            SPACE_TEXTURE,
-            enemyRectArr[rand()%2],
-            sf::Vector2f(
-                initialPos.x + i * 40.f,
-                initialPos.y + j * 30.f)
-                                     ));
+                SPACE_TEXTURE,
+                enemyRectArr[rand() % 2],
+                sf::Vector2f(
+                    initialPos.x + i * 40.f,
+                    initialPos.y + j * 30.f)
+            ));
         }
     }
-
+    return startIndex;
 }
 
-void Game::generateEnemy(){
+void Game::generateEnemy() {
     int time = genEnemyClock.getElapsedTime().asSeconds();
     randomEnemy = 1 + rand() % 5;
-    initialPos = sf::Vector2f(rand() % 900, 0);
+    //initialPos = sf::Vector2f(rand() % 900, -100);
+    initialPos = sf::Vector2f(-100, 200);
     float randX = rand() % 8 - 4;
     float randY = rand() % 8 - 4;
     direction = sf::Vector2f(randX, randY);
     int randNum = 1 + rand() % 4;
-    if ( time > 2)
+    int startIndex = 0;
+    if (time > 2)           // every 2 seconds
     {
-        if( tool->getTime().getElapsedTime().asSeconds() < 30)
-            generateDiagonalEnemy(randomEnemy, initialPos, direction);
-        else{
-            if( randNum % 2 == 0)
-                generateDiagonalEnemy(randomEnemy, initialPos, direction);
+        if (tool->getTime().getElapsedTime().asSeconds() < 30)
+            startIndex = generateDiagonalEnemy(randomEnemy, initialPos, direction);
+        else {
+            if (randNum % 2 == 0)
+                startIndex = generateDiagonalEnemy(randomEnemy, initialPos, direction);
             else
-                generateSquqreEnemy(abs(randX), abs(randY), initialPos, direction);
+                startIndex = generateSquqreEnemy(abs(randX), abs(randY), initialPos, direction);
         }
         genEnemyClock.restart();
-    }
-    
-    for(int i = 0; i < enemyArr.size(); i++){
-        enemyArr[i]->setDirection(sf::Vector2f(0, 1));
-        //std::cout << speed << std::endl;
-        enemyArr[i]->setSpeed(randNum);
-        if(enemyArr[i]->getPosition().x > window->Window::getSize().x - tool->getSize().x || enemyArr[i]->getPosition().y > window->Window::getSize().y)
-            enemyArr.erase(enemyArr.begin() + i);
+        for (int i = startIndex; i < enemyArr.size(); i++) {
+            enemyArr[i]->setDirection(sf::Vector2f(1, 0));
+            enemyArr[i]->setSpeed(randNum);
+            //std::cout << speed << std::endl;
+            //if(enemyArr[i]->getPosition().x > window->Window::getSize().x - tool->getSize().x || enemyArr[i]->getPosition().y > window->Window::getSize().y)
+            //    enemyArr.erase(enemyArr.begin() + i);
+        }
     }
 }
 
@@ -342,7 +359,7 @@ Game::Game()
     backgroundMusic.setVolume(20.0f);
 
     // base texture setup
-    if(!SPACE_TEXTURE.loadFromFile(TEXTURE_BASE_PATH + "spaceSprites.png"))
+    if (!SPACE_TEXTURE.loadFromFile(TEXTURE_BASE_PATH + "spaceSprites.png"))
         throw TextureNotLoaded("spaceSprites.png");
     if (!BackgroundTexture.loadFromFile(TEXTURE_BASE_PATH + "spaceBackground.png"))
         throw TextureNotLoaded("spaceBackground.png");
@@ -368,31 +385,19 @@ Game::Game()
 
     enemyRectArr.push_back(ENEMY_RECTEYE);
     enemyRectArr.push_back(ENEMY_RECTBLUE);
-    
-    boss = new Boss(SPACE_TEXTURE, ENEMY_RECTBOSS, sf::Vector2f((window->getSize().x-tool->getSize().x)/2, 0));
-    
+
+    boss = new Boss(SPACE_TEXTURE, ENEMY_RECTBOSS, sf::Vector2f((window->getSize().x - tool->getSize().x) / 2, 0));
+
     shieldSprite = sf::Sprite(SPACE_TEXTURE);
     shieldSprite.setTextureRect(sf::IntRect(134, 0, 45, 45));
     shieldSprite.setScale(1.4, 1.4);
+
+    bossSprite = sf::Sprite(ToolBarBackgroundTexture, sf::IntRect(0, 720, 204, 64));
+    bossSprite.setPosition(sf::Vector2f(1076.f, 581.0f));
+
+
 }
 
-Game::~Game() {
-    delete window;
-    delete player;
-    delete tool;
-    for (int i = 0; i < playerProjectileArray.size(); i++)
-    {
-        deleteObjectFromVector(playerProjectileArray, i);
-    }
-    for (int i = 0; i < enemyArr.size(); i++)
-    {
-        deleteObjectFromVector(enemyArr, i);
-    }
-    for (int i = 0; i < enemyArr.size(); i++)
-    {
-        deleteObjectFromVector(powerUpArr, i);
-    }
-}
 
 void Game::handleKeyInput()
 {
@@ -453,7 +458,9 @@ void Game::generatePowerUp()
     }
 }
 
-void Game::updateGameObjectArray(std::vector<GameObject*>& arr)
+// hmm...
+template<class T>
+void Game::updateGameObjectArray(std::vector<T*>& arr)
 {
     for (int i = 0; i < arr.size(); i++)
     {
@@ -461,7 +468,9 @@ void Game::updateGameObjectArray(std::vector<GameObject*>& arr)
     }
 }
 
-void Game::drawGameObjectArray(std::vector<GameObject*>& arr)
+// hmm...
+template<class T>
+void Game::drawGameObjectArray(std::vector<T*>& arr)
 {
     for (int i = 0; i < arr.size(); i++)
     {
@@ -493,7 +502,6 @@ void Game::updateGame()
     tool->update();
     updateGameObjectArray(enemyProjectileArray);
     updateGameObjectArray(playerProjectileArray);
-    //updateGameObjectArray(bossProjectileArray);
     //if(tool->getScore() == 0){
     //    updateGameObjectArray(enemyArr);
     //    generateEnemy();
@@ -507,17 +515,26 @@ void Game::updateGame()
     // if it passes the duration
     player->removeAllEndedPowerUp();
 
+    updateGameObjectArray(bossProjectileArray);
+    if (tool->getScore() == 0) {
+        bossRandomShoot();
+        //for (int i = 0; i < bossProjectileArray.size(); i++) {
+        //    bossProjectileArray[i]->setDirection(sf::Vector2f(0, 1));
+        //    bossProjectileArray[i]->setSpeed(7);
+        //    bossProjectileArray[i]->move();
+        //    window->draw(bossProjectileArray[i]->getSprite());
+        //}
+    }
 }
 
 void Game::drawGame() {
     window->draw(GameBackground);
-    window->draw(ToolBarBackground);
-    tool->drawTo(*window);
     window->draw(player->getSprite());
     drawGameObjectArray(enemyProjectileArray);
     drawGameObjectArray(playerProjectileArray);
     drawGameObjectArray(enemyArr);
     drawGameObjectArray(powerUpArr);
+    drawGameObjectArray(bossProjectileArray);
     // Demo, put to a function later
     // draw shield if player has SHIELD power up
     if (player->hasPowerUp(SHIELD))
@@ -531,20 +548,30 @@ void Game::drawGame() {
         window->draw(shieldSprite);
     }
 
-    if(tool->getScore() == 0){
-        window->draw(boss->getSprite());
-        bossRandomShoot();
-        //drawGameObjectArray(bossProjectileArray);
-        for(int i = 0; i < bossProjectileArray.size(); i++){
-            bossProjectileArray[i]->setDirection(sf::Vector2f(0, 1));
-            bossProjectileArray[i]->setSpeed(7);
-            bossProjectileArray[i]->move();
-            window->draw(bossProjectileArray[i]->getSprite());
-        }
-    }
+    window->draw(boss->getSprite());
+    window->draw(ToolBarBackground);
+    tool->drawTo(*window);
+    window->draw(bossSprite);
     window->display();
 }
 
+Game::~Game() {
+    delete window;
+    delete player;
+    delete tool;
+    for (int i = 0; i < playerProjectileArray.size(); i++)
+    {
+        deleteObjectFromVector(playerProjectileArray, i);
+    }
+    for (int i = 0; i < enemyArr.size(); i++)
+    {
+        deleteObjectFromVector(enemyArr, i);
+    }
+    for (int i = 0; i < enemyArr.size(); i++)
+    {
+        deleteObjectFromVector(powerUpArr, i);
+    }
+}
 
 void Game::gameLoop() {
     srand(time(0));

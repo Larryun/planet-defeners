@@ -5,6 +5,7 @@
 #define GAMEOBJECT_HPP
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <cmath>
 
 
 class GameObject
@@ -38,26 +39,34 @@ public:
 
     void move();
     void move(const sf::Vector2f&);
+    // rotate the object by the angle the their direction 
+    void roateToDirection()
+    {
+        // radian the degree
+        float angle = std::atan2f(direction.y, direction.x) * 180 / 3.141596f;
+        // offset by 90 degree
+        getSprite().setRotation(angle + 90);
+    }
 
     // Getters
-    const sf::Vector2f getVelocity() const { return speed * direction;  }
+    const sf::Vector2f getVelocity() const { return speed * direction; }
     sf::Sprite& getSprite() { return *objSprite; }
     // Get size of sprite
     sf::FloatRect getBound() { return objSprite->getGlobalBounds(); }
     float getSpeed() { return speed; }
-    const sf::Vector2f getPosition() { return objSprite->getPosition();  }
-    
+    const sf::Vector2f getPosition() { return objSprite->getPosition(); }
+
     // Setters
     void setSpeed(float const& spd) { speed = spd; }
     void setDirection(const sf::Vector2f& dir) { direction = dir; }
     void setPosition(const sf::Vector2f& p) { getSprite().setPosition(p); }
     void setScale(const sf::Vector2f& scale) { getSprite().setScale(scale); }
-    
+
     // bound_: pos from top left corner
     void setMovingBoundary(const sf::Vector2u& bound_) { movingBound = bound_; }
     void setSpriteTexture(sf::Texture& texture) { getSprite().setTexture(texture); }
     void accelerate(float a) { setSpeed(getSpeed() + a); }
-    
+
     //void drawTo(sf::RenderWindow &window){ window.draw(*objSprite); }
 
 };

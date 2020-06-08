@@ -7,7 +7,6 @@
 
 class Boss : public GameObject{
     sf::Clock shootClock;
-    std::vector<Projectile*> shootArr;
         
     public:
         Boss(const sf::Texture& texture, const sf::IntRect& rect, const sf::Vector2f& pos) :
@@ -23,6 +22,6 @@ class Boss : public GameObject{
         //sf::Vector2f getPosition
         bool isOutOfBound() { return false; }
 
-        std::vector<Projectile*> shoot(int i);
+        std::vector<Projectile*>* shoot(int i);
 };
 #endif /* Boss_hpp */

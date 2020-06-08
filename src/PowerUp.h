@@ -36,7 +36,6 @@ public:
 
     void setDuration(float t) { powerUpDuration = t; }
     void setType(const PowerUpEnum& s) { powerUpType = s; }
-    //void setClock(sf::Clock* c) { powerUpClock = c; }
     void startClock() { powerUpClock = new sf::Clock(); }
 
 

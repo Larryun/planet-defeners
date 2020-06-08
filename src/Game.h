@@ -62,6 +62,7 @@ class Game
     sf::RenderWindow* window;
     std::vector<GameObject*> playerProjectileArray;
     std::vector<GameObject*> enemyProjectileArray;
+    //std::vector<Projectile*> bossProjectileArray;
     std::vector<Projectile*> bossProjectileArray;
     std::vector<GameObject*> enemyArr;
     std::vector<GameObject*> powerUpArr;
@@ -75,6 +76,7 @@ class Game
     
     ShipSelection* shipSelect;
     sf::Sprite shieldSprite;
+    sf::Sprite bossSprite;
   
     sf::Clock genPowerUpClock;
     sf::Clock genEnemyClock;
@@ -103,8 +105,10 @@ public:
     bool displayMenu();
 
     //void loadEnemyRectArray();
-    void updateGameObjectArray(std::vector<GameObject*>&);
-    void drawGameObjectArray(std::vector<GameObject*>&);
+    template<class T>
+    void updateGameObjectArray(std::vector<T*>& arr);
+    template<class T>
+    void drawGameObjectArray(std::vector<T*>& arr);
 //    void updateProjectile(std::vector<Projectile*>&);
     
     // collision detection
@@ -118,8 +122,10 @@ public:
     void collisionPowerUpAndPlayer();
 
     void generateEnemy();
-    void generateDiagonalEnemy(int n, sf::Vector2f initialPos, sf::Vector2f direction);
-    void generateSquqreEnemy( int row, int col, sf::Vector2f initialPos, sf::Vector2f direction);
+    //void generateDiagonalEnemy(int n, sf::Vector2f initialPos, sf::Vector2f direction);
+    //std::reverse_iterator<std::vector<GameObject*>::iterator> generateDiagonalEnemy(int n, sf::Vector2f initialPos, sf::Vector2f direction);
+    int generateDiagonalEnemy(int n, sf::Vector2f initialPos, sf::Vector2f direction);
+    int generateSquqreEnemy( int row, int col, sf::Vector2f initialPos, sf::Vector2f direction);
     //void generateLineEnemy(int n, sf::Vector2f initialPos, sf::Vector2f direction, int speed);
         
     // for demonstration

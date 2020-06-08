@@ -81,7 +81,6 @@ namespace PlanetDefenders
     // utilites functions
     // put these into a libarary?
 
-    // delete object from vector 
     template <class T>
     inline void deleteObjectFromVector(std::vector<T*>& v, int i)
     {
@@ -112,6 +111,15 @@ namespace PlanetDefenders
             obj1->getSprite().getPosition().x < -100 ||
             obj1->getSprite().getPosition().y > WINDOW_HEIGHT + 100 ||
             obj1->getSprite().getPosition().x > WINDOW_WIDTH + 100;
+    }
+
+    inline sf::Vector2f normalize(const sf::Vector2f& v)
+    {
+        float length = sqrt((v.x * v.x) + (v.y * v.y));
+        if (length != 0)
+            return sf::Vector2f(v.x / length, v.y / length);
+        else
+            return v;
     }
 }
 #endif
