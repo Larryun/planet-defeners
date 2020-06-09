@@ -158,6 +158,7 @@
     <ClCompile Include="src\Projectile.cpp" />
     <ClCompile Include="src\Score.cpp" />
     <ClCompile Include="src\Shield.cpp" />
+    <ClCompile Include="src\ShowHighscore.cpp" />
     <ClCompile Include="src\TextureNotLoaded.cpp" />
     <ClCompile Include="src\ToolBar.cpp" />
   </ItemGroup>

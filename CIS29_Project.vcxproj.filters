@@ -85,9 +85,6 @@
     <ClCompile Include="src\Shield.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ShipSelection.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\TextureNotLoaded.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -103,13 +100,13 @@
     <ClCompile Include="src\Score.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ShowHighscore.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\InputHighscore.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ToolBar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ShowHighscore.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

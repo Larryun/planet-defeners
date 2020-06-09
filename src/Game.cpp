@@ -257,7 +257,7 @@ void Game::collisionEnemyAndPlayer()
         {
             std::cout << "PLAYER COLIDED ENEMY" << std::endl;
             //player->takeDamage(1);
-            player->takeDamage(100);
+            player->takeDamage(1);
             tool->updateHpBarSize(player->getHp());
             break;
         }
@@ -562,10 +562,6 @@ void Game::updateGame()
     updateGameObjectArray(enemyProjectileArray);
     updateGameObjectArray(playerProjectileArray);
     updateGameObjectArray(bossProjectileArray);
-    //if(tool->getScore() == 0){
-    //    updateGameObjectArray(enemyArr);
-    //    generateEnemy();
-    //}
     updateGameObjectArray(enemyArr);
     updateGameObjectArray(powerUpArr);
     generateEnemy();
@@ -633,26 +629,27 @@ Game::~Game() {
     delete inputHighscore;
 }
 
-void Game::init()
+void Game::resetGame()
 {
     tool->minusScore(tool->getScore());
+    tool->restartClock();
     player->setHp(100);
+    backgroundMusic.stop();
+    backgroundMusic.play();
     for (int i = 0; i < playerProjectileArray.size(); i++)
     {
         deleteObjectFromVector(playerProjectileArray, i);
     }
-    for (int i = 0; i < enemyArr.size(); i++)
+    for (int i = 0; i < enemyProjectileArray.size(); i++)
     {
-        deleteObjectFromVector(enemyArr, i);
+        deleteObjectFromVector(enemyProjectileArray, i);
     }
-    for (int i = 0; i < powerUpArr.size(); i++)
-    {
-        deleteObjectFromVector(powerUpArr, i);
-    }
-    for (int i = 0; i < bossProjectileArray.size(); i++)
-    {
-        deleteObjectFromVector(bossProjectileArray, i);
-    }
+    playerProjectileArray.clear();
+    enemyProjectileArray.clear();
+    enemyArr.clear();
+    playerProjectileArray.clear();
+    powerUpArr.clear();
+    bossProjectileArray.clear();
 }
 
 void Game::gameLoop() {
@@ -697,7 +694,8 @@ void Game::gameLoop() {
                 if (CheckScore::checkScore(tool->getScore()) == true)
                     inputHighscore->work(*window, *inputHighscore, GameBackground, backgroundMusic, tool->getScore());
             } while (!endscreen->work(*window, *endscreen, GameBackground, backgroundMusic));
-            init();
+            if (window->isOpen() == false) break;       // leave the game
+            resetGame();
             while (!displayMenu()) {}
         }
     }

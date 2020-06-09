@@ -88,7 +88,7 @@ class Game
 public:
     Game();
     ~Game();
-    void init();
+    void resetGame();
     void gameLoop();
     void handleKeyInput();
     void generatePowerUp();

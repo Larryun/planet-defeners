@@ -75,7 +75,7 @@ bool Endscreen::work(sf::RenderWindow& window, Endscreen& endscreen, sf::Sprite&
 						std::cout << "Exit" << std::endl;
 						window.close();
 						inEndscreen = false;
-						break;
+						flag = true;        // leave the loop
 						break;
 					case sf::Keyboard::BackSpace:
 						inEndscreen = false;
@@ -98,6 +98,7 @@ bool Endscreen::work(sf::RenderWindow& window, Endscreen& endscreen, sf::Sprite&
 						std::cout << "Exit" << std::endl;
 						window.close();
 						inEndscreen = false;
+						flag = true;        // leave the loop
 					}
 				}
 				else if (endscreen.inXBack(event, window) && endscreen.inYBack(event, window)) {
