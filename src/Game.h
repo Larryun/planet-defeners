@@ -12,6 +12,8 @@
 #include "ShipSelection.hpp"
 #include "Boss.hpp"
 #include "Projectile.h"
+#include "Endscreen.h"
+#include "InputHighscore.h"
 class Game
 {
     bool GAME_PAUSED = 0;
@@ -63,10 +65,12 @@ class Game
     std::vector<sf::IntRect> enemyRectArr;
     
     Player* player;
+    Boss* boss;
     ToolBar* tool;
     Menu* menu;
     Options* options;
-    Boss* boss;
+    Endscreen* endscreen;
+    InputHighscore* inputHighscore;
     
     ShipSelection* shipSelect;
     sf::Sprite shieldSprite;
@@ -84,7 +88,7 @@ class Game
 public:
     Game();
     ~Game();
-    void init() = delete;
+    void resetGame();
     void gameLoop();
     void handleKeyInput();
     void generatePowerUp();
@@ -120,11 +124,8 @@ public:
     void collisionPowerUpAndPlayer();
 
     void generateEnemy();
-    //void generateDiagonalEnemy(int n, sf::Vector2f initialPos, sf::Vector2f direction);
-    //std::reverse_iterator<std::vector<GameObject*>::iterator> generateDiagonalEnemy(int n, sf::Vector2f initialPos, sf::Vector2f direction);
     int generateDiagonalEnemy(int n, sf::Vector2f initialPos, sf::Vector2f direction);
     int generateSquqreEnemy( int row, int col, sf::Vector2f initialPos, sf::Vector2f direction);
-    //void generateLineEnemy(int n, sf::Vector2f initialPos, sf::Vector2f direction, int speed);
         
     // for demonstration
     // enemy shoot

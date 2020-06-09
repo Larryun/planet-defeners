@@ -13,6 +13,9 @@
 #include "Menu.h"
 #include "Options.h"
 #include "TextureNotLoaded.h"
+#include "Endscreen.h"
+#include "InputHighscore.h"
+
 
 
 using namespace PlanetDefenders;
@@ -253,6 +256,7 @@ void Game::collisionEnemyAndPlayer()
         if (checkCollision(player, enemyArr[i]))
         {
             std::cout << "PLAYER COLIDED ENEMY" << std::endl;
+            //player->takeDamage(1);
             player->takeDamage(1);
             tool->updateHpBarSize(player->getHp());
             break;
@@ -302,16 +306,18 @@ void Game::bossRandomShoot()
     //int randShoot = random() % 4;
     int randShoot = 0;
     std::vector<Projectile*> newProjectile;
-    const static sf::Vector2f offset =
+    // v1 = boss position + boss bottom middle posision
+    const static sf::Vector2f v1 =
         sf::Vector2f(boss->getBound().width / 2.0f - 10, boss->getBound().height - 10) +
         boss->getPosition();
     switch (randShoot) {
     case 0:
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++) {   // shoot for time each times with i projectile?
             newProjectile = *boss->shoot(i);
             for (auto it = newProjectile.begin(); it != newProjectile.end(); it++)
             {
-                (*it)->setDirection(normalize(player->getPosition() - offset));
+                // vector with the direction to the player = player position - v1
+                (*it)->setDirection(normalize(player->getPosition() - v1));
                 (*it)->roateToDirection();
             }
             bossProjectileArray.insert(
@@ -321,12 +327,10 @@ void Game::bossRandomShoot()
             );
         }
         break;
-    default:
-        break;
     }
 }
 
-//void Game::generateDiagonalEnemy(int n, sf::Vector2f initialPos, sf::Vector2f direction) {
+// return the first index of the newly added enemy in enemyArr
 int Game::generateDiagonalEnemy(int n, sf::Vector2f initialPos, sf::Vector2f direction) {
     int startIndex = enemyArr.size();
     for (int i = 0; i < n; i++) {
@@ -341,6 +345,7 @@ int Game::generateDiagonalEnemy(int n, sf::Vector2f initialPos, sf::Vector2f dir
     return startIndex;
 }
 
+// return the first index of the newly added enemy in enemyArr
 int Game::generateSquqreEnemy(int row, int col, sf::Vector2f initialPos, sf::Vector2f direction) {
     int startIndex = enemyArr.size();
     for (int i = 0; i < row; i++) {
@@ -378,12 +383,10 @@ void Game::generateEnemy() {
                 startIndex = generateSquqreEnemy(abs(randX), abs(randY), initialPos, direction);
         }
         genEnemyClock.restart();
+        // set the enemy from first index to the last element
         for (int i = startIndex; i < enemyArr.size(); i++) {
             enemyArr[i]->setDirection(sf::Vector2f(1, 0));
             enemyArr[i]->setSpeed(randNum);
-            //std::cout << speed << std::endl;
-            //if(enemyArr[i]->getPosition().x > window->Window::getSize().x - tool->getSize().x || enemyArr[i]->getPosition().y > window->Window::getSize().y)
-            //    enemyArr.erase(enemyArr.begin() + i);
         }
     }
 }
@@ -392,6 +395,8 @@ Game::Game()
 {
     menu = new Menu(WINDOW_WIDTH, WINDOW_HEIGHT);
     options = new Options(WINDOW_WIDTH, WINDOW_HEIGHT);
+    endscreen = new Endscreen(WINDOW_WIDTH, WINDOW_HEIGHT);
+    inputHighscore = new InputHighscore(WINDOW_WIDTH, WINDOW_HEIGHT);
 
     // window setup
     window = new sf::RenderWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), GAME_TITLE, sf::Style::Close | sf::Style::Resize);
@@ -410,7 +415,11 @@ Game::Game()
         throw TextureNotLoaded("spaceBackground.png");
 
     GameBackground = sf::Sprite(BackgroundTexture);
-    GameBackground.setScale(1.3, 1.3);
+    sf::Vector2u TextureSize = BackgroundTexture.getSize();
+    sf::Vector2u WindowSize = window->getSize();
+    float ScaleX = (float)WindowSize.x / TextureSize.x;
+    float ScaleY = (float)WindowSize.y / TextureSize.y;
+    GameBackground.setScale(ScaleX, ScaleY);
 
     // ToolBar
     if (!ToolBarBackgroundTexture.loadFromFile(TEXTURE_BASE_PATH + "toolbar.png"))
@@ -553,10 +562,6 @@ void Game::updateGame()
     updateGameObjectArray(enemyProjectileArray);
     updateGameObjectArray(playerProjectileArray);
     updateGameObjectArray(bossProjectileArray);
-    //if(tool->getScore() == 0){
-    //    updateGameObjectArray(enemyArr);
-    //    generateEnemy();
-    //}
     updateGameObjectArray(enemyArr);
     updateGameObjectArray(powerUpArr);
     generateEnemy();
@@ -614,35 +619,63 @@ Game::~Game() {
     {
         deleteObjectFromVector(enemyArr, i);
     }
-    for (int i = 0; i < enemyArr.size(); i++)
+    for (int i = 0; i < powerUpArr.size(); i++)
     {
         deleteObjectFromVector(powerUpArr, i);
     }
+    delete boss;
+    delete options;
+    delete endscreen;
+    delete inputHighscore;
+}
+
+void Game::resetGame()
+{
+    tool->minusScore(tool->getScore());
+    tool->restartClock();
+    player->setHp(100);
+    backgroundMusic.stop();
+    backgroundMusic.play();
+    for (int i = 0; i < playerProjectileArray.size(); i++)
+    {
+        deleteObjectFromVector(playerProjectileArray, i);
+    }
+    for (int i = 0; i < enemyProjectileArray.size(); i++)
+    {
+        deleteObjectFromVector(enemyProjectileArray, i);
+    }
+    playerProjectileArray.clear();
+    enemyProjectileArray.clear();
+    enemyArr.clear();
+    playerProjectileArray.clear();
+    powerUpArr.clear();
+    bossProjectileArray.clear();
 }
 
 void Game::gameLoop() {
     srand(time(0));
     // display menu
-    while (!displayMenu()) {}
     // main game loop
+    sf::Event e;
+    while (!displayMenu()) {}
     while (window->isOpen())
     {
-        sf::Event e;
         while (window->pollEvent(e))
         {
             switch (e.type)
             {
             case sf::Event::Closed:
                 window->close();
+                break;
             case sf::Event::KeyReleased:
                 if (e.key.code == sf::Keyboard::Key::Escape)
                 {
                     GAME_PAUSED ^= 1;
                     pauseGame();
                 }
+                break;
             }
         }
-
         if (!GAME_PAUSED)
         {
             handleKeyInput();
@@ -654,6 +687,16 @@ void Game::gameLoop() {
         {
             // prevent drawing TOO MUCH CPU power while pause
             sf::sleep(sf::milliseconds(100));
+        }
+        if (player->isDead())
+        {
+            do {
+                if (CheckScore::checkScore(tool->getScore()) == true)
+                    inputHighscore->work(*window, *inputHighscore, GameBackground, backgroundMusic, tool->getScore());
+            } while (!endscreen->work(*window, *endscreen, GameBackground, backgroundMusic));
+            if (window->isOpen() == false) break;       // leave the game
+            resetGame();
+            while (!displayMenu()) {}
         }
     }
 }

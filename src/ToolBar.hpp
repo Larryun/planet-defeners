@@ -74,6 +74,8 @@ public:
         initializeSprites();
 
     }
+
+    void restartClock() { timeClock.restart(); }
     
     const sf::Clock getTime() { return timeClock; }
     int getShipCount() { return shipCount; }
