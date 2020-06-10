@@ -6,6 +6,10 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <cmath>
+#define MAX_SPEED = 10
+
+//using PlanetDefenders::normalize;
+//using PlanetDefenders::truncate;
 
 
 class GameObject
@@ -49,12 +53,13 @@ public:
     }
 
     // Getters
-    const sf::Vector2f getVelocity() const { return speed * direction; }
+    const sf::Vector2f getVelocity() const;
     sf::Sprite& getSprite() { return *objSprite; }
     // Get size of sprite
     sf::FloatRect getBound() { return objSprite->getGlobalBounds(); }
     float getSpeed() { return speed; }
     const sf::Vector2f getPosition() { return objSprite->getPosition(); }
+    const sf::Vector2f getDirection() { return direction; }
 
     // Setters
     void setSpeed(float const& spd) { speed = spd; }
@@ -65,7 +70,9 @@ public:
     // bound_: pos from top left corner
     void setMovingBoundary(const sf::Vector2u& bound_) { movingBound = bound_; }
     void setSpriteTexture(sf::Texture& texture) { getSprite().setTexture(texture); }
+
     void accelerate(float a) { setSpeed(getSpeed() + a); }
+    void moveToward(GameObject& obj);
 
     //void drawTo(sf::RenderWindow &window){ window.draw(*objSprite); }
 

@@ -29,12 +29,14 @@ std::vector<Projectile*>* Boss::shoot(int num)
                 float randomPos = rand() % 100 - 50;
                 shootArr->push_back(new Projectile(
                     *objSprite->getTexture(),
-                    PROJECTILE_RECT,
+                    PROJECTILE_RECTBLUE,
                     sf::Vector2f(
                         getSprite().getPosition().x + getSprite().getGlobalBounds().width / 2 + i * randomPos, getSprite().getGlobalBounds().height),
                     sf::Vector2f(0, 1.0f),
-                    5
+                    5,
+                    BossProjectileDamage
                 ));
+
             }
     }
     return shootArr;

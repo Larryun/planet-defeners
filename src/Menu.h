@@ -30,7 +30,6 @@ private:
 	sf::Font font;
 	sf::Text menu[MAX];
 	sf::Text title;
-
 };
 #endif
 

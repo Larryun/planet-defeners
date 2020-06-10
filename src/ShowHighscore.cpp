@@ -1,9 +1,9 @@
 #pragma warning(disable: 4244)
-#include"ShowHighscore.h"
 #include <iostream>
-#include<iomanip>
-#include<fstream>
-#include<string>
+#include <iomanip>
+#include <fstream>
+#include <string>
+#include "ShowHighscore.h"
 
 using namespace std;
 
@@ -83,37 +83,13 @@ ShowHighscore::ShowHighscore(float width, float height) {
 	dates[0].setFillColor(sf::Color::Yellow);
 	scores[0].setFillColor(sf::Color::Yellow);
 	assignHighscores();
-    // WOWWWWW HARD CODE
-	names[0].setPosition(sf::Vector2f(width / 7.50, height / 4.0));
-	names[1].setPosition(sf::Vector2f(width / 7.50, height / 3.4));
-	names[2].setPosition(sf::Vector2f(width / 7.50, height / 2.95));
-	names[3].setPosition(sf::Vector2f(width / 7.50, height / 2.6));
-	names[4].setPosition(sf::Vector2f(width / 7.50, height / 2.33));
-	names[5].setPosition(sf::Vector2f(width / 7.50, height / 2.12));
-	names[6].setPosition(sf::Vector2f(width / 7.50, height / 1.93));
-	names[7].setPosition(sf::Vector2f(width / 7.50, height / 1.78));
-	names[8].setPosition(sf::Vector2f(width / 7.50, height / 1.66));
-	names[9].setPosition(sf::Vector2f(width / 7.50, height / 1.55));
-	scores[0].setPosition(sf::Vector2f(width / 2.00, height / 4.0));
-	scores[1].setPosition(sf::Vector2f(width / 2.00, height / 3.4));
-	scores[2].setPosition(sf::Vector2f(width / 2.00, height / 2.95));
-	scores[3].setPosition(sf::Vector2f(width / 2.00, height / 2.6));
-	scores[4].setPosition(sf::Vector2f(width / 2.00, height / 2.33));
-	scores[5].setPosition(sf::Vector2f(width / 2.00, height / 2.12));
-	scores[6].setPosition(sf::Vector2f(width / 2.00, height / 1.93));
-	scores[7].setPosition(sf::Vector2f(width / 2.00, height / 1.78));
-	scores[8].setPosition(sf::Vector2f(width / 2.00, height / 1.66));
-	scores[9].setPosition(sf::Vector2f(width / 2.00, height / 1.55));
-	dates[0].setPosition(sf::Vector2f(width / 1.42, height / 4.0));
-	dates[1].setPosition(sf::Vector2f(width / 1.42, height / 3.4));
-	dates[2].setPosition(sf::Vector2f(width / 1.42, height / 2.95));
-	dates[3].setPosition(sf::Vector2f(width / 1.42, height / 2.6));
-	dates[4].setPosition(sf::Vector2f(width / 1.42, height / 2.33));
-	dates[5].setPosition(sf::Vector2f(width / 1.42, height / 2.12));
-	dates[6].setPosition(sf::Vector2f(width / 1.42, height / 1.93));
-	dates[7].setPosition(sf::Vector2f(width / 1.42, height / 1.78));
-	dates[8].setPosition(sf::Vector2f(width / 1.42, height / 1.66));
-	dates[9].setPosition(sf::Vector2f(width / 1.42, height / 1.55));
+    // Modified, instead of division, use mulitplication
+    for (int i = 0; i < 10; i++)
+    {
+        names[i].setPosition(sf::Vector2f(width * 0.13, height * (0.25 + 0.045 * i)));
+        scores[i].setPosition(sf::Vector2f(width * 0.5, height * (0.25 + 0.045 * i)));
+        dates[i].setPosition(sf::Vector2f(width * 0.7, height * (0.25 + 0.045 * i)));
+    }
 }
 
 ShowHighscore::~ShowHighscore() {}

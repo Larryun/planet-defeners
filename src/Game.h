@@ -57,7 +57,7 @@ class Game
 
     sf::RenderWindow* window;
     std::vector<GameObject*> playerProjectileArray;
-    std::vector<GameObject*> enemyProjectileArray;
+    std::vector<Projectile*> enemyProjectileArray;
     //std::vector<Projectile*> bossProjectileArray;
     std::vector<Projectile*> bossProjectileArray;
     std::vector<GameObject*> enemyArr;
@@ -82,6 +82,7 @@ class Game
     int numEnemy;
     int randomEnemy;
     int bossHp;
+    bool BossShown = false;
     sf::Vector2f initialPos; //where should the layout start
     sf::Vector2f direction; //they all move in the same direction
     

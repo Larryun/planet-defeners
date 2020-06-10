@@ -17,7 +17,6 @@
 #include "InputHighscore.h"
 
 
-
 using namespace PlanetDefenders;
 
 
@@ -177,7 +176,8 @@ void Game::collisionBossProjAndPlayer()
         if (checkCollision(bossProjectileArray[i], player))
         {
             //enemyHurtSound.play();  playerHurSound?
-            player->takeDamage(1);
+            player->takeDamage(bossProjectileArray[i]->getDamage());
+
             tool->updateHpBarSize(player->getHp());
             std::cout << "BOSS PROJECTILE COLIDED PLAYER" << std::endl;
             deleteObjectFromVector(bossProjectileArray, i);
@@ -239,7 +239,7 @@ void Game::collisionEnemyProjAndPlayer()
     {
         if (checkCollision(enemyProjectileArray[i], player))
         {
-            player->takeDamage(1);
+            player->takeDamage(enemyProjectileArray[i]->getDamage());
             tool->updateHpBarSize(player->getHp());
             deleteObjectFromVector(enemyProjectileArray, i);
             break;
@@ -247,7 +247,6 @@ void Game::collisionEnemyProjAndPlayer()
     }
 
 }
-
 
 void Game::collisionEnemyAndPlayer()
 {
@@ -318,6 +317,7 @@ void Game::bossRandomShoot()
             {
                 // vector with the direction to the player = player position - v1
                 (*it)->setDirection(normalize(player->getPosition() - v1));
+                (*it)->setSpeed(7);
                 (*it)->roateToDirection();
             }
             bossProjectileArray.insert(
@@ -544,7 +544,6 @@ void Game::drawGameObjectArray(std::vector<T*>& arr)
 void Game::updateGame()
 {
     collisionPlayerProjAndEnemy();
-    collisionPlayerProjAndBoss();
     if (player->hasPowerUp(SHIELD))
     {
         collisionEnemyProjAndShield();
@@ -552,7 +551,6 @@ void Game::updateGame()
     }
     else
     {
-        collisionBossProjAndPlayer();
         collisionEnemyProjAndPlayer();
         collisionEnemyAndPlayer();
     }
@@ -561,7 +559,6 @@ void Game::updateGame()
     tool->update();
     updateGameObjectArray(enemyProjectileArray);
     updateGameObjectArray(playerProjectileArray);
-    updateGameObjectArray(bossProjectileArray);
     updateGameObjectArray(enemyArr);
     updateGameObjectArray(powerUpArr);
     generateEnemy();
@@ -572,9 +569,19 @@ void Game::updateGame()
     player->removeAllEndedPowerUp();
     boss->updateBossHpBarSize(bossHp);
 
+    //if (tool->getTime().getElapsedTime().asSeconds > 60)
+    if (tool->getScore() >= 0)
+        BossShown = true;
     // demostration
     enemyRandomShoot();
-    if (tool->getScore() == 0) {
+    if (BossShown) {
+        collisionPlayerProjAndBoss();
+        collisionBossProjAndPlayer();
+        for (auto it = bossProjectileArray.begin(); it != bossProjectileArray.end(); it++)
+        {
+            (*it)->moveToward(*player);
+        }
+        updateGameObjectArray(bossProjectileArray);
         bossRandomShoot();
     }
 }
@@ -600,10 +607,12 @@ void Game::drawGame() {
         window->draw(shieldSprite);
     }
 
-    window->draw(boss->getSprite());
     window->draw(ToolBarBackground);
     tool->drawTo(*window);
-    window->draw(bossSprite);
+    if (BossShown)
+    {
+        window->draw(boss->getSprite());
+    }
     window->display();
 }
 
@@ -611,18 +620,12 @@ Game::~Game() {
     delete window;
     delete player;
     delete tool;
-    for (int i = 0; i < playerProjectileArray.size(); i++)
-    {
-        deleteObjectFromVector(playerProjectileArray, i);
-    }
-    for (int i = 0; i < enemyArr.size(); i++)
-    {
-        deleteObjectFromVector(enemyArr, i);
-    }
-    for (int i = 0; i < powerUpArr.size(); i++)
-    {
-        deleteObjectFromVector(powerUpArr, i);
-    }
+    playerProjectileArray.clear();
+    enemyProjectileArray.clear();
+    enemyArr.clear();
+    playerProjectileArray.clear();
+    powerUpArr.clear();
+    bossProjectileArray.clear();
     delete boss;
     delete options;
     delete endscreen;
@@ -654,9 +657,9 @@ void Game::resetGame()
 
 void Game::gameLoop() {
     srand(time(0));
-    // display menu
     // main game loop
     sf::Event e;
+    // display menu
     while (!displayMenu()) {}
     while (window->isOpen())
     {
@@ -678,8 +681,8 @@ void Game::gameLoop() {
         }
         if (!GAME_PAUSED)
         {
-            handleKeyInput();
             window->clear();
+            handleKeyInput();
             updateGame();
             drawGame();
         }
@@ -688,6 +691,7 @@ void Game::gameLoop() {
             // prevent drawing TOO MUCH CPU power while pause
             sf::sleep(sf::milliseconds(100));
         }
+        // show high score if checkScore is true
         if (player->isDead())
         {
             do {
@@ -695,7 +699,9 @@ void Game::gameLoop() {
                     inputHighscore->work(*window, *inputHighscore, GameBackground, backgroundMusic, tool->getScore());
             } while (!endscreen->work(*window, *endscreen, GameBackground, backgroundMusic));
             if (window->isOpen() == false) break;       // leave the game
+            // reset everything in the game
             resetGame();
+            // draw menu again
             while (!displayMenu()) {}
         }
     }

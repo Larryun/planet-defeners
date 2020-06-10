@@ -78,7 +78,7 @@ public:
     void restartClock() { timeClock.restart(); }
     
     const sf::Clock getTime() { return timeClock; }
-    int getShipCount() { return shipCount; }
+    const int getShipCount() { return shipCount; }
     const sf::Vector2f getSize() { return sf::Vector2f(BAR_WIDTH, BAR_HEIGHT); }
     const unsigned int getScore() { return scoreCounter; }
     

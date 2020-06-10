@@ -4,6 +4,7 @@
 #include "GameObject.hpp"
 #include <iostream>
 #include <vector>
+#include <cmath>
 /*
     Put constants and function in this namespace
     when you want it to share arcoss header files
@@ -80,6 +81,8 @@ namespace PlanetDefenders
     const sf::IntRect PROJECTILE_RECTEYE = sf::IntRect(60, 48, 16, 16);
     const sf::IntRect PROJECTILE_RECTBLUE = sf::IntRect(80, 48, 7, 29);
 
+    const float BossProjectileDamage = 5;
+
     // Game Window size
     const unsigned int WINDOW_WIDTH = 1280;
     const unsigned int WINDOW_HEIGHT = 720;
@@ -95,8 +98,7 @@ namespace PlanetDefenders
         v.pop_back();
     }
 
-
-    // A collision detection wrapper function
+     //A collision detection wrapper function
     inline bool checkCollision(GameObject* obj1, GameObject* obj2)
     {
         return Collision::PixelPerfectTest(obj1->getSprite(), obj2->getSprite());
@@ -113,10 +115,10 @@ namespace PlanetDefenders
     inline bool isOutOfBound(GameObject* obj1)
     {
         return
-            obj1->getSprite().getPosition().y < -100 ||
-            obj1->getSprite().getPosition().x < -100 ||
-            obj1->getSprite().getPosition().y > WINDOW_HEIGHT + 100 ||
-            obj1->getSprite().getPosition().x > WINDOW_WIDTH + 100;
+                (obj1->getSprite().getPosition().y < -100 ||
+                obj1->getSprite().getPosition().x < -100 ||
+                obj1->getSprite().getPosition().y > WINDOW_HEIGHT + 10 ||
+                obj1->getSprite().getPosition().x > WINDOW_WIDTH + 100);
     }
 
     inline sf::Vector2f normalize(const sf::Vector2f& v)
@@ -127,6 +129,13 @@ namespace PlanetDefenders
         else
             return v;
     }
+
+    // limit a vector
+    inline sf::Vector2f truncate(const sf::Vector2f& v, const float MAXIMUM)
+    {
+        return sf::Vector2f(std::min(v.x, MAXIMUM), std::min(v.y, MAXIMUM));
+    }
+
 }
 #endif
 

@@ -1,5 +1,8 @@
 #include "GameObject.hpp"
+#include "PlanetDefenders.h"
 #include <cmath>
+
+using namespace PlanetDefenders;
 
 GameObject::GameObject(const sf::Texture& texture, const sf::IntRect& rect, const sf::Vector2f& pos, const sf::Vector2f& dir, float spd)
 {
@@ -28,6 +31,20 @@ void GameObject::move(const sf::Vector2f& dir)
 {
     this->setDirection(dir);
     this->move();
+}
+
+// Getters
+
+const sf::Vector2f GameObject::getVelocity() const { return truncate(speed * direction, 10); }
+
+void GameObject::moveToward(GameObject& obj)
+{
+    const static float SteeringCoefficient = 40.0f;
+    const static sf::Vector2f offset = sf::Vector2f(obj.getBound().width / 2, obj.getBound().height / 2);
+    setDirection(
+        normalize(getDirection() + ((normalize(obj.getPosition() + offset - getPosition()) - getDirection()) / SteeringCoefficient))
+    );
+    roateToDirection();
 }
 
 

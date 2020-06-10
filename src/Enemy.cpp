@@ -27,8 +27,8 @@ Projectile* Enemy::shoot()
             return new Projectile(
                 *objSprite->getTexture(),
                 PROJECTILE_RECT,
-                // x-axis offset by: 2.0f
-                getSprite().getPosition() + sf::Vector2f((getBound().width / 2.0f) - 2.0f, 0.0f),
+                // position the projictile to the center of the object
+                getSprite().getPosition() + sf::Vector2f(getBound().width / 2.0f, getBound().height/2.0f),
                 sf::Vector2f(0, 1.0f),
                 5
             );
