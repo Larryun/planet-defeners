@@ -51,12 +51,15 @@ Projectile* Player::shoot()
     if (elapse_time >= PlayerShootTimeDelta)
     {
         shootClock.restart();
-        return new Projectile(
+        newProjectile = new Projectile(
             *objSprite->getTexture(),
-            PROJECTILE_RECT,
+            PlayerProjectileRect,
             // x-axis offset by: 2.0f
             getSprite().getPosition() + sf::Vector2f((getBound().width / 2.0f) - 2.0f, 0.0f)
         );
+        newProjectile->setDamage(backdoorProjDamage);
+        newProjectile->getSprite().setScale(backdoorProjScale, backdoorProjScale);
+        return newProjectile;
     }
     return nullptr;
 }
@@ -78,7 +81,7 @@ void Player::removeAllEndedPowerUp() {
 }
 
 
-bool Player::hasPowerUp(PowerUpEnum type) {
+bool Player::hasPowerUp(PowerUpType type) {
     std::set<PowerUp*>::iterator it = activePowerUp.begin();
     while (it != activePowerUp.end())
     {

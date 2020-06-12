@@ -32,7 +32,7 @@ void ToolBar::updateHpBarSize(int hp) {
 /*
     set the activated PowerUp in the toolbar
 */
-void ToolBar::setPowerUp(PowerUpEnum type, unsigned int duration)
+void ToolBar::setPowerUp(PowerUpType type, unsigned int duration)
 {
     powerUpDuration = duration;
     drawPowerUp = true;

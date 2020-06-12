@@ -161,7 +161,7 @@
     <ClCompile Include="src\Score.cpp" />
     <ClCompile Include="src\Shield.cpp" />
     <ClCompile Include="src\ShowHighscore.cpp" />
-    <ClCompile Include="src\TextureNotLoaded.cpp" />
+    <ClCompile Include="src\ResourceNotLoaded.cpp" />
     <ClCompile Include="src\ToolBar.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -185,7 +185,7 @@
     <ClInclude Include="src\Shield.h" />
     <ClInclude Include="src\ShipSelection.hpp" />
     <ClInclude Include="src\ShowHighscore.h" />
-    <ClInclude Include="src\TextureNotLoaded.h" />
+    <ClInclude Include="src\ResourceNotLoaded.h" />
     <ClInclude Include="src\ToolBar.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

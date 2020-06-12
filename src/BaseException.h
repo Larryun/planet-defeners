@@ -14,7 +14,10 @@ namespace PlanetDefenders
         std::string msg;
     public:
         BaseException(const std::string& message) : msg(message) {}
-        virtual const std::string message() = 0;
+        const std::string message() const
+        {
+            return msg;
+        }
     };
 }
 

@@ -20,24 +20,42 @@ std::vector<Projectile*>* Boss::shoot(int num)
     double betweenZeroAndOne = ((double)rand() / RAND_MAX);
     sf::Time elapse_time = shootClock.getElapsedTime();
     std::vector<Projectile*>* shootArr = new std::vector<Projectile*>();
+    sf::IntRect spriteRect;
+    float spd = 0, damage;
     if (elapse_time >= BossShootTimeDelta + sf::milliseconds((betweenZeroAndOne) * 50))
     {
         shootClock.restart();
         if (betweenZeroAndOne < shootProbability)        // shoot
-            //std::cout << elapse_time.asSeconds() << std::endl;
+        {
+            ProjectileType randType = static_cast<ProjectileType>(rand() % NumberOfProjectileType);
+            switch (randType)
+            {
+            case RedCircle:
+                spriteRect = ProjectileRedCircle;
+                spd = ProjectileRedCircleSpd;
+                damage = ProjectileRedCircleDamage;
+                break;
+            case RedSharp:
+                spriteRect = ProjectileRedSharp;
+                spd = ProjectileRedSharpSpd;
+                damage = ProjectileRedSharpDamage;
+                break;
+            }
             for (int i = 0; i < num; i++) {
                 float randomPos = rand() % 100 - 50;
                 shootArr->push_back(new Projectile(
                     *objSprite->getTexture(),
-                    PROJECTILE_RECTBLUE,
+                    spriteRect,
                     sf::Vector2f(
                         getSprite().getPosition().x + getSprite().getGlobalBounds().width / 2 + i * randomPos, getSprite().getGlobalBounds().height),
                     sf::Vector2f(0, 1.0f),
-                    5,
-                    BossProjectileDamage
+                    spd,
+                    BossProjectileDamage,
+                    randType
                 ));
 
             }
+        }
     }
     return shootArr;
 }

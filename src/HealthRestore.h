@@ -12,7 +12,7 @@ public:
     HealthRestore(const sf::Texture& texture, const sf::Vector2f& pos, float duration = 0, float healAmt = 10) :
         PowerUp(
             texture,
-            HEALTH_RESTORE_RECT,
+            HealthRestoreRect,
             pos,
             duration,
             HEAL

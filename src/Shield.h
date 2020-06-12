@@ -7,7 +7,7 @@ public:
     Shield(const sf::Texture& texture, const sf::Vector2f& pos, float duration = 5) :
         PowerUp(
             texture,
-            SHIELD_POWERUP_RECT,
+            ShieldPowerUpRect,
             pos,
             duration,
             SHIELD

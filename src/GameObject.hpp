@@ -6,11 +6,10 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <cmath>
-#define MAX_SPEED = 10
+#include <algorithm>
 
 //using PlanetDefenders::normalize;
 //using PlanetDefenders::truncate;
-
 
 class GameObject
 {
@@ -71,8 +70,11 @@ public:
     void setMovingBoundary(const sf::Vector2u& bound_) { movingBound = bound_; }
     void setSpriteTexture(sf::Texture& texture) { getSprite().setTexture(texture); }
 
-    void accelerate(float a) { setSpeed(getSpeed() + a); }
+    void accelerate(float a) { setSpeed(std::min(getSpeed() + a, 50.0f)); }
+    void deaccelerate(float a) { setSpeed(std::max(0.0f, getSpeed() - a)); }
     void moveToward(GameObject& obj);
+    bool collide(GameObject& obj);
+    bool collide(sf::Sprite& obj);
 
     //void drawTo(sf::RenderWindow &window){ window.draw(*objSprite); }
 

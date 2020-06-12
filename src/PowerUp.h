@@ -8,12 +8,12 @@ class PowerUp : public GameObject
 {
     // in seconds
     float powerUpDuration;
-    PowerUpEnum powerUpType;
+    PowerUpType powerUpType;
     sf::Clock* powerUpClock;
 
 public:
     PowerUp(const sf::Texture& texture, const sf::IntRect& rect, 
-        const sf::Vector2f& pos, float duration, PowerUpEnum type) :
+        const sf::Vector2f& pos, float duration, PowerUpType type) :
         GameObject(
             texture,
             rect,
@@ -35,12 +35,12 @@ public:
     }
 
     void setDuration(float t) { powerUpDuration = t; }
-    void setType(const PowerUpEnum& s) { powerUpType = s; }
+    void setType(const PowerUpType& s) { powerUpType = s; }
     void startClock() { powerUpClock = new sf::Clock(); }
 
 
     const sf::Clock& getClock() { return *powerUpClock; }
-    const PowerUpEnum& getType() const { return powerUpType; }
+    const PowerUpType& getType() const { return powerUpType; }
     const float& getDuration() { return powerUpDuration; }
 
     void restartClock();

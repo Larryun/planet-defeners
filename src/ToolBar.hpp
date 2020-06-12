@@ -69,7 +69,7 @@ class ToolBar
 public:
     ToolBar(const sf::Vector2f& pos)
     {
-        if(!ToolBarTexture.loadFromFile(TEXTURE_BASE_PATH + "toolbar.png"))
+        if(!ToolBarTexture.loadFromFile(TextureBasePath + "toolbar.png"))
             std::cout << "cannot laod toolbar.png" << std::endl;
         initializeSprites();
 
@@ -86,7 +86,7 @@ public:
     void addScore(unsigned int x) { scoreCounter += x; }
     void minusScore(int x) { scoreCounter -= x; }
     void updateHpBarSize(int hp);
-    void setPowerUp(PowerUpEnum type, unsigned int duration);
+    void setPowerUp(PowerUpType type, unsigned int duration);
     void update();
     void drawTo(sf::RenderWindow& window);
 };

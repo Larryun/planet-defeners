@@ -13,7 +13,6 @@
 */
 namespace PlanetDefenders
 {
-
     // For ToolBar
     const sf::IntRect HpBorderRect = sf::IntRect(228, 48, 41, 279);
     const sf::IntRect ScoreRect = sf::IntRect(208, 0, 96, 20);
@@ -26,9 +25,9 @@ namespace PlanetDefenders
 
     // PowerUp
     // health restore
-    const sf::IntRect HEALTH_RESTORE_RECT = sf::IntRect(100, 48, 20, 20);
+    const sf::IntRect HealthRestoreRect = sf::IntRect(100, 48, 20, 20);
     // shield powerup
-    const sf::IntRect SHIELD_POWERUP_RECT = sf::IntRect(122, 48, 20, 20);
+    const sf::IntRect ShieldPowerUpRect = sf::IntRect(122, 48, 20, 20);
 
     // Unused vvvvvvv
     const sf::IntRect CureRect = sf::IntRect(100, 47, 22, 20);
@@ -47,45 +46,67 @@ namespace PlanetDefenders
 
 
     // Game Title
-    const std::string GAME_TITLE = "Space Invaders?";
+    const std::string GameTitle = "Space Invaders?";
 
     // resources path
-    const std::string TEXTURE_BASE_PATH = "resourses/texture/";
-    const std::string AUDIO_BASE_PATH = "resourses/sound/";
+    const std::string TextureBasePath = "resourses/texture/";
+    const std::string AudioBasePath = "resourses/sound/";
     const unsigned int FRAME_RATE_LIMIT = 65;
 
     // PowerUp constants
-    const enum PowerUpEnum { HEAL, SHIELD };
+    const enum PowerUpType { HEAL, SHIELD };
 
     // health restore
-    const float HEALTH_RESTORE_AMOUNT = 10;
+    const float HealthRestoreAmount = 10;
 
     // shield duration
-    const float SHIELD_DURATION = 5;
-    const float SHIELD_HP = 5;
+    const float ShieldDuration = 5;
+    const float ShieldHp = 5;
 
     // Player
-    const float PLAYER_INITIAL_HEALTH = 100;
+    const float PlayerInitialHealth = 100.0f;
+    const float PlayerMaxSpeed = 50.0f;
 
     // Projectile
-    const int MAX_PROJECTILE_NUM = 500;
+    const int MaxProjectileNum = 500;
     const sf::Time PlayerShootTimeDelta = sf::milliseconds(100);
     const sf::Time EnemyShootTimeDelta = sf::milliseconds(200);
     const sf::Time BossShootTimeDelta = sf::milliseconds(300);
 
-    const sf::IntRect ENEMY_RECTEYE = sf::IntRect(0, 48, 23, 28);
-    const sf::IntRect ENEMY_RECTBLUE = sf::IntRect(25, 48, 30, 28);
-    const sf::IntRect ENEMY_RECTBOSS = sf::IntRect(0, 76, 182, 235);
+    const sf::IntRect EnemyRectEye = sf::IntRect(0, 48, 23, 28);
+    const sf::IntRect EnemyRectBlue = sf::IntRect(25, 48, 30, 28);
+    const sf::IntRect EnemyRectBoss = sf::IntRect(0, 76, 182, 235);
 
-    const sf::IntRect PROJECTILE_RECT = sf::IntRect(0, 32, 5, 11);
-    const sf::IntRect PROJECTILE_RECTEYE = sf::IntRect(60, 48, 16, 16);
-    const sf::IntRect PROJECTILE_RECTBLUE = sf::IntRect(80, 48, 7, 29);
+    const sf::IntRect PlayerProjectileRect = sf::IntRect(0, 32, 5, 11);
+    const sf::IntRect ProjectileRedCircle = sf::IntRect(60, 48, 16, 16);
+    const sf::IntRect ProjectileRedSharp = sf::IntRect(80, 48, 7, 29);
+
+    // Speed
+    const float ProjectileRedCircleSpd = 15;
+    const float ProjectileRedSharpSpd = 6;
+
+    // Damage
+    const float ProjectileRedCircleDamage = 8;
+    const float ProjectileRedSharpDamage = 5;
+
+    enum ProjectileType { RedCircle, RedSharp, BlueRegular};
+    const unsigned int NumberOfProjectileType = 2; 
 
     const float BossProjectileDamage = 5;
 
+
     // Game Window size
-    const unsigned int WINDOW_WIDTH = 1280;
-    const unsigned int WINDOW_HEIGHT = 720;
+    const unsigned int WindowWidth = 1280;
+    const unsigned int WindowHeight = 720;
+
+    // Backdoor constants
+    // '['
+    const sf::Keyboard::Key BackdoorTriggerKey = sf::Keyboard::Equal;
+    const sf::Keyboard::Key InfinityHpKey = sf::Keyboard::Dash;
+    const sf::Keyboard::Key AccelerateKey = sf::Keyboard::RBracket;
+    const sf::Keyboard::Key DeaccelerateKey = sf::Keyboard::LBracket;
+    const sf::Keyboard::Key BiggerProjectile = sf::Keyboard::Quote;
+
 
     // utilites functions
     // put these into a libarary?
@@ -99,15 +120,15 @@ namespace PlanetDefenders
     }
 
      //A collision detection wrapper function
-    inline bool checkCollision(GameObject* obj1, GameObject* obj2)
-    {
-        return Collision::PixelPerfectTest(obj1->getSprite(), obj2->getSprite());
-    }
-    
-    inline bool checkCollision(sf::Sprite* sp1, sf::Sprite* sp2)
-    {
-        return Collision::PixelPerfectTest(*sp1, *sp2);
-    }
+    //inline bool checkCollision(GameObject* obj1, GameObject* obj2)
+    //{
+    //    return Collision::PixelPerfectTest(obj1->getSprite(), obj2->getSprite());
+    //}
+    //
+    //inline bool checkCollision(sf::Sprite* sp1, sf::Sprite* sp2)
+    //{
+    //    return Collision::PixelPerfectTest(*sp1, *sp2);
+    //}
 
 
     // check if obj is out of a certain bound
@@ -117,8 +138,8 @@ namespace PlanetDefenders
         return
                 (obj1->getSprite().getPosition().y < -100 ||
                 obj1->getSprite().getPosition().x < -100 ||
-                obj1->getSprite().getPosition().y > WINDOW_HEIGHT + 10 ||
-                obj1->getSprite().getPosition().x > WINDOW_WIDTH + 100);
+                obj1->getSprite().getPosition().y > WindowHeight + 10 ||
+                obj1->getSprite().getPosition().x > WindowWidth + 100);
     }
 
     inline sf::Vector2f normalize(const sf::Vector2f& v)

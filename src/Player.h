@@ -14,10 +14,11 @@ class Player : public GameObject
 {
 
     float hp;
+    float backdoorProjScale = 1.0f;
+    float backdoorProjDamage = 1.0f;
     sf::Clock shootClock;
 
     std::set<PowerUp*> activePowerUp;
-
     // apply power up effect to player
     void applyPowerUp(PowerUp& powerUp);
 
@@ -28,8 +29,8 @@ public:
             rect,
             pos,
             sf::Vector2f(0, 0),
-            5.0f		// Initial speed
-        ), hp(PlanetDefenders::PLAYER_INITIAL_HEALTH)
+            7.0f		// Initial speed
+        ), hp(PlanetDefenders::PlayerInitialHealth)
     {
         hp = 100;
     }
@@ -45,7 +46,7 @@ public:
 
     // check if PowerUp p is in activePowerUp
     bool hasPowerUp(PowerUp* p);
-    bool hasPowerUp(PowerUpEnum type);
+    bool hasPowerUp(PowerUpType type);
 
     // check all powerup 
     // remove from activePowerUp set 
@@ -55,6 +56,9 @@ public:
     // add PowerUp to activePowerUp set
     // and call applyPowerUp
     void addPowerUp(PowerUp* p);
+
+    void setBackdoorProjScale(float scale) { backdoorProjScale = scale; }
+    void setBackdoorProjDamage(float dmg) { backdoorProjDamage = dmg; }
 
     Projectile* shoot();
 };

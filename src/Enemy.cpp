@@ -26,7 +26,7 @@ Projectile* Enemy::shoot()
         if(betweenZeroAndOne < shootProbability)        // shoot
             return new Projectile(
                 *objSprite->getTexture(),
-                PROJECTILE_RECT,
+                PlayerProjectileRect,
                 // position the projictile to the center of the object
                 getSprite().getPosition() + sf::Vector2f(getBound().width / 2.0f, getBound().height/2.0f),
                 sf::Vector2f(0, 1.0f),

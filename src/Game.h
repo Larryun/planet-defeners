@@ -20,8 +20,12 @@ class Game
 
     // frequency of how often can a player shoot
 
+    // Sprites
+    sf::Sprite shieldSprite;
+    sf::Sprite bossSprite;
     sf::Sprite GameBackground;
     sf::Sprite ToolBarBackground;
+
     //background music
     sf::SoundBuffer backgroundBuffer;
     sf::Sound backgroundMusic;
@@ -39,7 +43,7 @@ class Game
     sf::Texture ToolBarBackgroundTexture;
     //for ships
     // ship1
-    sf::IntRect SHIP_1_TEXTURE_RECT = sf::IntRect(0, 0, 31, 30);
+    sf::IntRect SHIP_1_TEXTURE_RECT = sf::IntRect(0, 0, 30, 29);
     sf::IntRect SHIP_1_LASER_RECT = sf::IntRect(0, 33, 5, 11);
     // ship2
     sf::IntRect SHIP_2_TEXTURE_RECT = sf::IntRect(33, 0, 27, 21);
@@ -56,14 +60,14 @@ class Game
     sf::IntRect SHIELD_RECT = sf::IntRect(132, 0, 47, 46);
 
     sf::RenderWindow* window;
-    std::vector<GameObject*> playerProjectileArray;
+    std::vector<Projectile*> playerProjectileArray;
     std::vector<Projectile*> enemyProjectileArray;
-    //std::vector<Projectile*> bossProjectileArray;
     std::vector<Projectile*> bossProjectileArray;
-    std::vector<GameObject*> enemyArr;
-    std::vector<GameObject*> powerUpArr;
+    std::vector<Enemy*> enemyArr;
+    std::vector<PowerUp*> powerUpArr;
     std::vector<sf::IntRect> enemyRectArr;
     
+    // Objects
     Player* player;
     Boss* boss;
     ToolBar* tool;
@@ -73,16 +77,20 @@ class Game
     InputHighscore* inputHighscore;
     
     ShipSelection* shipSelect;
-    sf::Sprite shieldSprite;
-    sf::Sprite bossSprite;
-  
+
+    // Clocks
     sf::Clock genPowerUpClock;
     sf::Clock genEnemyClock;
     
+    // States
     int numEnemy;
     int randomEnemy;
     int bossHp;
     bool BossShown = false;
+    bool BackdoorTriggered = false;
+    bool InfinityHpTriggered = false;
+    bool BiggerProjTriggered = false;
+
     sf::Vector2f initialPos; //where should the layout start
     sf::Vector2f direction; //they all move in the same direction
     
@@ -92,6 +100,7 @@ public:
     void resetGame();
     void gameLoop();
     void handleKeyInput();
+    void handleBackdoorKeyInput(sf::Keyboard::Key code);
     void generatePowerUp();
     //void initEnemy(const sf::Vector2u, unsigned int, unsigned int);
     void loadAllMusic();
@@ -99,6 +108,7 @@ public:
     void drawGame();
     void pauseGame();
 
+    // Menu stuff
     bool menuHandleKeyboard(sf::Event& event);
     bool menuHandleMouseClicked(sf::Event& event);
     bool menuHandleMouseMove(sf::Event& event);
@@ -111,7 +121,7 @@ public:
     void drawGameObjectArray(std::vector<T*>& arr);
 //    void updateProjectile(std::vector<Projectile*>&);
     
-    // collision detection
+    // collision detections
     void collisionPlayerProjAndBoss();
     void collisionBossProjAndPlayer();
     void collisionPlayerProjAndEnemy();
@@ -124,6 +134,7 @@ public:
     // Check colliision between powerup and player
     void collisionPowerUpAndPlayer();
 
+    // Enemy Generations
     void generateEnemy();
     int generateDiagonalEnemy(int n, sf::Vector2f initialPos, sf::Vector2f direction);
     int generateSquqreEnemy( int row, int col, sf::Vector2f initialPos, sf::Vector2f direction);

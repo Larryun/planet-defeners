@@ -15,11 +15,11 @@ Endscreen::Endscreen(float width, float height) {
 	title.setString("GAME OVER");
 	title.setPosition(sf::Vector2f(width / 3.60, height / 3.00));
 
-	back.setFont(font);
-	back.setCharacterSize(80);
-	back.setFillColor(sf::Color::White);
-	back.setString("BACK TO MAIN MENU");
-	back.setPosition(sf::Vector2f(width / 4.2, height / 1.4));
+	//back.setFont(font);
+	//back.setCharacterSize(80);
+	//back.setFillColor(sf::Color::White);
+	//back.setString("BACK TO MAIN MENU");
+	//back.setPosition(sf::Vector2f(width / 4.2, height / 1.4));
 
 	for (int i = 0; i < choice; i++) {
 		buttons[i].setFont(font);
@@ -48,14 +48,17 @@ bool Endscreen::work(sf::RenderWindow& window, Endscreen& endscreen, sf::Sprite&
 	window.draw(s);
 	endscreen.draw(window);
 	while (inEndscreen) {
+        // prevent drawing to much CPU time  
+        //*****remove this if you have non-static things in this view****
+        sf::sleep(sf::milliseconds(100));
 		while (window.pollEvent(event)) {
 			switch (event.type) {
             // press any key to retry?? 
-			case sf::Event::TextEntered:        
-				std::cout << "Retry" << std::endl;
-				flag = true;
-				inEndscreen = false;
-				break;
+			// case sf::Event::TextEntered:        
+			//	std::cout << "Retry" << std::endl;
+			//	flag = true;
+			//	inEndscreen = false;
+			//	break;
 			case sf::Event::KeyPressed:
 				switch (event.key.code) {
 				case sf::Keyboard::Left:
@@ -66,6 +69,11 @@ bool Endscreen::work(sf::RenderWindow& window, Endscreen& endscreen, sf::Sprite&
 					break;
 				case sf::Keyboard::Return:
 					switch(selectedItemIndex) {
+                    case 0:
+                        std::cout << "Retry" << std::endl;
+                        flag = true;
+                        inEndscreen = false;
+                        break;
 					case 1:
 						std::cout << "Show Highscore" << std::endl;
 						showHighscore.work(window, inEndscreen, event, showHighscore, s, sound);
@@ -207,7 +215,7 @@ void Endscreen::draw(sf::RenderWindow& window) {
 	window.draw(buttons[0]);
 	window.draw(buttons[1]);
 	window.draw(buttons[2]);
-	window.draw(back);
+	//window.draw(back);
 	for (int i = 0; i < choice; i++) {
 		window.draw(buttons[i]);
 	}

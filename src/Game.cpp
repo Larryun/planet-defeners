@@ -12,33 +12,31 @@
 #include "Shield.h"
 #include "Menu.h"
 #include "Options.h"
-#include "TextureNotLoaded.h"
+#include "ResourceNotLoaded.h"
 #include "Endscreen.h"
 #include "InputHighscore.h"
 
-
 using namespace PlanetDefenders;
-
 
 void Game::loadAllMusic()
 {
     // add exception handling here
-    if (!backgroundBuffer.loadFromFile(AUDIO_BASE_PATH + "game_music.ogg"))
-        std::cout << "Music not loaded" << std::endl;
+    if (!backgroundBuffer.loadFromFile(AudioBasePath + "game_music.ogg"))
+        throw MusicNotLoaded("game_music.ogg");
     else
         backgroundMusic.setBuffer(backgroundBuffer);
-    if (!laserSoundBuffer.loadFromFile(AUDIO_BASE_PATH + "laser.ogg"))
-        std::cout << "LaserSound not loaded" << std::endl;
+    if (!laserSoundBuffer.loadFromFile(AudioBasePath + "laser.ogg"))
+        throw MusicNotLoaded("laser.ogg");
     else
         laserSound.setBuffer(laserSoundBuffer);
 
-    if (!powerupSoundBuffer.loadFromFile(AUDIO_BASE_PATH + "enemy_hurt.ogg"))
-        std::cout << "enemy_hurt not loaded" << std::endl;
+    if (!powerupSoundBuffer.loadFromFile(AudioBasePath + "enemy_hurt.ogg"))
+        throw MusicNotLoaded("enemy_hurt.ogg");
     else
         enemyHurtSound.setBuffer(powerupSoundBuffer);
 
-    if (!enemyHurtSoundBuffer.loadFromFile(AUDIO_BASE_PATH + "powerup.ogg"))
-        std::cout << "powerup not loaded" << std::endl;
+    if (!enemyHurtSoundBuffer.loadFromFile(AudioBasePath + "powerup.ogg"))
+        throw MusicNotLoaded("powerup.ogg");
     else
         powerupSound.setBuffer(enemyHurtSoundBuffer);
 }
@@ -129,7 +127,7 @@ bool Game::displayMenu()
     sf::Event event;
     while (window->pollEvent(event)) {
         switch (event.type) {
-        case sf::Event::KeyReleased:
+        case sf::Event::KeyPressed:
             if (menuHandleKeyboard(event))
                 return true;
             //Clicking on a button
@@ -156,11 +154,11 @@ void Game::collisionPlayerProjAndBoss()
     // Collision between playerProjectile and enemy
     for (int i = 0; i < playerProjectileArray.size(); i++)
     {
-        if (checkCollision(playerProjectileArray[i], boss))
+        //if (checkCollision(playerProjectileArray[i], boss))
+        if (playerProjectileArray[i]->collide(*dynamic_cast<GameObject*>(boss)))
         {
             tool->addScore(1);
             enemyHurtSound.play();
-            //bossHp++;
             bossHp--;
             std::cout << "PROJECTILE COLIDED BOSS" << std::endl;
             deleteObjectFromVector(playerProjectileArray, i);
@@ -173,12 +171,12 @@ void Game::collisionBossProjAndPlayer()
 {
     for (int i = 0; i < bossProjectileArray.size(); i++)
     {
-        if (checkCollision(bossProjectileArray[i], player))
+        //if (checkCollision(bossProjectileArray[i], player))
+        if (bossProjectileArray[i]->collide(*dynamic_cast<GameObject*>(player)))
         {
-            //enemyHurtSound.play();  playerHurSound?
+            //enemyHurtSound.play();  playerHurtSound?
             player->takeDamage(bossProjectileArray[i]->getDamage());
 
-            tool->updateHpBarSize(player->getHp());
             std::cout << "BOSS PROJECTILE COLIDED PLAYER" << std::endl;
             deleteObjectFromVector(bossProjectileArray, i);
             break;
@@ -193,7 +191,8 @@ void Game::collisionPlayerProjAndEnemy()
     {
         for (int j = 0; j < enemyArr.size(); j++)
         {
-            if (checkCollision(playerProjectileArray[i], enemyArr[j]))
+            //if (checkCollision(playerProjectileArray[i], enemyArr[j]))
+            if (playerProjectileArray[i]->collide(*dynamic_cast<GameObject*>(enemyArr[j])))
             {
                 tool->addScore(1);
                 enemyHurtSound.play();
@@ -211,7 +210,8 @@ void Game::collisionEnemyProjAndShield()
     // Collision between enemyProjectile player shield
     for (int i = 0; i < enemyProjectileArray.size(); i++)
     {
-        if (checkCollision(&enemyProjectileArray[i]->getSprite(), &shieldSprite))
+        //if (checkCollision(&enemyProjectileArray[i]->getSprite(), &shieldSprite))
+        if (enemyProjectileArray[i]->collide(shieldSprite))
         {
             //player->takeDamage(1);
             //tool->updateHpBarSize(player->getHp());
@@ -225,7 +225,8 @@ void Game::collisionBossProjAndShield()
 {
     for (int i = 0; i < bossProjectileArray.size(); i++)
     {
-        if (checkCollision(&bossProjectileArray[i]->getSprite(), &shieldSprite))
+        //if (checkCollision(&bossProjectileArray[i]->getSprite(), &shieldSprite))
+        if (bossProjectileArray[i]->collide(shieldSprite))
         {
             deleteObjectFromVector(bossProjectileArray, i);
             break;
@@ -237,10 +238,10 @@ void Game::collisionEnemyProjAndPlayer()
 {
     for (int i = 0; i < enemyProjectileArray.size(); i++)
     {
-        if (checkCollision(enemyProjectileArray[i], player))
+        //if (checkCollision(enemyProjectileArray[i], player))
+        if (player->collide(*dynamic_cast<GameObject*>(enemyProjectileArray[i])))
         {
             player->takeDamage(enemyProjectileArray[i]->getDamage());
-            tool->updateHpBarSize(player->getHp());
             deleteObjectFromVector(enemyProjectileArray, i);
             break;
         }
@@ -252,12 +253,12 @@ void Game::collisionEnemyAndPlayer()
 {
     for (int i = 0; i < enemyArr.size(); i++)
     {
-        if (checkCollision(player, enemyArr[i]))
+        //if (checkCollision(player, enemyArr[i]))
+        if (player->collide(*dynamic_cast<GameObject*>(enemyArr[i])))
         {
             std::cout << "PLAYER COLIDED ENEMY" << std::endl;
             //player->takeDamage(1);
             player->takeDamage(1);
-            tool->updateHpBarSize(player->getHp());
             break;
         }
     }
@@ -268,7 +269,8 @@ void Game::collisionPowerUpAndPlayer()
 {
     for (int i = 0; i < powerUpArr.size(); i++)
     {
-        if (checkCollision(player, powerUpArr[i]))
+        //if (checkCollision(player, powerUpArr[i]))
+        if (player->collide(*dynamic_cast<GameObject*>(powerUpArr[i])))
         {
             std::cout << "PLAYER COLIDED POWERUP" << std::endl;
             // do not delete powerUp in GameLoop
@@ -279,11 +281,10 @@ void Game::collisionPowerUpAndPlayer()
             );
             std::swap(powerUpArr[i], powerUpArr.back());
             powerUpArr.pop_back();
-            tool->updateHpBarSize(player->getHp());
+            powerupSound.play();
             break;
         }
     }
-
 }
 
 void Game::enemyRandomShoot()
@@ -307,18 +308,20 @@ void Game::bossRandomShoot()
     std::vector<Projectile*> newProjectile;
     // v1 = boss position + boss bottom middle posision
     const static sf::Vector2f v1 =
-        sf::Vector2f(boss->getBound().width / 2.0f - 10, boss->getBound().height - 10) +
+        sf::Vector2f(boss->getBound().width / 2.0f, boss->getBound().height) +
         boss->getPosition();
+    const static sf::Vector2f offset =
+        sf::Vector2f(player->getBound().width / 2.0f, player->getBound().height / 2.0f);
     switch (randShoot) {
     case 0:
         for (int i = 0; i < 4; i++) {   // shoot for time each times with i projectile?
             newProjectile = *boss->shoot(i);
-            for (auto it = newProjectile.begin(); it != newProjectile.end(); it++)
+            //for (auto it = newProjectile.begin(); it != newProjectile.end(); it++)
+            for (auto& proj : newProjectile)
             {
                 // vector with the direction to the player = player position - v1
-                (*it)->setDirection(normalize(player->getPosition() - v1));
-                (*it)->setSpeed(7);
-                (*it)->roateToDirection();
+                proj->setDirection(normalize(player->getPosition() - v1 + offset));
+                proj->roateToDirection();
             }
             bossProjectileArray.insert(
                 bossProjectileArray.end(),
@@ -393,26 +396,38 @@ void Game::generateEnemy() {
 
 Game::Game()
 {
-    menu = new Menu(WINDOW_WIDTH, WINDOW_HEIGHT);
-    options = new Options(WINDOW_WIDTH, WINDOW_HEIGHT);
-    endscreen = new Endscreen(WINDOW_WIDTH, WINDOW_HEIGHT);
-    inputHighscore = new InputHighscore(WINDOW_WIDTH, WINDOW_HEIGHT);
+    menu = new Menu(WindowWidth, WindowHeight);
+    options = new Options(WindowWidth, WindowHeight);
+    endscreen = new Endscreen(WindowWidth, WindowHeight);
+    inputHighscore = new InputHighscore(WindowWidth, WindowHeight);
 
     // window setup
-    window = new sf::RenderWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), GAME_TITLE, sf::Style::Close | sf::Style::Resize);
+    window = new sf::RenderWindow(sf::VideoMode(WindowWidth, WindowHeight), GameTitle, sf::Style::Close | sf::Style::Resize);
     //std::cout << window->getSize().x << " " << window->getSize().y << std::endl;
     window->setFramerateLimit(FRAME_RATE_LIMIT);
 
     // sounds setup
-    loadAllMusic();
+    try
+    {
+        loadAllMusic();
+    }
+    catch (const MusicNotLoaded & exception)
+    {
+
+        exit(-1);
+    }
+
     backgroundMusic.play();
     backgroundMusic.setVolume(20.0f);
+    backgroundMusic.setLoop(true);
 
     // base texture setup
-    if (!SPACE_TEXTURE.loadFromFile(TEXTURE_BASE_PATH + "spaceSprites.png"))
+    if (!SPACE_TEXTURE.loadFromFile(TextureBasePath + "spaceSprites.png"))
         throw TextureNotLoaded("spaceSprites.png");
-    if (!BackgroundTexture.loadFromFile(TEXTURE_BASE_PATH + "spaceBackground.png"))
+    if (!BackgroundTexture.loadFromFile(TextureBasePath + "spaceBackground.png"))
         throw TextureNotLoaded("spaceBackground.png");
+    if (!ToolBarBackgroundTexture.loadFromFile(TextureBasePath + "toolbar.png"))
+        throw TextureNotLoaded("toolbar.png");
 
     GameBackground = sf::Sprite(BackgroundTexture);
     sf::Vector2u TextureSize = BackgroundTexture.getSize();
@@ -422,8 +437,6 @@ Game::Game()
     GameBackground.setScale(ScaleX, ScaleY);
 
     // ToolBar
-    if (!ToolBarBackgroundTexture.loadFromFile(TEXTURE_BASE_PATH + "toolbar.png"))
-        throw TextureNotLoaded("toolbar.png");
     ToolBarBackground = sf::Sprite(ToolBarBackgroundTexture, sf::IntRect(0, 0, 204, 720));
     ToolBarBackground.setPosition(sf::Vector2f(1076, 0));
     tool = new ToolBar(sf::Vector2f(980, 0));
@@ -438,10 +451,10 @@ Game::Game()
     // build enemies array
     //initEnemy(window->getSize());
 
-    enemyRectArr.push_back(ENEMY_RECTEYE);
-    enemyRectArr.push_back(ENEMY_RECTBLUE);
+    enemyRectArr.push_back(EnemyRectEye);
+    enemyRectArr.push_back(EnemyRectBlue);
 
-    boss = new Boss(SPACE_TEXTURE, ENEMY_RECTBOSS, sf::Vector2f((window->getSize().x - tool->getSize().x) / 2, 0));
+    boss = new Boss(SPACE_TEXTURE, EnemyRectBoss, sf::Vector2f((window->getSize().x - tool->getSize().x) / 2, 0));
     //bossHp = -100;
     boss->setBossHpBar(bossHp, sf::Color::Red, sf::Vector2f(33.f, (float)bossHp * 7.2f), sf::Vector2f(0, 720.f));
     shieldSprite = sf::Sprite(SPACE_TEXTURE);
@@ -450,7 +463,6 @@ Game::Game()
 
     bossSprite = sf::Sprite(ToolBarBackgroundTexture, sf::IntRect(0, 720, 204, 64));
     bossSprite.setPosition(sf::Vector2f(1076.f, 581.0f));
-
 
 }
 
@@ -488,12 +500,42 @@ void Game::handleKeyInput()
     }
 }
 
+void Game::handleBackdoorKeyInput(sf::Keyboard::Key code)
+{
+    switch (code)
+    {
+    case InfinityHpKey:
+        InfinityHpTriggered = !InfinityHpTriggered;
+        break;
+    case AccelerateKey:
+        player->accelerate(5);
+        break;
+    case DeaccelerateKey:
+        player->deaccelerate(5);
+        break;
+    case BiggerProjectile:
+        BiggerProjTriggered = !BiggerProjTriggered;
+        if (BiggerProjTriggered)
+        {
+            player->setBackdoorProjScale(5.0f);
+            player->setBackdoorProjDamage(5.0f);
+        }
+        else
+        {
+            // TODO Add to resetGame
+            player->setBackdoorProjScale(1.0f);
+            player->setBackdoorProjDamage(1.0f);
+        }
+    }
+
+}
+
 void Game::generatePowerUp()
 {
     int numberOfPowerUpTypes = 2;
     if (genPowerUpClock.getElapsedTime().asSeconds() > 2)
     {
-        PowerUpEnum randomPowerUpType = static_cast<PowerUpEnum>(rand() % numberOfPowerUpTypes);
+        PowerUpType randomPowerUpType = static_cast<PowerUpType>(rand() % numberOfPowerUpTypes);
         float randX = rand() % (1076 - 30);
         float randY = -50;
         genPowerUpClock.restart();
@@ -518,10 +560,8 @@ void Game::generatePowerUp()
 template<class T>
 void Game::updateGameObjectArray(std::vector<T*>& arr)
 {
-    for (int i = 0; i < arr.size(); i++)
-    {
-        arr[i]->move();
-    }
+    for (auto& v : arr)
+        v->move();
 }
 
 // hmm...
@@ -577,13 +617,19 @@ void Game::updateGame()
     if (BossShown) {
         collisionPlayerProjAndBoss();
         collisionBossProjAndPlayer();
-        for (auto it = bossProjectileArray.begin(); it != bossProjectileArray.end(); it++)
+        for (auto& proj : bossProjectileArray)
         {
-            (*it)->moveToward(*player);
+            // only RedSharp will follow the player
+            if (proj->getType() == RedSharp) proj->moveToward(*player);
         }
         updateGameObjectArray(bossProjectileArray);
         bossRandomShoot();
     }
+    if (InfinityHpTriggered)
+    {
+        player->setHp(PlayerInitialHealth);
+    }
+    tool->updateHpBarSize(player->getHp());
 }
 
 void Game::drawGame() {
@@ -612,6 +658,7 @@ void Game::drawGame() {
     if (BossShown)
     {
         window->draw(boss->getSprite());
+        boss->drawTo(*window);
     }
     window->display();
 }
@@ -660,7 +707,7 @@ void Game::gameLoop() {
     // main game loop
     sf::Event e;
     // display menu
-    while (!displayMenu()) {}
+    while (!displayMenu()) { sf::sleep(sf::milliseconds(100)); }
     while (window->isOpen())
     {
         while (window->pollEvent(e))
@@ -676,6 +723,10 @@ void Game::gameLoop() {
                     GAME_PAUSED ^= 1;
                     pauseGame();
                 }
+                if (e.key.code == BackdoorTriggerKey)
+                    BackdoorTriggered = !BackdoorTriggered;
+                if (BackdoorTriggered)
+                    handleBackdoorKeyInput(e.key.code);
                 break;
             }
         }
@@ -702,7 +753,7 @@ void Game::gameLoop() {
             // reset everything in the game
             resetGame();
             // draw menu again
-            while (!displayMenu()) {}
+            while (!displayMenu()) { sf::sleep(sf::milliseconds(100)); }
         }
     }
 }

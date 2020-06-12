@@ -181,6 +181,9 @@ void InputHighscore::work(sf::RenderWindow& window, InputHighscore& inputHighsco
     window.draw(s);
     inputHighscore.draw(window);
     while (inInputHighscore) {
+        // prevent drawing to much CPU time  
+        //*****remove this if you have non-static things in this view****
+        sf::sleep(sf::milliseconds(100));
         while (window.pollEvent(event)) {
             switch (event.type) {
             case sf::Event::TextEntered:
@@ -228,5 +231,4 @@ void InputHighscore::draw(sf::RenderWindow& window) {
     window.draw(userInputPrint);
     window.draw(scoreWord);
     window.draw(scorePrint);
-    window.display();
 }
