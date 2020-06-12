@@ -73,6 +73,13 @@ namespace PlanetDefenders
     // Player
     const float PlayerInitialHealth = 100.0f;
     const float PlayerMaxSpeed = 50.0f;
+    const float PlayerProjectileDamage = 2.0f;
+    
+    // Enemy
+    const float EnemyMaxScale = 3.0f;
+    const float EnemyBaseDamage = 1.0f;
+    const sf::Time EnemyShootInterval = sf::milliseconds(2000);
+    const sf::Time EnemyShootEachProjInterval = sf::milliseconds(200);
 
     // Projectile
     const int MaxProjectileNum = 500;

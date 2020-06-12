@@ -16,7 +16,7 @@ class Player : public GameObject
     int shipNum;
     float hp;
     float backdoorProjScale = 1.0f;
-    float backdoorProjDamage = 1.0f;
+    float projDamage = PlanetDefenders::PlayerProjectileDamage;
     sf::Clock shootClock;
 
     std::set<PowerUp*> activePowerUp;
@@ -57,7 +57,9 @@ public:
     void addPowerUp(PowerUp* p);
 
     void setBackdoorProjScale(float scale) { backdoorProjScale = scale; }
-    void setBackdoorProjDamage(float dmg) { backdoorProjDamage = dmg; }
+    void setProjDamage(float dmg) { projDamage = dmg; }
+
+    std::set<PowerUp*>& getPowerUpSet() { return activePowerUp;  }
 
     Projectile* shoot();
 };

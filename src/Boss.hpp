@@ -24,10 +24,9 @@ public:
     ~Boss();
     //sf::Vector2f getPosition
     bool isOutOfBound() { return false; }
-
-        void setBossHpBar(int hp, sf::Color color, sf::Vector2f size, sf::Vector2f pos);
-        void updateBossHpBarSize(int hp) { bossHpBar.setSize(sf::Vector2f(33.f, (float)hp * 7.2f)); }
-        void drawTo(sf::RenderWindow &window);
-        std::vector<Projectile*>* shoot(int i);
+    void setBossHpBar(int hp, sf::Color color, sf::Vector2f size, sf::Vector2f pos);
+    void updateBossHpBarSize(int hp) { bossHpBar.setSize(sf::Vector2f(33.f, (float)hp * 7.2f)); }
+    void drawTo(sf::RenderWindow& window);
+    std::vector<Projectile*>* shoot(int i);
 };
 #endif /* Boss_hpp */

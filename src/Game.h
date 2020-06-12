@@ -124,8 +124,8 @@ public:
 
     // Enemy Generations
     void generateEnemy();
-    int generateDiagonalEnemy(int n, sf::Vector2f initialPos, sf::Vector2f direction);
-    int generateSquqreEnemy( int row, int col, sf::Vector2f initialPos, sf::Vector2f direction);
+    int generateDiagonalEnemy(int n, sf::Vector2f initialPos, sf::Vector2f direction, float attribute);
+    int generateSquqreEnemy( int row, int col, sf::Vector2f initialPos, sf::Vector2f direction, float attribute);
         
     // for demonstration
     // enemy shoot

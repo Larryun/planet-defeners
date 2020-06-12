@@ -34,22 +34,25 @@ void ToolBar::updateHpBarSize(float hpPercent) {
 */
 void ToolBar::setPowerUp(PowerUpType type, unsigned int duration)
 {
-    powerUpDuration = duration;
-    drawPowerUp = true;
-    //delete powerUpClock;                    
-    powerUpClock = new sf::Clock();         // "restart" the clock, don't forgot delete the clock when stop
+    if (type != HEAL)
+    {
+        powerUpDuration = duration;
+        drawPowerUp = true;
+        powerUpClock = new sf::Clock();         // "restart" the clock, don't forgot delete the clock when stop
+    }
     switch (type)
     {
     case SHIELD:
         activatedPowerUpSp.setTextureRect(ToolBarShieldPowerUp);
         break;
-    case HEAL:
-        activatedPowerUpSp.setTextureRect(ToolBarHealPowerUp);
-        powerUpDuration = 1;                       // show it for 1 sec
-        break;
+    //case HEAL:
+    //    activatedPowerUpSp.setTextureRect(ToolBarHealPowerUp);
+    //    powerUpDuration = 1;                       // show it for 1 sec
+    //    break;
     // add more case here if you have more PowerUps
     }
 }
+
 
 void ToolBar::generateDigitRects()
 {
