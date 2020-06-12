@@ -726,7 +726,7 @@ void Game::gameLoop() {
     // main game loop
     sf::Event e;
     // display menu
-    while (!displayMenu()) { sf::sleep(sf::milliseconds(100)); }
+    while (!displayMenu()) { sf::sleep(sf::milliseconds(10)); }
     backgroundMusic.setBuffer(backgroundBuffer);
     backgroundMusic.play();
     while (window->isOpen())
@@ -774,8 +774,7 @@ void Game::gameLoop() {
         if (player->isDead())
         {
             do {
-                //if (CheckScore::checkScore(tool->getScore()) == true)
-                if (CheckScore::checkScore(999999))
+                if (CheckScore::checkScore(tool->getScore()) == true)
                     inputHighscore->work(*window, *inputHighscore, GameBackground, backgroundMusic, tool->getScore());
             } while (!endscreen->work(*window, *endscreen, GameBackground, backgroundMusic));
             // leave the game
@@ -785,7 +784,7 @@ void Game::gameLoop() {
             // draw menu again
             backgroundMusic.setBuffer(titleThemeBuffer);
             backgroundMusic.play();
-            while (!displayMenu()) { sf::sleep(sf::milliseconds(100)); }
+            while (!displayMenu()) { sf::sleep(sf::milliseconds(10)); }
             backgroundMusic.setBuffer(backgroundBuffer);
             backgroundMusic.play();
         }
