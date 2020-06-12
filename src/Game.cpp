@@ -21,10 +21,12 @@ using namespace PlanetDefenders;
 void Game::loadAllMusic()
 {
     // add exception handling here
+    if (!titleThemeBuffer.loadFromFile(AudioBasePath + "titleTheme.ogg"))
+        throw MusicNotLoaded("titleTheme.ogg");
+    else
+        backgroundMusic.setBuffer(titleThemeBuffer);
     if (!backgroundBuffer.loadFromFile(AudioBasePath + "game_music.ogg"))
         throw MusicNotLoaded("game_music.ogg");
-    else
-        backgroundMusic.setBuffer(backgroundBuffer);
     if (!laserSoundBuffer.loadFromFile(AudioBasePath + "laser.ogg"))
         throw MusicNotLoaded("laser.ogg");
     else
@@ -37,8 +39,10 @@ void Game::loadAllMusic()
 
     if (!enemyHurtSoundBuffer.loadFromFile(AudioBasePath + "powerup.ogg"))
         throw MusicNotLoaded("powerup.ogg");
-    else
+    else {
         powerupSound.setBuffer(enemyHurtSoundBuffer);
+        powerupSound.setVolume(40);
+    }
 }
 
 void Game::pauseGame()
@@ -194,14 +198,10 @@ void Game::collisionPlayerProjAndEnemy()
             //if (checkCollision(playerProjectileArray[i], enemyArr[j]))
             if (playerProjectileArray[i]->collide(*dynamic_cast<GameObject*>(enemyArr[j])))
             {
+                tool->addScore(3);
                 enemyHurtSound.play();
-                enemyArr[j]->takeDamage(playerProjectileArray[i]->getDamage());
-                if (enemyArr[j]->isDead())
-                {
-                    tool->addScore(1);
-                    deleteObjectFromVector(enemyArr, j);
-                }
                 deleteObjectFromVector(playerProjectileArray, i);
+                deleteObjectFromVector(enemyArr, j);
                 std::cout << "PROJECTILE COLIDED ENEMY" << std::endl;
                 break;
             }
@@ -217,6 +217,8 @@ void Game::collisionEnemyProjAndShield()
         //if (checkCollision(&enemyProjectileArray[i]->getSprite(), &shieldSprite))
         if (enemyProjectileArray[i]->collide(shieldSprite))
         {
+            //player->takeDamage(1);
+            //tool->updateHpBarSize(player->getHp());
             deleteObjectFromVector(enemyProjectileArray, i);
             break;
         }
@@ -227,6 +229,7 @@ void Game::collisionBossProjAndShield()
 {
     for (int i = 0; i < bossProjectileArray.size(); i++)
     {
+        //if (checkCollision(&bossProjectileArray[i]->getSprite(), &shieldSprite))
         if (bossProjectileArray[i]->collide(shieldSprite))
         {
             deleteObjectFromVector(bossProjectileArray, i);
@@ -263,6 +266,7 @@ void Game::collisionEnemyAndPlayer()
             break;
         }
     }
+
 }
 
 void Game::collisionPowerUpAndPlayer()
@@ -334,26 +338,22 @@ void Game::bossRandomShoot()
 }
 
 // return the first index of the newly added enemy in enemyArr
-int Game::generateDiagonalEnemy(int n, sf::Vector2f initialPos, sf::Vector2f direction, float attribute)
-{
+int Game::generateDiagonalEnemy(int n, sf::Vector2f initialPos, sf::Vector2f direction) {
     int startIndex = enemyArr.size();
-    Enemy* newEnemy;
     for (int i = 0; i < n; i++) {
         enemyArr.push_back(new Enemy(
             SPACE_TEXTURE,
             enemyRectArr[rand() % 2],
             sf::Vector2f(
                 initialPos.x + i * direction.x * 20.f,
-                initialPos.y + i * direction.y * 26.f),
-            attribute
+                initialPos.y + i * direction.y * 26.f)
         ));
     }
     return startIndex;
 }
 
 // return the first index of the newly added enemy in enemyArr
-int Game::generateSquqreEnemy(int row, int col, sf::Vector2f initialPos, sf::Vector2f direction, float attribute)
-{
+int Game::generateSquqreEnemy(int row, int col, sf::Vector2f initialPos, sf::Vector2f direction) {
     int startIndex = enemyArr.size();
     for (int i = 0; i < row; i++) {
         for (int j = 0; j < col; j++) {
@@ -362,19 +362,13 @@ int Game::generateSquqreEnemy(int row, int col, sf::Vector2f initialPos, sf::Vec
                 enemyRectArr[rand() % 2],
                 sf::Vector2f(
                     initialPos.x + i * 40.f,
-                    initialPos.y + j * 30.f),
-                attribute
+                    initialPos.y + j * 30.f)
             ));
         }
     }
     return startIndex;
 }
 
-/*
-    Generate enemy in different layout
-    each wave of enemy has a random attribute which determine their
-    size, speed, damage, projectile size
-*/
 void Game::generateEnemy() {
     int time = genEnemyClock.getElapsedTime().asSeconds();
     randomEnemy = 1 + rand() % 5;       // num of enemy
@@ -387,26 +381,27 @@ void Game::generateEnemy() {
     int startIndex = 0;
     if (time > 2)           // every 2 seconds
     {
-        // 0.6 < x < 2.1
-        float randAttribute = (rand() % 15) / 10.0f + 0.8f;
         if (tool->getTime().getElapsedTime().asSeconds() < 30)
-            startIndex = generateDiagonalEnemy(randomEnemy, initialPos, direction, randAttribute);
+            startIndex = generateDiagonalEnemy(randomEnemy, initialPos, direction);
         else {
             if (randNum % 2 == 0)
-                startIndex = generateDiagonalEnemy(randomEnemy, initialPos, direction, randAttribute);
+                startIndex = generateDiagonalEnemy(randomEnemy, initialPos, direction);
             else
-                startIndex = generateSquqreEnemy(abs(randX), abs(randY), initialPos, direction, randAttribute);
+                startIndex = generateSquqreEnemy(abs(randX), abs(randY), initialPos, direction);
         }
         genEnemyClock.restart();
         // set the enemy from first index to the last element
         for (int i = startIndex; i < enemyArr.size(); i++) {
             enemyArr[i]->setDirection(sf::Vector2f(1, 0));
+            enemyArr[i]->setSpeed(randNum);
         }
     }
 }
 
 Game::Game()
 {
+    shipNum = 3; //ADD SOMETHING IN MENU TO SELECT SHIP (0 to 3)
+
     menu = new Menu(WindowWidth, WindowHeight);
     options = new Options(WindowWidth, WindowHeight);
     endscreen = new Endscreen(WindowWidth, WindowHeight);
@@ -428,7 +423,7 @@ Game::Game()
         exit(-1);
     }
 
-    backgroundMusic.play();
+    backgroundMusic.setVolume(20.0f);
     backgroundMusic.setLoop(true);
 
     // base texture setup
@@ -452,10 +447,10 @@ Game::Game()
     tool = new ToolBar(sf::Vector2f(980, 0));
     assert(tool);           // Make sure tool is not null
 
-    player = new Player(SPACE_TEXTURE, SHIP_1_TEXTURE_RECT, sf::Vector2f(100, 100));
+    player = new Player(SPACE_TEXTURE, SHIP_TEXTURE_RECT[shipNum], sf::Vector2f(100, 100), shipNum);
     player->setMovingBoundary(sf::Vector2u(1076, 720));      // set moving bound so that it wont go over to ToolBar
     player->getSprite().scale(sf::Vector2f(1, 1) * 1.5f);
-    tool->updateHpBarSize(player->getHp());
+    tool->updateHpBarSize(player->getHp() / SHIP_MAX_HP[shipNum]); //send percentage of health
 
     // demo
     // build enemies array
@@ -481,19 +476,19 @@ void Game::handleKeyInput()
 {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
     {
-        player->move(sf::Vector2f(-0.5f, 0.0f));
+        player->move(sf::Vector2f(-SHIP_SPEED[shipNum], 0.0f));
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
     {
-        player->move(sf::Vector2f(0.5f, 0.0f));
+        player->move(sf::Vector2f(SHIP_SPEED[shipNum], 0.0f));
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
     {
-        player->move(sf::Vector2f(0.0f, -0.5f));
+        player->move(sf::Vector2f(0.0f, -SHIP_SPEED[shipNum]));
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
     {
-        player->move(sf::Vector2f(0.0f, 0.5f));
+        player->move(sf::Vector2f(0.0f, SHIP_SPEED[shipNum]));
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
     {
@@ -504,9 +499,10 @@ void Game::handleKeyInput()
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
     {
         Projectile* newProjectile = player->shoot();
-        if (newProjectile)
+        if (newProjectile) {
             playerProjectileArray.push_back(newProjectile);
-        laserSound.play();
+            laserSound.play();
+        }
     }
 }
 
@@ -528,13 +524,13 @@ void Game::handleBackdoorKeyInput(sf::Keyboard::Key code)
         if (BiggerProjTriggered)
         {
             player->setBackdoorProjScale(5.0f);
-            player->setProjDamage(5.0f);
+            player->setBackdoorProjDamage(5.0f);
         }
         else
         {
             // TODO Add to resetGame
             player->setBackdoorProjScale(1.0f);
-            player->setProjDamage(1.0f);
+            player->setBackdoorProjDamage(1.0f);
         }
     }
 
@@ -543,7 +539,7 @@ void Game::handleBackdoorKeyInput(sf::Keyboard::Key code)
 void Game::generatePowerUp()
 {
     int numberOfPowerUpTypes = 2;
-    if (genPowerUpClock.getElapsedTime().asSeconds() > 2)
+    if (genPowerUpClock.getElapsedTime().asSeconds() > 8)
     {
         PowerUpType randomPowerUpType = static_cast<PowerUpType>(rand() % numberOfPowerUpTypes);
         float randX = rand() % (1076 - 30);
@@ -562,7 +558,7 @@ void Game::generatePowerUp()
         }
         // set the direction and speed of the newly added powerup
         powerUpArr.back()->setDirection(sf::Vector2f(0, 1));
-        powerUpArr.back()->setSpeed(7);
+        powerUpArr.back()->setSpeed(3);
     }
 }
 
@@ -581,9 +577,13 @@ void Game::drawGameObjectArray(std::vector<T*>& arr)
     for (int i = 0; i < arr.size(); i++)
     {
         if (isOutOfBound(arr[i]) == false)
+        {
             window->draw(arr[i]->getSprite());
+        }
         else
+        {
             deleteObjectFromVector(arr, i);
+        }
     }
 }
 
@@ -633,9 +633,9 @@ void Game::updateGame()
     }
     if (InfinityHpTriggered)
     {
-        player->setHp(PlayerInitialHealth);
+        player->setHp(PlanetDefenders::SHIP_MAX_HP[shipNum]);
     }
-    tool->updateHpBarSize(player->getHp());
+    tool->updateHpBarSize(player->getHp() / PlanetDefenders::SHIP_MAX_HP[shipNum]);
 }
 
 void Game::drawGame() {
@@ -689,7 +689,7 @@ void Game::resetGame()
 {
     tool->minusScore(tool->getScore());
     tool->restartClock();
-    player->setHp(100);
+    player->setHp(PlanetDefenders::SHIP_MAX_HP[shipNum]);
     backgroundMusic.stop();
     backgroundMusic.play();
     for (int i = 0; i < playerProjectileArray.size(); i++)
@@ -710,10 +710,14 @@ void Game::resetGame()
 
 void Game::gameLoop() {
     srand(time(0));
+    backgroundMusic.setBuffer(titleThemeBuffer);
+    backgroundMusic.play();
     // main game loop
     sf::Event e;
     // display menu
     while (!displayMenu()) { sf::sleep(sf::milliseconds(100)); }
+    backgroundMusic.setBuffer(backgroundBuffer);
+    backgroundMusic.play();
     while (window->isOpen())
     {
         while (window->pollEvent(e))
@@ -755,12 +759,15 @@ void Game::gameLoop() {
                 if (CheckScore::checkScore(tool->getScore()) == true)
                     inputHighscore->work(*window, *inputHighscore, GameBackground, backgroundMusic, tool->getScore());
             } while (!endscreen->work(*window, *endscreen, GameBackground, backgroundMusic));
-            // leave the game
-            if (window->isOpen() == false) break;
+            if (window->isOpen() == false) break;       // leave the game
             // reset everything in the game
             resetGame();
             // draw menu again
+            backgroundMusic.setBuffer(titleThemeBuffer);
+            backgroundMusic.play();
             while (!displayMenu()) { sf::sleep(sf::milliseconds(100)); }
+            backgroundMusic.setBuffer(backgroundBuffer);
+            backgroundMusic.play();
         }
     }
 }

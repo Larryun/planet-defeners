@@ -13,6 +13,13 @@
 */
 namespace PlanetDefenders
 {
+    //ship info
+    const int SHIP_MAX_HP[4] = { 100, 50, 200, 80 };
+    const float SHIP_SPEED[4] = { 0.5, 0.8, 0.3, 0.65};
+    const sf::Time SHIP_ATTACK_SPEED[4] = { sf::milliseconds(150), sf::milliseconds(100), sf::milliseconds(200), sf::milliseconds(125) };
+    const sf::IntRect SHIP_TEXTURE_RECT[4] = { sf::IntRect(0, 0, 31, 30), sf::IntRect(33, 0, 27, 21), sf::IntRect(62, 0, 39, 25), sf::IntRect(103, 0, 29, 30) };
+    const sf::IntRect SHIP_LASER_RECT[4] = { sf::IntRect(0, 33, 5, 11), sf::IntRect(33, 33, 7, 14), sf::IntRect(62, 33, 11, 11), sf::IntRect(103, 33, 3, 12) };
+
     // For ToolBar
     const sf::IntRect HpBorderRect = sf::IntRect(228, 48, 41, 279);
     const sf::IntRect ScoreRect = sf::IntRect(208, 0, 96, 20);
@@ -32,7 +39,7 @@ namespace PlanetDefenders
     // Unused vvvvvvv
     const sf::IntRect CureRect = sf::IntRect(100, 47, 22, 20);
     const sf::IntRect ProtectRect = sf::IntRect(122, 47, 22, 20);
-    const sf::IntRect ShipRect = sf::IntRect(122, 47, 22, 20);
+    //const sf::IntRect ShipRect = sf::IntRect(122, 47, 22, 20);
     // ???
     const sf::IntRect DeleteShieldRect = sf::IntRect(500, 0, 48, 48);
 
@@ -66,13 +73,6 @@ namespace PlanetDefenders
     // Player
     const float PlayerInitialHealth = 100.0f;
     const float PlayerMaxSpeed = 50.0f;
-    const float PlayerProjectileDamage = 2.0f;
-    
-    // Enemy
-    const float EnemyMaxScale = 3.0f;
-    const float EnemyBaseDamage = 1.0f;
-    const sf::Time EnemyShootInterval = sf::milliseconds(2000);
-    const sf::Time EnemyShootEachProjInterval = sf::milliseconds(200);
 
     // Projectile
     const int MaxProjectileNum = 500;
@@ -85,6 +85,7 @@ namespace PlanetDefenders
     const sf::IntRect EnemyRectBoss = sf::IntRect(0, 76, 182, 235);
 
     const sf::IntRect PlayerProjectileRect = sf::IntRect(0, 32, 5, 11);
+    const sf::IntRect ProjectileMiniCircle = sf::IntRect(89, 48, 8, 8);
     const sf::IntRect ProjectileRedCircle = sf::IntRect(60, 48, 16, 16);
     const sf::IntRect ProjectileRedSharp = sf::IntRect(80, 48, 7, 29);
 

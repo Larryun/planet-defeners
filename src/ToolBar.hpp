@@ -10,7 +10,6 @@
 #define ToolBar_hpp
 #include <SFML/Graphics.hpp>
 #include <stdio.h>
-#include <set>
 #include "GameObject.hpp"
 #include "PlanetDefenders.h"
 #include "PowerUp.h"
@@ -24,8 +23,8 @@ class ToolBar
     const unsigned int BAR_HEIGHT = 720;
 
     sf::IntRect digitRects[10];
-    sf::Sprite scoreSprites[3];
-    sf::Sprite timeSprites[3];
+    sf::Sprite scoreSprites[8];
+    sf::Sprite timeSprites[8];
 
     sf::Sprite hpBorderSp;
     sf::Sprite scoreSp;
@@ -86,7 +85,7 @@ public:
     void addProtection(int num1);
     void addScore(unsigned int x) { scoreCounter += x; }
     void minusScore(int x) { scoreCounter -= x; }
-    void updateHpBarSize(int hp);
+    void updateHpBarSize(float hp);
     void setPowerUp(PowerUpType type, unsigned int duration);
     void update();
     void drawTo(sf::RenderWindow& window);
