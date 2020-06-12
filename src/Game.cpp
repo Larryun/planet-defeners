@@ -194,10 +194,14 @@ void Game::collisionPlayerProjAndEnemy()
             //if (checkCollision(playerProjectileArray[i], enemyArr[j]))
             if (playerProjectileArray[i]->collide(*dynamic_cast<GameObject*>(enemyArr[j])))
             {
-                tool->addScore(1);
                 enemyHurtSound.play();
+                enemyArr[j]->takeDamage(playerProjectileArray[i]->getDamage());
+                if (enemyArr[j]->isDead())
+                {
+                    tool->addScore(1);
+                    deleteObjectFromVector(enemyArr, j);
+                }
                 deleteObjectFromVector(playerProjectileArray, i);
-                deleteObjectFromVector(enemyArr, j);
                 std::cout << "PROJECTILE COLIDED ENEMY" << std::endl;
                 break;
             }
@@ -213,8 +217,6 @@ void Game::collisionEnemyProjAndShield()
         //if (checkCollision(&enemyProjectileArray[i]->getSprite(), &shieldSprite))
         if (enemyProjectileArray[i]->collide(shieldSprite))
         {
-            //player->takeDamage(1);
-            //tool->updateHpBarSize(player->getHp());
             deleteObjectFromVector(enemyProjectileArray, i);
             break;
         }
@@ -225,7 +227,6 @@ void Game::collisionBossProjAndShield()
 {
     for (int i = 0; i < bossProjectileArray.size(); i++)
     {
-        //if (checkCollision(&bossProjectileArray[i]->getSprite(), &shieldSprite))
         if (bossProjectileArray[i]->collide(shieldSprite))
         {
             deleteObjectFromVector(bossProjectileArray, i);
@@ -262,7 +263,6 @@ void Game::collisionEnemyAndPlayer()
             break;
         }
     }
-
 }
 
 void Game::collisionPowerUpAndPlayer()
@@ -334,22 +334,26 @@ void Game::bossRandomShoot()
 }
 
 // return the first index of the newly added enemy in enemyArr
-int Game::generateDiagonalEnemy(int n, sf::Vector2f initialPos, sf::Vector2f direction) {
+int Game::generateDiagonalEnemy(int n, sf::Vector2f initialPos, sf::Vector2f direction, float attribute)
+{
     int startIndex = enemyArr.size();
+    Enemy* newEnemy;
     for (int i = 0; i < n; i++) {
         enemyArr.push_back(new Enemy(
             SPACE_TEXTURE,
             enemyRectArr[rand() % 2],
             sf::Vector2f(
                 initialPos.x + i * direction.x * 20.f,
-                initialPos.y + i * direction.y * 26.f)
+                initialPos.y + i * direction.y * 26.f),
+            attribute
         ));
     }
     return startIndex;
 }
 
 // return the first index of the newly added enemy in enemyArr
-int Game::generateSquqreEnemy(int row, int col, sf::Vector2f initialPos, sf::Vector2f direction) {
+int Game::generateSquqreEnemy(int row, int col, sf::Vector2f initialPos, sf::Vector2f direction, float attribute)
+{
     int startIndex = enemyArr.size();
     for (int i = 0; i < row; i++) {
         for (int j = 0; j < col; j++) {
@@ -358,13 +362,19 @@ int Game::generateSquqreEnemy(int row, int col, sf::Vector2f initialPos, sf::Vec
                 enemyRectArr[rand() % 2],
                 sf::Vector2f(
                     initialPos.x + i * 40.f,
-                    initialPos.y + j * 30.f)
+                    initialPos.y + j * 30.f),
+                attribute
             ));
         }
     }
     return startIndex;
 }
 
+/*
+    Generate enemy in different layout
+    each wave of enemy has a random attribute which determine their
+    size, speed, damage, projectile size
+*/
 void Game::generateEnemy() {
     int time = genEnemyClock.getElapsedTime().asSeconds();
     randomEnemy = 1 + rand() % 5;       // num of enemy
@@ -377,19 +387,20 @@ void Game::generateEnemy() {
     int startIndex = 0;
     if (time > 2)           // every 2 seconds
     {
+        // 0.6 < x < 2.1
+        float randAttribute = (rand() % 15) / 10.0f + 0.8f;
         if (tool->getTime().getElapsedTime().asSeconds() < 30)
-            startIndex = generateDiagonalEnemy(randomEnemy, initialPos, direction);
+            startIndex = generateDiagonalEnemy(randomEnemy, initialPos, direction, randAttribute);
         else {
             if (randNum % 2 == 0)
-                startIndex = generateDiagonalEnemy(randomEnemy, initialPos, direction);
+                startIndex = generateDiagonalEnemy(randomEnemy, initialPos, direction, randAttribute);
             else
-                startIndex = generateSquqreEnemy(abs(randX), abs(randY), initialPos, direction);
+                startIndex = generateSquqreEnemy(abs(randX), abs(randY), initialPos, direction, randAttribute);
         }
         genEnemyClock.restart();
         // set the enemy from first index to the last element
         for (int i = startIndex; i < enemyArr.size(); i++) {
             enemyArr[i]->setDirection(sf::Vector2f(1, 0));
-            enemyArr[i]->setSpeed(randNum);
         }
     }
 }
@@ -418,7 +429,6 @@ Game::Game()
     }
 
     backgroundMusic.play();
-    backgroundMusic.setVolume(20.0f);
     backgroundMusic.setLoop(true);
 
     // base texture setup
@@ -518,13 +528,13 @@ void Game::handleBackdoorKeyInput(sf::Keyboard::Key code)
         if (BiggerProjTriggered)
         {
             player->setBackdoorProjScale(5.0f);
-            player->setBackdoorProjDamage(5.0f);
+            player->setProjDamage(5.0f);
         }
         else
         {
             // TODO Add to resetGame
             player->setBackdoorProjScale(1.0f);
-            player->setBackdoorProjDamage(1.0f);
+            player->setProjDamage(1.0f);
         }
     }
 
@@ -571,13 +581,9 @@ void Game::drawGameObjectArray(std::vector<T*>& arr)
     for (int i = 0; i < arr.size(); i++)
     {
         if (isOutOfBound(arr[i]) == false)
-        {
             window->draw(arr[i]->getSprite());
-        }
         else
-        {
             deleteObjectFromVector(arr, i);
-        }
     }
 }
 
@@ -749,7 +755,8 @@ void Game::gameLoop() {
                 if (CheckScore::checkScore(tool->getScore()) == true)
                     inputHighscore->work(*window, *inputHighscore, GameBackground, backgroundMusic, tool->getScore());
             } while (!endscreen->work(*window, *endscreen, GameBackground, backgroundMusic));
-            if (window->isOpen() == false) break;       // leave the game
+            // leave the game
+            if (window->isOpen() == false) break;
             // reset everything in the game
             resetGame();
             // draw menu again

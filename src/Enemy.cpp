@@ -9,29 +9,35 @@ using namespace PlanetDefenders;
 
 Enemy::~Enemy()
 {
-	std::cout << "Enemy removed" << std::endl;
-	delete objSprite;
+    std::cout << "Enemy removed" << std::endl;
+    delete objSprite;
 }
 
 
 Projectile* Enemy::shoot()
 {
-    // for demonstration
+    Projectile* newProj;
     double shootProbability = 0.2;
-    double betweenZeroAndOne = ((double)rand() / RAND_MAX) ;
+    double betweenZeroAndOne = ((double)rand() / RAND_MAX);
     sf::Time elapse_time = shootClock.getElapsedTime();
-    if (elapse_time >= EnemyShootTimeDelta + sf::milliseconds((betweenZeroAndOne)*50))
+    if (elapse_time >= EnemyShootTimeDelta + sf::milliseconds((betweenZeroAndOne) * 50))
     {
         shootClock.restart();
-        if(betweenZeroAndOne < shootProbability)        // shoot
-            return new Projectile(
+        if (betweenZeroAndOne < shootProbability)        // shoot
+        {
+            newProj = new Projectile(
                 *objSprite->getTexture(),
                 PlayerProjectileRect,
                 // position the projictile to the center of the object
-                getSprite().getPosition() + sf::Vector2f(getBound().width / 2.0f, getBound().height/2.0f),
+                getSprite().getPosition() + sf::Vector2f(getBound().width / 2.0f, getBound().height / 2.0f),
                 sf::Vector2f(0, 1.0f),
-                5
+                projectileSpeed,
+                projectileDamage
             );
+            newProj->getSprite().scale(projectileScale, projectileScale);
+            newProj->roateToDirection();
+            return newProj;
+        }
     }
     return nullptr;
 }

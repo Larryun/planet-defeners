@@ -57,7 +57,7 @@ Projectile* Player::shoot()
             // x-axis offset by: 2.0f
             getSprite().getPosition() + sf::Vector2f((getBound().width / 2.0f) - 2.0f, 0.0f)
         );
-        newProjectile->setDamage(backdoorProjDamage);
+        newProjectile->setDamage(projDamage);
         newProjectile->getSprite().setScale(backdoorProjScale, backdoorProjScale);
         return newProjectile;
     }

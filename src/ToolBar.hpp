@@ -10,6 +10,7 @@
 #define ToolBar_hpp
 #include <SFML/Graphics.hpp>
 #include <stdio.h>
+#include <set>
 #include "GameObject.hpp"
 #include "PlanetDefenders.h"
 #include "PowerUp.h"
