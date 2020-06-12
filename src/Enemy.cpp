@@ -29,7 +29,7 @@ Projectile* Enemy::shoot()
                 *objSprite->getTexture(),
                 ProjectileMiniCircle,
                 // position the projictile to the center of the object
-                getSprite().getPosition() + sf::Vector2f(getBound().width / 2.0f, getBound().height / 2.0f),
+                getSprite().getPosition() + sf::Vector2f(getBound().width / 2.0f, getBound().height),
                 sf::Vector2f(0, 1.0f),
                 projectileSpeed,
                 projectileDamage

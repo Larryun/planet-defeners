@@ -70,7 +70,7 @@ class Game
     sf::Clock genEnemyClock;
     
     // States
-    int shipNum;
+    enum ShipType shipType;
     int numEnemy;
     int randomEnemy;
     int bossHp;
