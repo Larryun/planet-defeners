@@ -13,6 +13,7 @@
 class Player : public GameObject
 {
 
+    int shipNum;
     float hp;
     float backdoorProjScale = 1.0f;
     float projDamage = PlanetDefenders::PlayerProjectileDamage;
@@ -23,24 +24,22 @@ class Player : public GameObject
     void applyPowerUp(PowerUp& powerUp);
 
 public:
-    Player(const sf::Texture& texture, const sf::IntRect& rect, const sf::Vector2f& pos) :
+    Player(const sf::Texture& texture, const sf::IntRect& rect, const sf::Vector2f& pos, int num) :
         GameObject(
             texture,
             rect,
             pos,
             sf::Vector2f(0, 0),
             7.0f		// Initial speed
-        ), hp(PlanetDefenders::PlayerInitialHealth)
-    {
-        hp = 100;
-    }
+        ), hp(PlanetDefenders::SHIP_MAX_HP[num]), shipNum(num)
+    { }
     ~Player();
 
     float getHp() { return hp; }
     void setHp(float _hp) { hp = _hp; }
 
-    void heal(float amt) { hp = std::min(std::max(static_cast<int>(hp + amt), 0), 100); }
-    void takeDamage(float amt) { hp = std::min(std::max(static_cast<int>(hp - amt), 0), 100); }
+    void heal(float amt) { hp = std::min(std::max(static_cast<int>(hp + amt), 0), PlanetDefenders::SHIP_MAX_HP[shipNum]); }
+    void takeDamage(float amt) { hp = std::min(std::max(static_cast<int>(hp - amt), 0), PlanetDefenders::SHIP_MAX_HP[shipNum]); }
     bool isDead() { return hp <= 0; }
     bool isAlive() { return hp > 0; }
 

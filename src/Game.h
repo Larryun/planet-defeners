@@ -28,6 +28,7 @@ class Game
 
     //background music
     sf::SoundBuffer backgroundBuffer;
+    sf::SoundBuffer titleThemeBuffer;
     sf::Sound backgroundMusic;
     sf::SoundBuffer laserSoundBuffer;
     sf::Sound laserSound;
@@ -41,20 +42,6 @@ class Game
     // background texture
     sf::Texture BackgroundTexture;
     sf::Texture ToolBarBackgroundTexture;
-    //for ships
-    // ship1
-    sf::IntRect SHIP_1_TEXTURE_RECT = sf::IntRect(0, 0, 30, 29);
-    sf::IntRect SHIP_1_LASER_RECT = sf::IntRect(0, 33, 5, 11);
-    // ship2
-    sf::IntRect SHIP_2_TEXTURE_RECT = sf::IntRect(33, 0, 27, 21);
-    sf::IntRect SHIP_2_LASER_RECT = sf::IntRect(33, 33, 7, 14);
-    // ship3
-    sf::IntRect SHIP_3_TEXTURE_RECT = sf::IntRect(62, 0, 39, 25);
-    sf::IntRect SHIP_3_LASER_RECT = sf::IntRect(62, 33, 11, 11);
-    // ship4
-    sf::IntRect SHIP_4_TEXTURE_RECT = sf::IntRect(103, 0, 29, 30);
-    sf::IntRect SHIP_4_LASER_RECT = sf::IntRect(103, 33, 3, 12);
-
 
     // shield
     sf::IntRect SHIELD_RECT = sf::IntRect(132, 0, 47, 46);
@@ -83,6 +70,7 @@ class Game
     sf::Clock genEnemyClock;
     
     // States
+    enum ShipType shipType;
     int numEnemy;
     int randomEnemy;
     int bossHp;

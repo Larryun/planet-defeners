@@ -21,14 +21,18 @@ using namespace PlanetDefenders;
 void Game::loadAllMusic()
 {
     // add exception handling here
+    if (!titleThemeBuffer.loadFromFile(AudioBasePath + "titleTheme.ogg"))
+        throw MusicNotLoaded("titleTheme.ogg");
+    else
+        backgroundMusic.setBuffer(titleThemeBuffer);
     if (!backgroundBuffer.loadFromFile(AudioBasePath + "game_music.ogg"))
         throw MusicNotLoaded("game_music.ogg");
-    else
-        backgroundMusic.setBuffer(backgroundBuffer);
     if (!laserSoundBuffer.loadFromFile(AudioBasePath + "laser.ogg"))
         throw MusicNotLoaded("laser.ogg");
-    else
+    else {
         laserSound.setBuffer(laserSoundBuffer);
+        laserSound.setVolume(120);
+    }
 
     if (!powerupSoundBuffer.loadFromFile(AudioBasePath + "enemy_hurt.ogg"))
         throw MusicNotLoaded("enemy_hurt.ogg");
@@ -37,8 +41,10 @@ void Game::loadAllMusic()
 
     if (!enemyHurtSoundBuffer.loadFromFile(AudioBasePath + "powerup.ogg"))
         throw MusicNotLoaded("powerup.ogg");
-    else
+    else {
         powerupSound.setBuffer(enemyHurtSoundBuffer);
+        powerupSound.setVolume(40);
+    }
 }
 
 void Game::pauseGame()
@@ -194,6 +200,7 @@ void Game::collisionPlayerProjAndEnemy()
             //if (checkCollision(playerProjectileArray[i], enemyArr[j]))
             if (playerProjectileArray[i]->collide(*dynamic_cast<GameObject*>(enemyArr[j])))
             {
+                tool->addScore(3);
                 enemyHurtSound.play();
                 enemyArr[j]->takeDamage(playerProjectileArray[i]->getDamage());
                 if (enemyArr[j]->isDead())
@@ -389,6 +396,7 @@ void Game::generateEnemy() {
     {
         // 0.6 < x < 2.1
         float randAttribute = (rand() % 15) / 10.0f + 0.8f;
+        // Issues here, it lags when timer hit around 30s
         if (tool->getTime().getElapsedTime().asSeconds() < 30)
             startIndex = generateDiagonalEnemy(randomEnemy, initialPos, direction, randAttribute);
         else {
@@ -407,6 +415,7 @@ void Game::generateEnemy() {
 
 Game::Game()
 {
+    shipType = RedShip; //ADD SOMETHING IN MENU TO SELECT SHIP (0 to 3)
     menu = new Menu(WindowWidth, WindowHeight);
     options = new Options(WindowWidth, WindowHeight);
     endscreen = new Endscreen(WindowWidth, WindowHeight);
@@ -452,10 +461,10 @@ Game::Game()
     tool = new ToolBar(sf::Vector2f(980, 0));
     assert(tool);           // Make sure tool is not null
 
-    player = new Player(SPACE_TEXTURE, SHIP_1_TEXTURE_RECT, sf::Vector2f(100, 100));
+    player = new Player(SPACE_TEXTURE, SHIP_TEXTURE_RECT[shipType], sf::Vector2f(100, 100), shipType);
     player->setMovingBoundary(sf::Vector2u(1076, 720));      // set moving bound so that it wont go over to ToolBar
     player->getSprite().scale(sf::Vector2f(1, 1) * 1.5f);
-    tool->updateHpBarSize(player->getHp());
+    tool->updateHpBarSize(player->getHp() / SHIP_MAX_HP[shipType]); //send percentage of health
 
     // demo
     // build enemies array
@@ -469,7 +478,7 @@ Game::Game()
     boss->setBossHpBar(bossHp, sf::Color::Red, sf::Vector2f(33.f, (float)bossHp * 7.2f), sf::Vector2f(0, 720.f));
     shieldSprite = sf::Sprite(SPACE_TEXTURE);
     shieldSprite.setTextureRect(sf::IntRect(134, 0, 45, 45));
-    shieldSprite.setScale(1.4, 1.4);
+    shieldSprite.setScale(1.4f, 1.4f);
 
     bossSprite = sf::Sprite(ToolBarBackgroundTexture, sf::IntRect(0, 720, 204, 64));
     bossSprite.setPosition(sf::Vector2f(1076.f, 581.0f));
@@ -481,32 +490,33 @@ void Game::handleKeyInput()
 {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
     {
-        player->move(sf::Vector2f(-0.5f, 0.0f));
+        player->move(sf::Vector2f(-SHIP_SPEED[shipType], 0.0f));
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
     {
-        player->move(sf::Vector2f(0.5f, 0.0f));
+        player->move(sf::Vector2f(SHIP_SPEED[shipType], 0.0f));
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
     {
-        player->move(sf::Vector2f(0.0f, -0.5f));
+        player->move(sf::Vector2f(0.0f, -SHIP_SPEED[shipType]));
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
     {
-        player->move(sf::Vector2f(0.0f, 0.5f));
+        player->move(sf::Vector2f(0.0f, SHIP_SPEED[shipType]));
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
     {
         // demo
         // press R the accerlerate
-        player->accelerate(1.1);
+        player->accelerate(1.1f);
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
     {
         Projectile* newProjectile = player->shoot();
-        if (newProjectile)
+        if (newProjectile) {
             playerProjectileArray.push_back(newProjectile);
-        laserSound.play();
+            laserSound.play();
+        }
     }
 }
 
@@ -543,7 +553,7 @@ void Game::handleBackdoorKeyInput(sf::Keyboard::Key code)
 void Game::generatePowerUp()
 {
     int numberOfPowerUpTypes = 2;
-    if (genPowerUpClock.getElapsedTime().asSeconds() > 2)
+    if (genPowerUpClock.getElapsedTime().asSeconds() > 8)
     {
         PowerUpType randomPowerUpType = static_cast<PowerUpType>(rand() % numberOfPowerUpTypes);
         float randX = rand() % (1076 - 30);
@@ -562,7 +572,7 @@ void Game::generatePowerUp()
         }
         // set the direction and speed of the newly added powerup
         powerUpArr.back()->setDirection(sf::Vector2f(0, 1));
-        powerUpArr.back()->setSpeed(7);
+        powerUpArr.back()->setSpeed(3);
     }
 }
 
@@ -633,9 +643,9 @@ void Game::updateGame()
     }
     if (InfinityHpTriggered)
     {
-        player->setHp(PlayerInitialHealth);
+        player->setHp(PlanetDefenders::SHIP_MAX_HP[shipType]);
     }
-    tool->updateHpBarSize(player->getHp());
+    tool->updateHpBarSize(player->getHp() / PlanetDefenders::SHIP_MAX_HP[shipType]);
 }
 
 void Game::drawGame() {
@@ -689,7 +699,7 @@ void Game::resetGame()
 {
     tool->minusScore(tool->getScore());
     tool->restartClock();
-    player->setHp(100);
+    player->setHp(PlanetDefenders::SHIP_MAX_HP[shipType]);
     backgroundMusic.stop();
     backgroundMusic.play();
     for (int i = 0; i < playerProjectileArray.size(); i++)
@@ -709,11 +719,16 @@ void Game::resetGame()
 }
 
 void Game::gameLoop() {
-    srand(time(0));
+    srand(static_cast<unsigned>(time(0)));
+    backgroundMusic.setBuffer(titleThemeBuffer);
+    backgroundMusic.setVolume(69);
+    backgroundMusic.play();
     // main game loop
     sf::Event e;
     // display menu
     while (!displayMenu()) { sf::sleep(sf::milliseconds(100)); }
+    backgroundMusic.setBuffer(backgroundBuffer);
+    backgroundMusic.play();
     while (window->isOpen())
     {
         while (window->pollEvent(e))
@@ -733,6 +748,13 @@ void Game::gameLoop() {
                     BackdoorTriggered = !BackdoorTriggered;
                 if (BackdoorTriggered)
                     handleBackdoorKeyInput(e.key.code);
+                else
+                {
+                    InfinityHpTriggered = false;
+                    BiggerProjTriggered = false;
+                    player->setBackdoorProjScale(1.0f);
+                    player->setProjDamage(PlayerProjectileDamage);
+                }
                 break;
             }
         }
@@ -760,7 +782,11 @@ void Game::gameLoop() {
             // reset everything in the game
             resetGame();
             // draw menu again
+            backgroundMusic.setBuffer(titleThemeBuffer);
+            backgroundMusic.play();
             while (!displayMenu()) { sf::sleep(sf::milliseconds(100)); }
+            backgroundMusic.setBuffer(backgroundBuffer);
+            backgroundMusic.play();
         }
     }
 }
