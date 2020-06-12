@@ -50,7 +50,7 @@ bool Endscreen::work(sf::RenderWindow& window, Endscreen& endscreen, sf::Sprite&
 	while (inEndscreen) {
         // prevent drawing to much CPU time  
         //*****remove this if you have non-static things in this view****
-        sf::sleep(sf::milliseconds(100));
+        sf::sleep(sf::milliseconds(10));
 		while (window.pollEvent(event)) {
 			switch (event.type) {
             // press any key to retry?? 

@@ -768,13 +768,14 @@ void Game::gameLoop() {
         else
         {
             // prevent drawing TOO MUCH CPU power while pause
-            sf::sleep(sf::milliseconds(100));
+            sf::sleep(sf::milliseconds(10));
         }
         // show high score if checkScore is true
         if (player->isDead())
         {
             do {
-                if (CheckScore::checkScore(tool->getScore()) == true)
+                //if (CheckScore::checkScore(tool->getScore()) == true)
+                if (CheckScore::checkScore(999999))
                     inputHighscore->work(*window, *inputHighscore, GameBackground, backgroundMusic, tool->getScore());
             } while (!endscreen->work(*window, *endscreen, GameBackground, backgroundMusic));
             // leave the game
