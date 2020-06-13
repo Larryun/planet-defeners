@@ -1,6 +1,7 @@
 #include <cassert>
-
 #include "PowerUp.h"
+
+using namespace PlanetDefenders;
 
 void PowerUp::restartClock()
 {

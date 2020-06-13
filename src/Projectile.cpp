@@ -1,8 +1,9 @@
-#include "Projectile.h"
 #include <iostream>
+#include "Projectile.h"
+
+using namespace PlanetDefenders;
 
 int Projectile::PROJECTILE_COUNTER = 0;
-
 
 Projectile::~Projectile()
 {

@@ -1,5 +1,7 @@
 #include "Menu.h"
 
+using namespace PlanetDefenders;
+
 Menu::Menu(float width, float height)
 {
 	if (!font.loadFromFile("Samson_Bold_Oblique.ttf")) {
