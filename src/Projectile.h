@@ -41,6 +41,7 @@ namespace PlanetDefenders
             return output;
         }
 
+        bool isOutOfBound() override;
     };
 }
 #endif

@@ -22,7 +22,7 @@ class Game
 
     // Sprites
     sf::Sprite shieldSprite;
-    sf::Sprite bossSprite;
+    sf::Sprite bossSignSprite;
     sf::Sprite GameBackground;
     sf::Sprite ToolBarBackground;
 
@@ -68,23 +68,25 @@ class Game
     // Clocks
     sf::Clock genPowerUpClock;
     sf::Clock genEnemyClock;
+    sf::Clock genBossClock;
+    sf::Clock gameClock;
     
     // States
     enum ShipType shipType;
     int numEnemy;
-    int randomEnemy;
-    int bossHp;
-    bool BossShown = false;
+    int enemyNum;
+    bool BossShown = true;
     bool BackdoorTriggered = false;
     bool InfinityHpTriggered = false;
     bool BiggerProjTriggered = false;
 
-    sf::Vector2f initialPos; //where should the layout start
-    sf::Vector2f direction; //they all move in the same direction
     
 public:
     Game();
     ~Game();
+    // restart all clock
+    void restartClocks();
+    void resetBoss();
     void resetGame();
     void gameLoop();
     void handleKeyInput();

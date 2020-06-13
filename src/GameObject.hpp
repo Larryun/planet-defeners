@@ -15,6 +15,25 @@ namespace PlanetDefenders
     {
         // Default values
         sf::Vector2f velocity;
+        // the bound that decide where the object get destroyed
+        /*
+                       destroy bound
+                    vvvvvvvvvvvvvvvv
+            *************************************
+            *                                   *
+            *   *****************************   *
+            *   *     ^^^^^^^^^^^^^         *   *
+            *   *      moving bound         *   *
+            *   *                           *   *
+            *   *                           *   *
+            *   *                           *   *
+            *   *                           *   *
+            *   *                           *   *
+            *   *                           *   *
+            *   *****************************   *
+            *                                   *
+            *************************************
+        */
 
     protected:
 
@@ -75,6 +94,8 @@ namespace PlanetDefenders
         void moveToward(GameObject& obj);
         bool collide(GameObject& obj);
         bool collide(sf::Sprite& obj);
+        bool _isOutOfBound(int margin);
+        virtual bool isOutOfBound();
         //void drawTo(sf::RenderWindow &window){ window.draw(*objSprite); }
     };
 }
