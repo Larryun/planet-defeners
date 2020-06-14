@@ -1,17 +1,14 @@
+#include <iostream>
 #include "Boss.hpp"
 #include "Projectile.h"
 #include "PlanetDefenders.h"
-#include <iostream>
 using namespace PlanetDefenders;
-
-
 
 Boss::~Boss()
 {
     std::cout << "Boss removed" << std::endl;
     delete objSprite;
 }
-
 
 std::vector<Projectile*>* Boss::shoot(int num)
 {

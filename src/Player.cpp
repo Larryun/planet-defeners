@@ -2,6 +2,8 @@
 #include "Player.h"
 #include "HealthRestore.h"
 
+using namespace PlanetDefenders;
+
 Player::~Player()
 {
     std::cout << "Player removed" << std::endl;

@@ -1,7 +1,7 @@
 #ifndef PLANET_DEFENDERS_H
 #define PLANET_DEFENDERS_H
 #include "Collision.h"
-#include "GameObject.hpp"
+//#include "GameObject.hpp"
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -13,7 +13,9 @@
 */
 namespace PlanetDefenders
 {
-    enum ShipType { BlueShip, RedShip, GreenShip, BeeShip };
+    const enum ShipType { BlueShip, RedShip, GreenShip, BeeShip };
+    const enum PowerUpType { HEAL, SHIELD };
+    const enum ProjectileType { RedCircle, RedSharp, BlueRegular };
     //ship info
     const int SHIP_MAX_HP[4] = { 100, 50, 200, 80 };
     const float SHIP_SPEED[4] = { 0.5, 0.8, 0.3, 0.65 };
@@ -41,18 +43,14 @@ namespace PlanetDefenders
     // Unused vvvvvvv
     const sf::IntRect CureRect = sf::IntRect(100, 47, 22, 20);
     const sf::IntRect ProtectRect = sf::IntRect(122, 47, 22, 20);
-    //const sf::IntRect ShipRect = sf::IntRect(122, 47, 22, 20);
-    // ???
     const sf::IntRect DeleteShieldRect = sf::IntRect(500, 0, 48, 48);
-
-    // rect for addProtect sprite ??
-    const sf::IntRect ShieldRect = sf::IntRect(132, 0, 48, 48);
     // Unused ^^^^^^^
 
+    // rect for addProtect sprite ??
+    const sf::IntRect ShieldRect = sf::IntRect(134, 0, 45, 45);
 
     // hp bar color
     const sf::Color HpBarColor(159, 245, 78);
-
 
     // Game Title
     const std::string GameTitle = "Space Invaders?";
@@ -63,7 +61,6 @@ namespace PlanetDefenders
     const unsigned int FRAME_RATE_LIMIT = 65;
 
     // PowerUp constants
-    const enum PowerUpType { HEAL, SHIELD };
 
     // health restore
     const float HealthRestoreAmount = 10;
@@ -75,18 +72,18 @@ namespace PlanetDefenders
     // Player
     const float PlayerInitialHealth = 100.0f;
     const float PlayerMaxSpeed = 50.0f;
-    const float PlayerProjectileDamage = 2.0f;
+    const float PlayerProjectileDamage = 3.0f;
 
     // Enemy
     const float EnemyMaxScale = 3.0f;
     const float EnemyBaseDamage = 1.0f;
     const sf::Time EnemyShootInterval = sf::milliseconds(2000);
-    const sf::Time EnemyShootEachProjInterval = sf::milliseconds(200);
+    const sf::Time EnemyShootEachProjInterval = sf::milliseconds(50);
 
     // Projectile
     const int MaxProjectileNum = 500;
     const sf::Time PlayerShootTimeDelta = sf::milliseconds(100);
-    const sf::Time EnemyShootTimeDelta = sf::milliseconds(200);
+    const sf::Time shootInterval = sf::milliseconds(200);
     const sf::Time BossShootTimeDelta = sf::milliseconds(300);
 
     const sf::IntRect EnemyRectEye = sf::IntRect(0, 48, 23, 28);
@@ -106,11 +103,9 @@ namespace PlanetDefenders
     const float ProjectileRedCircleDamage = 8;
     const float ProjectileRedSharpDamage = 5;
 
-    enum ProjectileType { RedCircle, RedSharp, BlueRegular };
     const unsigned int NumberOfProjectileType = 2;
 
     const float BossProjectileDamage = 5;
-
 
     // Game Window size
     const unsigned int WindowWidth = 1280;
@@ -136,32 +131,18 @@ namespace PlanetDefenders
         v.pop_back();
     }
 
-   // check if obj is out of a certain bound
-   // can be used to check if obj should be deleted
-    inline bool isOutOfBound(GameObject* obj1)
-    {
-        return
-            (obj1->getSprite().getPosition().y < -100 ||
-                obj1->getSprite().getPosition().x < -100 ||
-                obj1->getSprite().getPosition().y > WindowHeight + 10 ||
-                obj1->getSprite().getPosition().x > WindowWidth + 100);
-    }
-
+    // check if obj is out of a certain bound
+    // can be used to check if obj should be deleted
+    bool isOutOfBound(GameObject* obj1);
     // calculate the unit vector
-    inline sf::Vector2f normalize(const sf::Vector2f& v)
-    {
-        float length = sqrt((v.x * v.x) + (v.y * v.y));
-        if (length != 0)
-            return sf::Vector2f(v.x / length, v.y / length);
-        else
-            return v;
-    }
-
+    sf::Vector2f normalize(const sf::Vector2f& v);
     // limit a vector
-    inline sf::Vector2f truncate(const sf::Vector2f& v, const float MAXIMUM)
-    {
-        return sf::Vector2f(std::min(v.x, MAXIMUM), std::min(v.y, MAXIMUM));
-    }
+    sf::Vector2f truncate(const sf::Vector2f& v, const float MAXIMUM);
+
+    void setSpriteOriginCenter(sf::Sprite& spr);
+    // draw outline of the sprite
+    // for debug purpose
+    void drawOutline(sf::Sprite& spr, sf::RenderWindow& window);
 
 }
 #endif

@@ -20,7 +20,7 @@ Projectile* Enemy::shoot()
     double shootProbability = 0.2;
     double betweenZeroAndOne = ((double)rand() / RAND_MAX);
     sf::Time elapse_time = shootClock.getElapsedTime();
-    if (elapse_time >= EnemyShootTimeDelta + sf::milliseconds((betweenZeroAndOne) * 50))
+    if (elapse_time >= shootInterval + sf::milliseconds((betweenZeroAndOne) * 50))
     {
         shootClock.restart();
         if (betweenZeroAndOne < shootProbability)        // shoot

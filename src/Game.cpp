@@ -301,6 +301,7 @@ void Game::enemyRandomShoot()
         Projectile* newProjectile = dynamic_cast<Enemy*>(enemyArr[i])->shoot();
         if (newProjectile)
         {
+            std::cout << *newProjectile << std::endl;
             newProjectile->roateToDirection();
             enemyProjectileArray.push_back(newProjectile);
         }
@@ -415,7 +416,7 @@ void Game::generateEnemy() {
 
 Game::Game()
 {
-    shipType = RedShip; //ADD SOMETHING IN MENU TO SELECT SHIP (0 to 3)
+    shipType = BlueShip; //ADD SOMETHING IN MENU TO SELECT SHIP (0 to 3)
     menu = new Menu(WindowWidth, WindowHeight);
     options = new Options(WindowWidth, WindowHeight);
     endscreen = new Endscreen(WindowWidth, WindowHeight);
@@ -427,15 +428,8 @@ Game::Game()
     window->setFramerateLimit(FRAME_RATE_LIMIT);
 
     // sounds setup
-    try
-    {
-        loadAllMusic();
-    }
-    catch (const MusicNotLoaded & exception)
-    {
-
-        exit(-1);
-    }
+    try { loadAllMusic(); }
+    catch (const MusicNotLoaded & exception) { exit(-1); }
 
     backgroundMusic.play();
     backgroundMusic.setLoop(true);
@@ -477,7 +471,8 @@ Game::Game()
     //bossHp = -100;
     boss->setBossHpBar(bossHp, sf::Color::Red, sf::Vector2f(33.f, (float)bossHp * 7.2f), sf::Vector2f(0, 720.f));
     shieldSprite = sf::Sprite(SPACE_TEXTURE);
-    shieldSprite.setTextureRect(sf::IntRect(134, 0, 45, 45));
+    shieldSprite.setTextureRect(ShieldRect);
+    setSpriteOriginCenter(shieldSprite);
     shieldSprite.setScale(1.4f, 1.4f);
 
     bossSprite = sf::Sprite(ToolBarBackgroundTexture, sf::IntRect(0, 720, 204, 64));
@@ -661,10 +656,8 @@ void Game::drawGame() {
     if (player->hasPowerUp(SHIELD))
     {
         shieldSprite.setPosition(
-            player->getSprite().getPosition() +
-            sf::Vector2f(
-                -9, -7         // offset
-            )
+            player->getPosition() + 
+            sf::Vector2f(player->getBound().width/2, player->getBound().height/2)
         );
         window->draw(shieldSprite);
     }
@@ -683,16 +676,16 @@ Game::~Game() {
     delete window;
     delete player;
     delete tool;
+    delete boss;
+    delete options;
+    delete endscreen;
+    delete inputHighscore;
     playerProjectileArray.clear();
     enemyProjectileArray.clear();
     enemyArr.clear();
     playerProjectileArray.clear();
     powerUpArr.clear();
     bossProjectileArray.clear();
-    delete boss;
-    delete options;
-    delete endscreen;
-    delete inputHighscore;
 }
 
 void Game::resetGame()
