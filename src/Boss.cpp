@@ -66,5 +66,5 @@ void Boss::setBossHpBar(int hp, sf::Color color, sf::Vector2f size, sf::Vector2f
 void Boss::drawTo(sf::RenderWindow& window) {
 
     window.draw(bossHpBar);
-
+    window.draw(getSprite());
 }

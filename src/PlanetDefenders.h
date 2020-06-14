@@ -16,6 +16,16 @@ namespace PlanetDefenders
     const enum ShipType { BlueShip, RedShip, GreenShip, BeeShip };
     const enum PowerUpType { HEAL, SHIELD };
     const enum ProjectileType { RedCircle, RedSharp, BlueRegular };
+    const enum Side { Left, Right, Top, Bottom };
+
+    // Destory Margin
+    const int BaseDestroyBoundMargin = 500;
+    const int ProjectileDestroyBoundMargin = 50;
+
+    // Score
+    const unsigned int BossScore = 100;
+    const unsigned int RegularEnemyScore = 1;
+  
     //ship info
     const int SHIP_MAX_HP[4] = { 100, 50, 200, 80 };
     const float SHIP_SPEED[4] = { 0.5, 0.8, 0.3, 0.65 };
@@ -73,6 +83,7 @@ namespace PlanetDefenders
     const float PlayerInitialHealth = 100.0f;
     const float PlayerMaxSpeed = 50.0f;
     const float PlayerProjectileDamage = 3.0f;
+    const sf::Vector2u PlayerMovingBound = sf::Vector2u(1076, 720);
 
     // Enemy
     const float EnemyMaxScale = 3.0f;
@@ -133,7 +144,7 @@ namespace PlanetDefenders
 
     // check if obj is out of a certain bound
     // can be used to check if obj should be deleted
-    bool isOutOfBound(GameObject* obj1);
+    //bool isOutOfBound(GameObject* obj1);
     // calculate the unit vector
     sf::Vector2f normalize(const sf::Vector2f& v);
     // limit a vector

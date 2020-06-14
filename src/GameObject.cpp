@@ -39,7 +39,7 @@ const sf::Vector2f GameObject::getVelocity() const { return speed * direction; }
 
 void GameObject::moveToward(GameObject& obj)
 {
-    const static float SteeringCoefficient = 30.0f;
+    const static float SteeringCoefficient = 40.0f;
     const static sf::Vector2f offset = sf::Vector2f(obj.getBound().width / 2, obj.getBound().height / 2);
     setDirection(
         normalize(getDirection() + ((normalize(obj.getPosition() + offset - getPosition()) - getDirection()) / SteeringCoefficient))
@@ -63,3 +63,15 @@ void GameObject::draw(sf::RenderTarget& target, sf::RenderStates states) const
     target.draw(*objSprite, states);
 }
 
+bool GameObject::_isOutOfBound(int margin)
+{
+    return (getSprite().getPosition().y < -margin ||
+            getSprite().getPosition().x < -margin ||
+            getSprite().getPosition().y > WindowHeight + margin ||
+            getSprite().getPosition().x > WindowWidth + margin);
+}
+
+bool GameObject::isOutOfBound()
+{
+    return _isOutOfBound(BaseDestroyBoundMargin);
+}

@@ -163,9 +163,9 @@ void Game::collisionPlayerProjAndBoss()
         //if (checkCollision(playerProjectileArray[i], boss))
         if (playerProjectileArray[i]->collide(*dynamic_cast<GameObject*>(boss)))
         {
-            tool->addScore(1);
             enemyHurtSound.play();
-            bossHp--;
+            tool->addScore(1);
+            boss->takeDamage(playerProjectileArray[i]->getDamage());
             std::cout << "PROJECTILE COLIDED BOSS" << std::endl;
             deleteObjectFromVector(playerProjectileArray, i);
             break;
@@ -200,12 +200,11 @@ void Game::collisionPlayerProjAndEnemy()
             //if (checkCollision(playerProjectileArray[i], enemyArr[j]))
             if (playerProjectileArray[i]->collide(*dynamic_cast<GameObject*>(enemyArr[j])))
             {
-                tool->addScore(3);
                 enemyHurtSound.play();
                 enemyArr[j]->takeDamage(playerProjectileArray[i]->getDamage());
                 if (enemyArr[j]->isDead())
                 {
-                    tool->addScore(1);
+                    tool->addScore(roundf(pow(enemyArr[j]->getAttribute(), 2) * RegularEnemyScore));
                     deleteObjectFromVector(enemyArr, j);
                 }
                 deleteObjectFromVector(playerProjectileArray, i);
@@ -306,7 +305,6 @@ void Game::enemyRandomShoot()
             enemyProjectileArray.push_back(newProjectile);
         }
     }
-
 }
 
 void Game::bossRandomShoot()
@@ -330,6 +328,7 @@ void Game::bossRandomShoot()
                 // vector with the direction to the player = player position - v1
                 proj->setDirection(normalize(player->getPosition() - v1 + offset));
                 proj->roateToDirection();
+                proj->getSprite().setColor(sf::Color::Green);
             }
             bossProjectileArray.insert(
                 bossProjectileArray.end(),
@@ -351,8 +350,8 @@ int Game::generateDiagonalEnemy(int n, sf::Vector2f initialPos, sf::Vector2f dir
             SPACE_TEXTURE,
             enemyRectArr[rand() % 2],
             sf::Vector2f(
-                initialPos.x + i * direction.x * 20.f,
-                initialPos.y + i * direction.y * 26.f),
+                initialPos.x + i * 20.f,
+                initialPos.y + i * 26.f),
             attribute
         ));
     }
@@ -378,6 +377,35 @@ int Game::generateSquqreEnemy(int row, int col, sf::Vector2f initialPos, sf::Vec
     return startIndex;
 }
 
+// given a side s, set initialPos and direction to corresponding value
+void decideSide(Side s, sf::Vector2f& initialPos, sf::Vector2f& direction)
+{
+    int offset = 0;
+    switch (s)
+    {
+    case Side::Top:
+        offset = rand() % PlayerMovingBound.x;
+        initialPos = sf::Vector2f(offset, -400);
+        direction = sf::Vector2f(0, 1);
+        break;
+    case Side::Bottom:
+        offset = rand() % PlayerMovingBound.x;
+        initialPos = sf::Vector2f(offset, WindowHeight);
+        direction = sf::Vector2f(0, -1);
+        break;
+    case Side::Left:
+        offset = rand() % PlayerMovingBound.y;
+        initialPos = sf::Vector2f(-400, offset);
+        direction = sf::Vector2f(1, 0);
+        break;
+    case Side::Right:
+        offset = rand() % PlayerMovingBound.y;
+        initialPos = sf::Vector2f(WindowWidth, offset);
+        direction = sf::Vector2f(-1, 0);
+        break;
+    }
+}
+
 /*
     Generate enemy in different layout
     each wave of enemy has a random attribute which determine their
@@ -385,31 +413,29 @@ int Game::generateSquqreEnemy(int row, int col, sf::Vector2f initialPos, sf::Vec
 */
 void Game::generateEnemy() {
     int time = genEnemyClock.getElapsedTime().asSeconds();
-    randomEnemy = 1 + rand() % 5;       // num of enemy
-    //initialPos = sf::Vector2f(rand() % 900, -100);
-    initialPos = sf::Vector2f(-100, 200);
-    float randX = rand() % 8 - 4;
-    float randY = rand() % 8 - 4;
-    direction = sf::Vector2f(randX, randY);
-    int randNum = 1 + rand() % 4;
-    int startIndex = 0;
     if (time > 2)           // every 2 seconds
     {
+        enemyNum = 3 + rand() % 5;       // num of enemy
+        sf::Vector2f initialPos; //where should the layout start
+        sf::Vector2f direction; //they all move in the same direction
+        int startIndex = 0;
+        float rows = rand() % 4;
+        float cols = rand() % 4;
+        int randNum = rand() % 2;
+        Side s = static_cast<Side>(rand() % 4);
+        decideSide(s, initialPos, direction);
+        std::cout << s << std::endl;
         // 0.6 < x < 2.1
         float randAttribute = (rand() % 15) / 10.0f + 0.8f;
-        // Issues here, it lags when timer hit around 30s
-        if (tool->getTime().getElapsedTime().asSeconds() < 30)
-            startIndex = generateDiagonalEnemy(randomEnemy, initialPos, direction, randAttribute);
-        else {
-            if (randNum % 2 == 0)
-                startIndex = generateDiagonalEnemy(randomEnemy, initialPos, direction, randAttribute);
-            else
-                startIndex = generateSquqreEnemy(abs(randX), abs(randY), initialPos, direction, randAttribute);
-        }
+        if (randNum % 2 == 0)
+            startIndex = generateDiagonalEnemy(enemyNum, initialPos, direction, randAttribute);
+        else
+            startIndex = generateSquqreEnemy(abs(rows), abs(cols), initialPos, direction, randAttribute);
         genEnemyClock.restart();
         // set the enemy from first index to the last element
         for (int i = startIndex; i < enemyArr.size(); i++) {
-            enemyArr[i]->setDirection(sf::Vector2f(1, 0));
+            enemyArr[i]->setDirection(direction);
+            std::cout << *enemyArr[i] << std::endl;
         }
     }
 }
@@ -442,6 +468,11 @@ Game::Game()
     if (!ToolBarBackgroundTexture.loadFromFile(TextureBasePath + "toolbar.png"))
         throw TextureNotLoaded("toolbar.png");
 
+    // Smooth or no smooth?
+    SPACE_TEXTURE.setSmooth(1);
+    BackgroundTexture.setSmooth(1);
+    ToolBarBackgroundTexture.setSmooth(1);
+
     GameBackground = sf::Sprite(BackgroundTexture);
     sf::Vector2u TextureSize = BackgroundTexture.getSize();
     sf::Vector2u WindowSize = window->getSize();
@@ -456,7 +487,8 @@ Game::Game()
     assert(tool);           // Make sure tool is not null
 
     player = new Player(SPACE_TEXTURE, SHIP_TEXTURE_RECT[shipType], sf::Vector2f(100, 100), shipType);
-    player->setMovingBoundary(sf::Vector2u(1076, 720));      // set moving bound so that it wont go over to ToolBar
+
+    player->setMovingBoundary(PlayerMovingBound);
     player->getSprite().scale(sf::Vector2f(1, 1) * 1.5f);
     tool->updateHpBarSize(player->getHp() / SHIP_MAX_HP[shipType]); //send percentage of health
 
@@ -469,15 +501,18 @@ Game::Game()
 
     boss = new Boss(SPACE_TEXTURE, EnemyRectBoss, sf::Vector2f((window->getSize().x - tool->getSize().x) / 2, 0));
     //bossHp = -100;
-    boss->setBossHpBar(bossHp, sf::Color::Red, sf::Vector2f(33.f, (float)bossHp * 7.2f), sf::Vector2f(0, 720.f));
     shieldSprite = sf::Sprite(SPACE_TEXTURE);
     shieldSprite.setTextureRect(ShieldRect);
     setSpriteOriginCenter(shieldSprite);
     shieldSprite.setScale(1.4f, 1.4f);
 
-    bossSprite = sf::Sprite(ToolBarBackgroundTexture, sf::IntRect(0, 720, 204, 64));
-    bossSprite.setPosition(sf::Vector2f(1076.f, 581.0f));
+    bossSignSprite = sf::Sprite(ToolBarBackgroundTexture, sf::IntRect(0, 720, 204, 64));
+    bossSignSprite.setPosition(sf::Vector2f(1076.f, 581.0f));
 
+    genPowerUpClock.restart();
+    genEnemyClock.restart();
+    genBossClock.restart();
+    gameClock.restart();
 }
 
 
@@ -523,6 +558,7 @@ void Game::handleBackdoorKeyInput(sf::Keyboard::Key code)
         InfinityHpTriggered = !InfinityHpTriggered;
         break;
     case AccelerateKey:
+        // TODO reset player speed in restGame()
         player->accelerate(5);
         break;
     case DeaccelerateKey:
@@ -537,7 +573,7 @@ void Game::handleBackdoorKeyInput(sf::Keyboard::Key code)
         }
         else
         {
-            // TODO Add to resetGame
+            // TODO Add to resetGame()
             player->setBackdoorProjScale(1.0f);
             player->setProjDamage(1.0f);
         }
@@ -585,7 +621,7 @@ void Game::drawGameObjectArray(std::vector<T*>& arr)
 {
     for (int i = 0; i < arr.size(); i++)
     {
-        if (isOutOfBound(arr[i]) == false)
+        if (arr[i]->isOutOfBound() == false)
             window->draw(arr[i]->getSprite());
         else
             deleteObjectFromVector(arr, i);
@@ -618,29 +654,36 @@ void Game::updateGame()
     // remove from activePowerUp set 
     // if it passes the duration
     player->removeAllEndedPowerUp();
-    boss->updateBossHpBarSize(bossHp);
+    boss->updateBossHpBarSize(boss->getHp());
 
-    //if (tool->getTime().getElapsedTime().asSeconds > 60)
-    if (tool->getScore() >= 0)
-        BossShown = true;
-    // demostration
+    if (!BossShown && static_cast<int>(genBossClock.getElapsedTime().asSeconds() + 1) % 5 == 0)
+    {
+        resetBoss();
+    }
+
     enemyRandomShoot();
     if (BossShown) {
-        collisionPlayerProjAndBoss();
-        collisionBossProjAndPlayer();
-        for (auto& proj : bossProjectileArray)
+        if (boss->isDead())
         {
-            // only RedSharp will follow the player
-            if (proj->getType() == RedSharp) proj->moveToward(*player);
+            tool->addScore(BossScore);
+            boss->getSprite().setColor(sf::Color::Color(125, 125, 125));
+            BossShown = false;
+            genBossClock.restart();
         }
-        updateGameObjectArray(bossProjectileArray);
         bossRandomShoot();
+        collisionPlayerProjAndBoss();
     }
+    collisionBossProjAndPlayer();
+    // only RedSharp will follow the player
+    for (auto& proj : bossProjectileArray)
+        if (proj->getType() == RedSharp) proj->moveToward(*player);
+    updateGameObjectArray(bossProjectileArray);
+
     if (InfinityHpTriggered)
-    {
         player->setHp(PlanetDefenders::SHIP_MAX_HP[shipType]);
-    }
+
     tool->updateHpBarSize(player->getHp() / PlanetDefenders::SHIP_MAX_HP[shipType]);
+    boss->updateBossHpBarSize(boss->getHp());
 }
 
 void Game::drawGame() {
@@ -656,8 +699,8 @@ void Game::drawGame() {
     if (player->hasPowerUp(SHIELD))
     {
         shieldSprite.setPosition(
-            player->getPosition() + 
-            sf::Vector2f(player->getBound().width/2, player->getBound().height/2)
+            player->getPosition() +
+            sf::Vector2f(player->getBound().width / 2, player->getBound().height / 2)
         );
         window->draw(shieldSprite);
     }
@@ -665,10 +708,8 @@ void Game::drawGame() {
     window->draw(ToolBarBackground);
     tool->drawTo(*window);
     if (BossShown)
-    {
-        window->draw(boss->getSprite());
-        boss->drawTo(*window);
-    }
+        window->draw(bossSignSprite);
+    boss->drawTo(*window);
     window->display();
 }
 
@@ -688,6 +729,20 @@ Game::~Game() {
     bossProjectileArray.clear();
 }
 
+void Game::restartClocks()
+{
+    genPowerUpClock.restart();
+    genEnemyClock.restart();
+    genBossClock.restart();
+    gameClock.restart();
+}
+
+void Game::resetBoss()
+{
+    BossShown = true;
+    boss->getSprite().setColor(sf::Color::White);
+    boss->setHp(100);
+
 void Game::resetGame()
 {
     tool->minusScore(tool->getScore());
@@ -695,33 +750,25 @@ void Game::resetGame()
     player->setHp(PlanetDefenders::SHIP_MAX_HP[shipType]);
     backgroundMusic.stop();
     backgroundMusic.play();
-    for (int i = 0; i < playerProjectileArray.size(); i++)
-    {
-        deleteObjectFromVector(playerProjectileArray, i);
-    }
-    for (int i = 0; i < enemyProjectileArray.size(); i++)
-    {
-        deleteObjectFromVector(enemyProjectileArray, i);
-    }
-    playerProjectileArray.clear();
     enemyProjectileArray.clear();
     enemyArr.clear();
-    playerProjectileArray.clear();
     powerUpArr.clear();
     bossProjectileArray.clear();
+    restartClocks();
 }
 
 void Game::gameLoop() {
     srand(static_cast<unsigned>(time(0)));
+    sf::Event e;
     backgroundMusic.setBuffer(titleThemeBuffer);
     backgroundMusic.setVolume(69);
     backgroundMusic.play();
-    // main game loop
-    sf::Event e;
     // display menu
     while (!displayMenu()) { sf::sleep(sf::milliseconds(10)); }
+    resetGame();
     backgroundMusic.setBuffer(backgroundBuffer);
     backgroundMusic.play();
+    // main game loop
     while (window->isOpen())
     {
         while (window->pollEvent(e))
