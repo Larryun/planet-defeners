@@ -15,7 +15,7 @@ namespace PlanetDefenders
     {
         // Default values
         sf::Vector2f velocity;
-        // the bound that decide where the object get destroyed
+        // destroy bound decide where the object get destroyed
         /*
                        destroy bound
                     vvvvvvvvvvvvvvvv

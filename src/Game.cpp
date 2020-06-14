@@ -300,7 +300,7 @@ void Game::enemyRandomShoot()
         Projectile* newProjectile = dynamic_cast<Enemy*>(enemyArr[i])->shoot();
         if (newProjectile)
         {
-            //std::cout << *newProjectile << std::endl;
+            std::cout << *newProjectile << std::endl;
             newProjectile->roateToDirection();
             enemyProjectileArray.push_back(newProjectile);
         }
@@ -742,7 +742,6 @@ void Game::resetBoss()
     BossShown = true;
     boss->getSprite().setColor(sf::Color::White);
     boss->setHp(100);
-}
 
 void Game::resetGame()
 {

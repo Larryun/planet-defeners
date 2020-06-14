@@ -25,8 +25,7 @@ namespace PlanetDefenders
     // Score
     const unsigned int BossScore = 100;
     const unsigned int RegularEnemyScore = 1;
-
-
+  
     //ship info
     const int SHIP_MAX_HP[4] = { 100, 50, 200, 80 };
     const float SHIP_SPEED[4] = { 0.5, 0.8, 0.3, 0.65 };
