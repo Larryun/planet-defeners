@@ -742,6 +742,7 @@ void Game::resetBoss()
     BossShown = true;
     boss->getSprite().setColor(sf::Color::White);
     boss->setHp(100);
+}
 
 void Game::resetGame()
 {
