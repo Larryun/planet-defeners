@@ -62,7 +62,6 @@ std::vector<Projectile*>* Boss::shoot(int num)
 void Boss::updateBossHpBarSize(int hp)
 {
     bossHpBar.setSize(sf::Vector2f((float)hp * eachInterval, 33.f));
-    std::cout << (float)hp << " " << eachInterval << std::endl;
     setHpText(hp);
 }
 

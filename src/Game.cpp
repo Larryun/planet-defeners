@@ -694,10 +694,7 @@ void Game::updateGame()
     // if it passes the duration
     enemyRandomShoot();
 
-    // every 30 seconds after first death
-    //if (!ShowBoss && static_cast<int>(genBossClock.getElapsedTime().asSeconds() + 1) % 30 == 0
-    //    && gameClock.getElapsedTime().asSeconds() > 30)
-    if(!ShowBoss)
+    if (!ShowBoss && static_cast<int>(genBossClock.getElapsedTime().asSeconds() + 1) % 20 == 0)
         resetBoss();
     if (ShowBoss)
     {
@@ -798,7 +795,7 @@ void Game::resetGame()
     powerUpArr.clear();
     bossProjectileArray.clear();
     restartClocks();
-    resetBoss();
+    boss->resetHp();
     ShowBoss = false;
 }
 
