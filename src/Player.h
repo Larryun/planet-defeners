@@ -30,7 +30,7 @@ namespace PlanetDefenders
                 rect,
                 pos,
                 sf::Vector2f(0, 0),
-                7.0f		// Initial speed
+                PlayerInitialSpeed
             ), hp(PlanetDefenders::ShipMaxHp[num]), shipNum(num)
         { }
         ~Player();

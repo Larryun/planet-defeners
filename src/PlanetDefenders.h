@@ -90,6 +90,7 @@ namespace PlanetDefenders
 
     // Player
     const float PlayerInitialHealth = 100.0f;
+    const float PlayerInitialSpeed = 10.0f;
     const float PlayerMaxSpeed = 50.0f;
     const float PlayerProjectileDamage = 3.0f;
     const sf::Vector2u PlayerMovingBound = sf::Vector2u(1076, 720);

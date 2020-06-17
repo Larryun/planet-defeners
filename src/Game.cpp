@@ -465,8 +465,6 @@ Game::Game()
     if (!ToolBarBackgroundTexture.loadFromFile(TextureBasePath + "toolbar.png"))
         throw TextureNotLoaded("toolbar.png");
 
-    // Smooth or no smooth?
-    //SPACE_TEXTURE.setSmooth(1);
     //BackgroundTexture.setSmooth(1);
     //ToolBarBackgroundTexture.setSmooth(1);
 
@@ -489,10 +487,6 @@ Game::Game()
     player->getSprite().scale(sf::Vector2f(1, 1) * 1.5f);
     tool->updateHpBarSize(player->getHp() / ShipMaxHp[shipType]); //send percentage of health
 
-    // demo
-    // build enemies array
-    //initEnemy(window->getSize());
-
     enemyRectArr.push_back(EnemyRectEye);
     enemyRectArr.push_back(EnemyRectBlue);
 
@@ -500,7 +494,6 @@ Game::Game()
     boss->setSpeed(1);
     // "disable" boss
     boss->getSprite().setColor(sf::Color::Color(125, 125, 125));
-    //bossHp = -100;
     shieldSprite = sf::Sprite(SpaceTexture);
     shieldSprite.setTextureRect(ShieldRect);
     setSpriteOriginCenter(shieldSprite);
