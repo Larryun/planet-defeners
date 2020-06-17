@@ -31,7 +31,7 @@ namespace PlanetDefenders
             getSprite().scale(attribute, attribute);
             setSpeed(4 / attribute);                     // larger the attribute, slower it moves
             setProjectileDamage(attribute * 1);
-            setProjectileSpeed(8 / attribute);
+            setProjectileSpeed(6 / attribute);
             setProjectileScale(attribute * 1.1);
             setShootInterval(EnemyShootEachProjInterval + sf::milliseconds(pow((attribute * 10), 2)));
             this->hp = hp * attribute;

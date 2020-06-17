@@ -413,7 +413,7 @@ void decideSide(Side s, sf::Vector2f& initialPos, sf::Vector2f& direction)
 */
 void Game::generateEnemy() {
     int time = genEnemyClock.getElapsedTime().asSeconds();
-    if (time > 2)           // every 2 seconds
+    if (time > 1)           // every 1 seconds
     {
         enemyNum = 3 + rand() % 5;       // num of enemy
         sf::Vector2f initialPos; //where should the layout start
@@ -499,7 +499,10 @@ Game::Game()
     enemyRectArr.push_back(EnemyRectEye);
     enemyRectArr.push_back(EnemyRectBlue);
 
-    boss = new Boss(SPACE_TEXTURE, EnemyRectBoss, sf::Vector2f((window->getSize().x - tool->getSize().x) / 2, 0));
+    boss = new Boss(SPACE_TEXTURE, EnemyRectBoss, sf::Vector2f(PlayerMovingBound.x / 2, 40.0f));
+    boss->setSpeed(1);
+    // "disable" boss
+    boss->getSprite().setColor(sf::Color::Color(125, 125, 125));
     //bossHp = -100;
     shieldSprite = sf::Sprite(SPACE_TEXTURE);
     shieldSprite.setTextureRect(ShieldRect);
@@ -508,11 +511,7 @@ Game::Game()
 
     bossSignSprite = sf::Sprite(ToolBarBackgroundTexture, sf::IntRect(0, 720, 204, 64));
     bossSignSprite.setPosition(sf::Vector2f(1076.f, 581.0f));
-
-    genPowerUpClock.restart();
-    genEnemyClock.restart();
-    genBossClock.restart();
-    gameClock.restart();
+    restartClocks();
 }
 
 
@@ -578,7 +577,6 @@ void Game::handleBackdoorKeyInput(sf::Keyboard::Key code)
             player->setProjDamage(1.0f);
         }
     }
-
 }
 
 void Game::generatePowerUp()
@@ -628,6 +626,49 @@ void Game::drawGameObjectArray(std::vector<T*>& arr)
     }
 }
 
+void Game::updateBoss(BossStates state = BossStates::Stay, sf::Vector2f destination = sf::Vector2f(0, 0))
+{
+    if (boss->isDead())
+    {
+        tool->addScore(BossScore);
+        boss->getSprite().setColor(sf::Color::Color(125, 125, 125));
+        boss->increaseDifficulty(0.1);
+        ShowBoss = false;
+        genBossClock.restart();
+    }
+    else
+    {
+        bossRandomShoot();
+        collisionPlayerProjAndBoss();
+    }
+    switch (state)
+    {
+    case BossStates::MoveLeft:
+        boss->setDirection(DirectionMap.at(Direction::LeftDirection));
+        boss->move();
+        break;
+    case BossStates::MoveRight:
+        boss->setDirection(DirectionMap.at(Direction::RightDirection));
+        boss->move();
+        break;
+    case BossStates::MoveDown:
+        boss->setDirection(DirectionMap.at(Direction::DownDirection));
+        boss->move();
+        break;
+    case BossStates::MoveUp:
+        boss->setDirection(DirectionMap.at(Direction::UpDirection));
+        boss->move();
+        break;
+    case BossStates::MoveTo:        // does not work
+        boss->moveTo(destination);
+        break;
+    case BossStates::Stay:
+        boss->setDirection(sf::Vector2f(0, 0));
+        break;
+    }
+
+}
+
 void Game::updateGame()
 {
     collisionPlayerProjAndEnemy();
@@ -642,8 +683,6 @@ void Game::updateGame()
         collisionEnemyAndPlayer();
     }
     collisionPowerUpAndPlayer();
-
-    tool->update();
     updateGameObjectArray(enemyProjectileArray);
     updateGameObjectArray(playerProjectileArray);
     updateGameObjectArray(enemyArr);
@@ -653,27 +692,27 @@ void Game::updateGame()
     // check all powerup 
     // remove from activePowerUp set 
     // if it passes the duration
-    player->removeAllEndedPowerUp();
-    boss->updateBossHpBarSize(boss->getHp());
-
-    if (!BossShown && static_cast<int>(genBossClock.getElapsedTime().asSeconds() + 1) % 5 == 0)
-    {
-        resetBoss();
-    }
-
     enemyRandomShoot();
-    if (BossShown) {
-        if (boss->isDead())
+
+    // every 30 seconds after first death
+    //if (!ShowBoss && static_cast<int>(genBossClock.getElapsedTime().asSeconds() + 1) % 30 == 0
+    //    && gameClock.getElapsedTime().asSeconds() > 30)
+    if(!ShowBoss)
+        resetBoss();
+    if (ShowBoss)
+    {
+        // change direction when hit 200 or 800
+        if(boss->getPosition().x <= 200 || boss->getPosition().x >= 800)
         {
-            tool->addScore(BossScore);
-            boss->getSprite().setColor(sf::Color::Color(125, 125, 125));
-            BossShown = false;
-            genBossClock.restart();
+            if (bossMoveDir == MoveRight)
+                bossMoveDir = MoveLeft;
+            else if (bossMoveDir == MoveLeft)
+                bossMoveDir = MoveRight;
         }
-        bossRandomShoot();
-        collisionPlayerProjAndBoss();
+        updateBoss(bossMoveDir);
     }
     collisionBossProjAndPlayer();
+
     // only RedSharp will follow the player
     for (auto& proj : bossProjectileArray)
         if (proj->getType() == RedSharp) proj->moveToward(*player);
@@ -681,9 +720,11 @@ void Game::updateGame()
 
     if (InfinityHpTriggered)
         player->setHp(PlanetDefenders::SHIP_MAX_HP[shipType]);
+    player->removeAllEndedPowerUp();
 
+    tool->update();
     tool->updateHpBarSize(player->getHp() / PlanetDefenders::SHIP_MAX_HP[shipType]);
-    boss->updateBossHpBarSize(boss->getHp());
+    boss->updateBossHpBarSize();
 }
 
 void Game::drawGame() {
@@ -707,7 +748,7 @@ void Game::drawGame() {
 
     window->draw(ToolBarBackground);
     tool->drawTo(*window);
-    if (BossShown)
+    if (ShowBoss)
         window->draw(bossSignSprite);
     boss->drawTo(*window);
     window->display();
@@ -734,14 +775,15 @@ void Game::restartClocks()
     genPowerUpClock.restart();
     genEnemyClock.restart();
     genBossClock.restart();
+    bossMoveClock.restart();
     gameClock.restart();
 }
 
 void Game::resetBoss()
 {
-    BossShown = true;
+    ShowBoss = true;
     boss->getSprite().setColor(sf::Color::White);
-    boss->setHp(100);
+    boss->resetHp();
 }
 
 void Game::resetGame()
@@ -756,6 +798,8 @@ void Game::resetGame()
     powerUpArr.clear();
     bossProjectileArray.clear();
     restartClocks();
+    resetBoss();
+    ShowBoss = false;
 }
 
 void Game::gameLoop() {

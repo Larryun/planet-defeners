@@ -33,6 +33,18 @@ void GameObject::move(const sf::Vector2f& dir)
     this->move();
 }
 
+bool PlanetDefenders::GameObject::moveTo(const sf::Vector2f& destination)
+{
+    if (getPosition() != destination)
+    {
+        static sf::Vector2f dir = normalize(destination - getPosition());
+        setDirection(dir);
+        move();
+        return false;
+    }
+    return true;
+}
+
 // Getters
 
 const sf::Vector2f GameObject::getVelocity() const { return speed * direction; }

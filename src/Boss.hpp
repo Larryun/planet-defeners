@@ -11,6 +11,13 @@ namespace PlanetDefenders
     class Boss : public Enemy {
         sf::Clock shootClock;
         sf::RectangleShape bossHpBar;
+        sf::Font font;
+        sf::Text hpText;
+        float eachInterval;
+        const sf::Vector2f HpBarPos = sf::Vector2f(0, 0);
+        const sf::Vector2f HpBarSize = sf::Vector2f(PlayerMovingBound.x, PlayerMovingBound.y);
+        float difficulty = 1.0f;
+        float MaxHp = 100;
 
     public:
         Boss(const sf::Texture& texture, const sf::IntRect& rect, const sf::Vector2f& pos) :
@@ -19,14 +26,30 @@ namespace PlanetDefenders
                 rect,
                 pos,
                 1, 100
-            ) 
+            )
         {
-            setBossHpBar(getHp(), sf::Color::Red, sf::Vector2f(33.f, (float)getHp() * 7.2f), sf::Vector2f(0, 720.f));
+            if (!font.loadFromFile("Samson_Bold_Oblique.ttf"));
+            bossHpBar.setPosition(HpBarPos);
+            bossHpBar.setFillColor(sf::Color::Red);
+            bossHpBar.setSize(HpBarSize);
+            eachInterval = HpBarSize.x / MaxHp;
+            setHpText(getHp());
         }
         ~Boss();
-        //sf::Vector2f getPosition
-        void setBossHpBar(int hp, sf::Color color, sf::Vector2f size, sf::Vector2f pos);
-        void updateBossHpBarSize(int hp) { bossHpBar.setSize(sf::Vector2f(33.f, (float)hp * 7.2f)); }
+        //boss hp bar
+        void increaseDifficulty(float d)
+        {
+            difficulty += d;
+            MaxHp = MaxHp * difficulty;
+            eachInterval = HpBarSize.x / (float)MaxHp;
+        }
+        void resetHp()
+        {
+            setHp(MaxHp);
+        }
+        void updateBossHpBarSize(int hp);
+        void updateBossHpBarSize();
+        void setHpText(int hp);
         void drawTo(sf::RenderWindow& window);
         std::vector<Projectile*>* shoot(int i);
     };

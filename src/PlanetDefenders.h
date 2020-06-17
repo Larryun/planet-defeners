@@ -4,6 +4,7 @@
 //#include "GameObject.hpp"
 #include <iostream>
 #include <vector>
+#include <map>
 #include <cmath>
 /*
     Put constants and function in this namespace
@@ -17,6 +18,14 @@ namespace PlanetDefenders
     const enum PowerUpType { HEAL, SHIELD };
     const enum ProjectileType { RedCircle, RedSharp, BlueRegular };
     const enum Side { Left, Right, Top, Bottom };
+    const enum Direction { LeftDirection, RightDirection, UpDirection, DownDirection };
+    const enum BossStates { MoveLeft, MoveRight, MoveDown, MoveUp, MoveTo, Shoot, Stay };
+    const std::map<Direction, sf::Vector2f> DirectionMap = {
+        {LeftDirection, sf::Vector2f(-1,0)},
+        {RightDirection, sf::Vector2f(1,0)},
+        {UpDirection, sf::Vector2f(0,-1)},
+        {DownDirection, sf::Vector2f(0,1)}
+    };
 
     // Destory Margin
     const int BaseDestroyBoundMargin = 500;
