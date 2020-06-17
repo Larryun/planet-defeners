@@ -14,17 +14,17 @@
 */
 namespace PlanetDefenders
 {
-    const enum ShipType { BlueShip, RedShip, GreenShip, BeeShip };
-    const enum PowerUpType { HEAL, SHIELD };
-    const enum ProjectileType { RedCircle, RedSharp, BlueRegular };
-    const enum Side { Left, Right, Top, Bottom };
-    const enum Direction { LeftDirection, RightDirection, UpDirection, DownDirection };
-    const enum BossStates { MoveLeft, MoveRight, MoveDown, MoveUp, MoveTo, Shoot, Stay };
+    const enum class ShipType { BlueShip, RedShip, GreenShip, BeeShip };
+    const enum class PowerUpType { HEAL, SHIELD };
+    const enum class ProjectileType { RedCircle, RedSharp, BlueRegular };
+    const enum class Side { Left, Right, Top, Bottom };
+    const enum class Direction { LeftDirection, RightDirection, UpDirection, DownDirection };
+    const enum class BossStates { MoveLeft, MoveRight, MoveDown, MoveUp, MoveTo, Shoot, Stay };
     const std::map<Direction, sf::Vector2f> DirectionMap = {
-        {LeftDirection, sf::Vector2f(-1,0)},
-        {RightDirection, sf::Vector2f(1,0)},
-        {UpDirection, sf::Vector2f(0,-1)},
-        {DownDirection, sf::Vector2f(0,1)}
+        {Direction::LeftDirection, sf::Vector2f(-1,0)},
+        {Direction::RightDirection, sf::Vector2f(1,0)},
+        {Direction::UpDirection, sf::Vector2f(0,-1)},
+        {Direction::DownDirection, sf::Vector2f(0,1)}
     };
 
     // Destory Margin

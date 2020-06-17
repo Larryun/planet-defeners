@@ -15,13 +15,13 @@ void Player::applyPowerUp(PowerUp& powerUp)
 {
     switch (powerUp.getType())
     {
-    case (PlanetDefenders::HEAL):
+    case (PlanetDefenders::PowerUpType::HEAL):
         heal(static_cast<HealthRestore*>(&powerUp)->getHealAmount());
         std::cout << "HEAL POWERUPPP" << std::endl;
         if (activePowerUp.erase(&powerUp) >= 1)
             std::cout << "HEAL POWERUPPP ERASED" << std::endl;
         break;
-    case (PlanetDefenders::SHIELD):
+    case (PlanetDefenders::PowerUpType::SHIELD):
         std::cout << "SHIELD POWERUPPP" << std::endl;
         break;
     }
@@ -50,12 +50,12 @@ Projectile* Player::shoot()
 {
     sf::Time elapse_time = shootClock.getElapsedTime();
     Projectile* newProjectile = nullptr;
-    if (elapse_time >= PlanetDefenders::ShipAttackSpeed[shipNum])
+    if (elapse_time >= PlanetDefenders::ShipAttackSpeed[(int)shipNum])
     {
         shootClock.restart();
         newProjectile = new Projectile(
             *objSprite->getTexture(),
-            PlanetDefenders::ShipLaserRect[shipNum],
+            PlanetDefenders::ShipLaserRect[(int)shipNum],
             // x-axis offset by: 2.0f
             getSprite().getPosition() + sf::Vector2f((getBound().width / 2.0f) - 2.0f, 0.0f)
         );

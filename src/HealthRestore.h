@@ -15,7 +15,7 @@ public:
             HealthRestoreRect,
             pos,
             duration,
-            HEAL
+            PowerUpType::HEAL
         ), healAmount(healAmt)
     {}
     

@@ -27,12 +27,12 @@ std::vector<Projectile*>* Boss::shoot(int num)
             ProjectileType randType = static_cast<ProjectileType>(rand() % NumberOfProjectileType);
             switch (randType)
             {
-            case RedCircle:
+            case ProjectileType::RedCircle:
                 spriteRect = ProjectileRedCircle;
                 spd = ProjectileRedCircleSpd;
                 damage = ProjectileRedCircleDamage;
                 break;
-            case RedSharp:
+            case ProjectileType::RedSharp:
                 spriteRect = ProjectileRedSharp;
                 spd = ProjectileRedSharpSpd;
                 damage = ProjectileRedSharpDamage;

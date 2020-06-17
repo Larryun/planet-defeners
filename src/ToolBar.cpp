@@ -35,7 +35,7 @@ void ToolBar::updateHpBarSize(float hpPercent) {
 */
 void ToolBar::setPowerUp(PowerUpType type, unsigned int duration)
 {
-    if (type != HEAL)
+    if (type != PowerUpType::HEAL)
     {
         powerUpDuration = duration;
         drawPowerUp = true;
@@ -43,7 +43,7 @@ void ToolBar::setPowerUp(PowerUpType type, unsigned int duration)
     }
     switch (type)
     {
-    case SHIELD:
+    case PowerUpType::SHIELD:
         activatedPowerUpSp.setTextureRect(ToolBarShieldPowerUp);
         break;
     //case HEAL:

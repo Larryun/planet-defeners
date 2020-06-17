@@ -13,7 +13,7 @@ namespace PlanetDefenders
                 ShieldPowerUpRect,
                 pos,
                 duration,
-                SHIELD
+                PowerUpType::SHIELD
 
             )
         {}

@@ -81,7 +81,7 @@ class Game
     bool InfinityHpTriggered = false;
     bool BiggerProjTriggered = false;
 
-    BossStates bossMoveDir = MoveRight;
+    BossStates bossMoveDir = BossStates::MoveRight;
     
 public:
     Game();

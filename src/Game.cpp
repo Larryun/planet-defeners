@@ -439,7 +439,7 @@ void Game::generateEnemy() {
 
 Game::Game()
 {
-    shipType = BlueShip; //ADD SOMETHING IN MENU TO SELECT SHIP (0 to 3)
+    shipType = ShipType::BlueShip; //ADD SOMETHING IN MENU TO SELECT SHIP (0 to 3)
     menu = new Menu(WindowWidth, WindowHeight);
     options = new Options(WindowWidth, WindowHeight);
     endscreen = new Endscreen(WindowWidth, WindowHeight);
@@ -481,11 +481,11 @@ Game::Game()
     tool = new ToolBar(sf::Vector2f(980, 0));
     assert(tool);           // Make sure tool is not null
 
-    player = new Player(SpaceTexture, ShipTextureRect[shipType], sf::Vector2f(100, 100), shipType);
+    player = new Player(SpaceTexture, ShipTextureRect[(int)shipType], sf::Vector2f(100, 100), shipType);
 
     player->setMovingBoundary(PlayerMovingBound);
     player->getSprite().scale(sf::Vector2f(1, 1) * 1.5f);
-    tool->updateHpBarSize(player->getHp() / ShipMaxHp[shipType]); //send percentage of health
+    tool->updateHpBarSize(player->getHp() / ShipMaxHp[(int)shipType]); //send percentage of health
 
     enemyRectArr.push_back(EnemyRectEye);
     enemyRectArr.push_back(EnemyRectBlue);
@@ -509,19 +509,19 @@ void Game::handleKeyInput()
 {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
     {
-        player->move(sf::Vector2f(-ShipSpeed[shipType], 0.0f));
+        player->move(sf::Vector2f(-ShipSpeed[(int)shipType], 0.0f));
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
     {
-        player->move(sf::Vector2f(ShipSpeed[shipType], 0.0f));
+        player->move(sf::Vector2f(ShipSpeed[(int)shipType], 0.0f));
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
     {
-        player->move(sf::Vector2f(0.0f, -ShipSpeed[shipType]));
+        player->move(sf::Vector2f(0.0f, -ShipSpeed[(int)shipType]));
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
     {
-        player->move(sf::Vector2f(0.0f, ShipSpeed[shipType]));
+        player->move(sf::Vector2f(0.0f, ShipSpeed[(int)shipType]));
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
     {
@@ -580,10 +580,10 @@ void Game::generatePowerUp()
         genPowerUpClock.restart();
         switch (randomPowerUpType)
         {
-        case HEAL:
+        case PowerUpType::HEAL:
             powerUpArr.push_back(new HealthRestore(SpaceTexture, sf::Vector2f(randX, randY)));
             break;
-        case SHIELD:
+        case PowerUpType::SHIELD:
             powerUpArr.push_back(new Shield(SpaceTexture, sf::Vector2f(randX, randY)));
             break;
         default:
@@ -662,7 +662,7 @@ void Game::updateBoss(BossStates state = BossStates::Stay, sf::Vector2f destinat
 void Game::updateGame()
 {
     collisionPlayerProjAndEnemy();
-    if (player->hasPowerUp(SHIELD))
+    if (player->hasPowerUp(PowerUpType::SHIELD))
     {
         collisionEnemyProjAndShield();
         collisionBossProjAndShield();
@@ -691,10 +691,10 @@ void Game::updateGame()
         // change direction when hit 200 or 800
         if (boss->getPosition().x <= 200 || boss->getPosition().x >= 800)
         {
-            if (bossMoveDir == MoveRight)
-                bossMoveDir = MoveLeft;
-            else if (bossMoveDir == MoveLeft)
-                bossMoveDir = MoveRight;
+            if (bossMoveDir == BossStates::MoveRight)
+                bossMoveDir = BossStates::MoveLeft;
+            else if (bossMoveDir == BossStates::MoveLeft)
+                bossMoveDir = BossStates::MoveRight;
         }
         updateBoss(bossMoveDir);
     }
@@ -702,15 +702,15 @@ void Game::updateGame()
 
     // only RedSharp will follow the player
     for (auto& proj : bossProjectileArray)
-        if (proj->getType() == RedSharp) proj->moveToward(*player);
+        if (proj->getType() == ProjectileType::RedSharp) proj->moveToward(*player);
     updateGameObjectArray(bossProjectileArray);
 
     if (InfinityHpTriggered)
-        player->setHp(PlanetDefenders::ShipMaxHp[shipType]);
+        player->setHp(PlanetDefenders::ShipMaxHp[(int)shipType]);
     player->removeAllEndedPowerUp();
 
     tool->update();
-    tool->updateHpBarSize(player->getHp() / PlanetDefenders::ShipMaxHp[shipType]);
+    tool->updateHpBarSize(player->getHp() / PlanetDefenders::ShipMaxHp[(int)shipType]);
     boss->updateBossHpBarSize();
 }
 
@@ -724,7 +724,7 @@ void Game::drawGame() {
     drawGameObjectArray(bossProjectileArray);
     // Demo, put to a function later
     // draw shield if player has SHIELD power up
-    if (player->hasPowerUp(SHIELD))
+    if (player->hasPowerUp(PowerUpType::SHIELD))
     {
         shieldSprite.setPosition(
             player->getPosition() +
@@ -777,7 +777,7 @@ void Game::resetGame()
 {
     tool->minusScore(tool->getScore());
     tool->restartClock();
-    player->setHp(PlanetDefenders::ShipMaxHp[shipType]);
+    player->setHp(PlanetDefenders::ShipMaxHp[(int)shipType]);
     backgroundMusic.stop();
     backgroundMusic.play();
     enemyProjectileArray.clear();
