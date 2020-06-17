@@ -31,15 +31,15 @@ namespace PlanetDefenders
                 pos,
                 sf::Vector2f(0, 0),
                 7.0f		// Initial speed
-            ), hp(PlanetDefenders::SHIP_MAX_HP[num]), shipNum(num)
+            ), hp(PlanetDefenders::ShipMaxHp[num]), shipNum(num)
         { }
         ~Player();
 
         float getHp() { return hp; }
         void setHp(float _hp) { hp = _hp; }
 
-        void heal(float amt) { hp = std::min(std::max(static_cast<int>(hp + amt), 0), PlanetDefenders::SHIP_MAX_HP[shipNum]); }
-        void takeDamage(float amt) { hp = std::min(std::max(static_cast<int>(hp - amt), 0), PlanetDefenders::SHIP_MAX_HP[shipNum]); }
+        void heal(float amt) { hp = std::min(std::max(static_cast<int>(hp + amt), 0), PlanetDefenders::ShipMaxHp[shipNum]); }
+        void takeDamage(float amt) { hp = std::min(std::max(static_cast<int>(hp - amt), 0), PlanetDefenders::ShipMaxHp[shipNum]); }
         bool isDead() { return hp <= 0; }
         bool isAlive() { return hp > 0; }
 

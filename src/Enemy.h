@@ -7,8 +7,8 @@ namespace PlanetDefenders
 {
     class Enemy : public GameObject
     {
+
         sf::Clock shootClock;
-        float hp;
 
         // that determine the scale, damage, speed shoot interval of the enemy
         float attribute;
@@ -17,6 +17,8 @@ namespace PlanetDefenders
         float projectileSpeed;
         sf::Time shootInterval;
 
+    protected:
+        float hp;
     public:
         Enemy(const sf::Texture& texture, const sf::IntRect& rect, const sf::Vector2f& pos,
             float attribute = 1.0f, float hp = 2.0f) :
@@ -46,7 +48,7 @@ namespace PlanetDefenders
 
         float getHp() { return hp; }
         float getAttribute(){ return attribute; }
-        void setHp(float x) { hp = x; }
+        void setHp(float x) { this->hp = x; }
 
         void setProjectileScale(float s) { projectileScale = s; }
         void setProjectileDamage(float s) { projectileDamage = s; }
@@ -60,7 +62,7 @@ namespace PlanetDefenders
         {
             output << "Enemy at" << " (" << p.getSprite().getPosition().x << ", "
                 << p.getSprite().getPosition().y << ") "
-                << "Attr: " << p.attribute
+                << "Attr: " << p.attribute << " "
                 << "Hp: " << p.getHp();
             return output;
         }

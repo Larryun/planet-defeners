@@ -34,13 +34,13 @@ namespace PlanetDefenders
     // Score
     const unsigned int BossScore = 100;
     const unsigned int RegularEnemyScore = 1;
-  
+
     //ship info
-    const int SHIP_MAX_HP[4] = { 100, 50, 200, 80 };
-    const float SHIP_SPEED[4] = { 0.5, 0.8, 0.3, 0.65 };
-    const sf::Time SHIP_ATTACK_SPEED[4] = { sf::milliseconds(150), sf::milliseconds(100), sf::milliseconds(200), sf::milliseconds(125) };
-    const sf::IntRect SHIP_TEXTURE_RECT[4] = { sf::IntRect(0, 0, 31, 30), sf::IntRect(33, 0, 27, 21), sf::IntRect(62, 0, 39, 25), sf::IntRect(103, 0, 29, 30) };
-    const sf::IntRect SHIP_LASER_RECT[4] = { sf::IntRect(0, 33, 5, 11), sf::IntRect(33, 33, 7, 14), sf::IntRect(62, 33, 11, 11), sf::IntRect(103, 33, 3, 12) };
+    const int ShipMaxHp[4] = { 100, 50, 200, 80 };
+    const float ShipSpeed[4] = { 0.5, 0.8, 0.3, 0.65 };
+    const sf::Time ShipAttackSpeed[4] = { sf::milliseconds(150), sf::milliseconds(100), sf::milliseconds(200), sf::milliseconds(125) };
+    const sf::IntRect ShipTextureRect[4] = { sf::IntRect(0, 0, 31, 30), sf::IntRect(33, 0, 27, 21), sf::IntRect(62, 0, 39, 25), sf::IntRect(103, 0, 29, 30) };
+    const sf::IntRect ShipLaserRect[4] = { sf::IntRect(0, 33, 5, 11), sf::IntRect(33, 33, 7, 14), sf::IntRect(62, 33, 11, 11), sf::IntRect(103, 33, 3, 12) };
 
     // For ToolBar
     const sf::IntRect HpBorderRect = sf::IntRect(228, 48, 41, 279);
@@ -77,7 +77,7 @@ namespace PlanetDefenders
     // resources path
     const std::string TextureBasePath = "resourses/texture/";
     const std::string AudioBasePath = "resourses/sound/";
-    const unsigned int FRAME_RATE_LIMIT = 65;
+    const unsigned int FrameRateLimit = 65;
 
     // PowerUp constants
 
@@ -143,26 +143,28 @@ namespace PlanetDefenders
     // utilites functions
     // put these into a libarary?
 
-    template <class T>
-    inline void deleteObjectFromVector(std::vector<T*>& v, int i)
-    {
-        std::swap(v[i], v.back());
-        delete v.back();
-        v.pop_back();
-    }
 
     // check if obj is out of a certain bound
     // can be used to check if obj should be deleted
     //bool isOutOfBound(GameObject* obj1);
     // calculate the unit vector
-    sf::Vector2f normalize(const sf::Vector2f& v);
-    // limit a vector
-    sf::Vector2f truncate(const sf::Vector2f& v, const float MAXIMUM);
+    namespace utils {
+        template <class T>
+        inline void deleteObjectFromVector(std::vector<T*>& v, int i)
+        {
+            std::swap(v[i], v.back());
+            delete v.back();
+            v.pop_back();
+        }
+        sf::Vector2f normalize(const sf::Vector2f& v);
+        // limit a vector
+        sf::Vector2f truncate(const sf::Vector2f& v, const float MAXIMUM);
 
-    void setSpriteOriginCenter(sf::Sprite& spr);
-    // draw outline of the sprite
-    // for debug purpose
-    void drawOutline(sf::Sprite& spr, sf::RenderWindow& window);
+        void setSpriteOriginCenter(sf::Sprite& spr);
+        // draw outline of the sprite
+        // for debug purpose
+        void drawOutline(sf::Sprite& spr, sf::RenderWindow& window);
+    }
 
 }
 #endif

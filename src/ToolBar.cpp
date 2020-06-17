@@ -14,6 +14,7 @@
 #include <iomanip>
 
 using namespace PlanetDefenders;
+using namespace PlanetDefenders::utils;
 
 
 void ToolBar::initializeHpBar(int hp)

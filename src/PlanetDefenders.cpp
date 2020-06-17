@@ -6,7 +6,7 @@
 
 
 // calculate the unit vector
-sf::Vector2f PlanetDefenders::normalize(const sf::Vector2f& v)
+sf::Vector2f PlanetDefenders::utils::normalize(const sf::Vector2f& v)
 {
     float length = sqrt((v.x * v.x) + (v.y * v.y));
     if (length != 0)
@@ -16,20 +16,20 @@ sf::Vector2f PlanetDefenders::normalize(const sf::Vector2f& v)
 }
 
 // limit a vector
-sf::Vector2f PlanetDefenders::truncate(const sf::Vector2f& v, const float MAXIMUM)
+sf::Vector2f PlanetDefenders::utils::truncate(const sf::Vector2f& v, const float MAXIMUM)
 {
     return sf::Vector2f(std::min(v.x, MAXIMUM), std::min(v.y, MAXIMUM));
 }
 
 
 // set a sprite to its origin
-void PlanetDefenders::setSpriteOriginCenter(sf::Sprite& spr)
+void PlanetDefenders::utils::setSpriteOriginCenter(sf::Sprite& spr)
 {
     spr.setOrigin(spr.getGlobalBounds().width / 2.0f, spr.getGlobalBounds().height / 2.0f);
 }
 
 
-void PlanetDefenders::drawOutline(sf::Sprite& spr, sf::RenderWindow& window)
+void PlanetDefenders::utils::drawOutline(sf::Sprite& spr, sf::RenderWindow& window)
 {
     sf::RectangleShape rect = sf::RectangleShape(
         sf::Vector2f(spr.getGlobalBounds().width, spr.getGlobalBounds().height)

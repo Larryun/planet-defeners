@@ -36,7 +36,7 @@ class Game
     sf::Sound powerupSound;
     sf::SoundBuffer enemyHurtSoundBuffer;
     sf::Sound enemyHurtSound;
-    sf::Texture SPACE_TEXTURE;
+    sf::Texture SpaceTexture;
 
 
     // background texture

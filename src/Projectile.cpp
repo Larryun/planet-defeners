@@ -8,7 +8,7 @@ int Projectile::PROJECTILE_COUNTER = 0;
 Projectile::~Projectile()
 {
 	PROJECTILE_COUNTER--;
-	std::cout << *this << " removed" << std::endl;
+	//std::cout << *this << " removed" << std::endl;
 	delete objSprite;
 }
 

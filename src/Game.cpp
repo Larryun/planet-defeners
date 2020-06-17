@@ -17,6 +17,7 @@
 #include "InputHighscore.h"
 
 using namespace PlanetDefenders;
+using namespace PlanetDefenders::utils;
 
 void Game::loadAllMusic()
 {
@@ -49,10 +50,8 @@ void Game::loadAllMusic()
 
 void Game::pauseGame()
 {
-    if (GAME_PAUSED)
-        backgroundMusic.pause();
-    else
-        backgroundMusic.play();
+    if (GAME_PAUSED) backgroundMusic.pause();
+    else backgroundMusic.play();
 }
 
 bool Game::menuHandleKeyboard(sf::Event& event)
@@ -300,20 +299,19 @@ void Game::enemyRandomShoot()
         Projectile* newProjectile = dynamic_cast<Enemy*>(enemyArr[i])->shoot();
         if (newProjectile)
         {
-            std::cout << *newProjectile << std::endl;
+            //std::cout << *newProjectile << std::endl;
             newProjectile->roateToDirection();
             enemyProjectileArray.push_back(newProjectile);
         }
     }
 }
-
 void Game::bossRandomShoot()
 {
     //int randShoot = random() % 4;
     int randShoot = 0;
     std::vector<Projectile*> newProjectile;
     // v1 = boss position + boss bottom middle posision
-    const static sf::Vector2f v1 =
+    const sf::Vector2f v1 =
         sf::Vector2f(boss->getBound().width / 2.0f, boss->getBound().height) +
         boss->getPosition();
     const static sf::Vector2f offset =
@@ -347,7 +345,7 @@ int Game::generateDiagonalEnemy(int n, sf::Vector2f initialPos, sf::Vector2f dir
     Enemy* newEnemy;
     for (int i = 0; i < n; i++) {
         enemyArr.push_back(new Enemy(
-            SPACE_TEXTURE,
+            SpaceTexture,
             enemyRectArr[rand() % 2],
             sf::Vector2f(
                 initialPos.x + i * 20.f,
@@ -365,7 +363,7 @@ int Game::generateSquqreEnemy(int row, int col, sf::Vector2f initialPos, sf::Vec
     for (int i = 0; i < row; i++) {
         for (int j = 0; j < col; j++) {
             enemyArr.push_back(new Enemy(
-                SPACE_TEXTURE,
+                SpaceTexture,
                 enemyRectArr[rand() % 2],
                 sf::Vector2f(
                     initialPos.x + i * 40.f,
@@ -424,7 +422,6 @@ void Game::generateEnemy() {
         int randNum = rand() % 2;
         Side s = static_cast<Side>(rand() % 4);
         decideSide(s, initialPos, direction);
-        std::cout << s << std::endl;
         // 0.6 < x < 2.1
         float randAttribute = (rand() % 15) / 10.0f + 0.8f;
         if (randNum % 2 == 0)
@@ -451,7 +448,7 @@ Game::Game()
     // window setup
     window = new sf::RenderWindow(sf::VideoMode(WindowWidth, WindowHeight), GameTitle, sf::Style::Close | sf::Style::Resize);
     //std::cout << window->getSize().x << " " << window->getSize().y << std::endl;
-    window->setFramerateLimit(FRAME_RATE_LIMIT);
+    window->setFramerateLimit(FrameRateLimit);
 
     // sounds setup
     try { loadAllMusic(); }
@@ -461,7 +458,7 @@ Game::Game()
     backgroundMusic.setLoop(true);
 
     // base texture setup
-    if (!SPACE_TEXTURE.loadFromFile(TextureBasePath + "spaceSprites.png"))
+    if (!SpaceTexture.loadFromFile(TextureBasePath + "spaceSprites.png"))
         throw TextureNotLoaded("spaceSprites.png");
     if (!BackgroundTexture.loadFromFile(TextureBasePath + "spaceBackground.png"))
         throw TextureNotLoaded("spaceBackground.png");
@@ -486,11 +483,11 @@ Game::Game()
     tool = new ToolBar(sf::Vector2f(980, 0));
     assert(tool);           // Make sure tool is not null
 
-    player = new Player(SPACE_TEXTURE, SHIP_TEXTURE_RECT[shipType], sf::Vector2f(100, 100), shipType);
+    player = new Player(SpaceTexture, ShipTextureRect[shipType], sf::Vector2f(100, 100), shipType);
 
     player->setMovingBoundary(PlayerMovingBound);
     player->getSprite().scale(sf::Vector2f(1, 1) * 1.5f);
-    tool->updateHpBarSize(player->getHp() / SHIP_MAX_HP[shipType]); //send percentage of health
+    tool->updateHpBarSize(player->getHp() / ShipMaxHp[shipType]); //send percentage of health
 
     // demo
     // build enemies array
@@ -499,12 +496,12 @@ Game::Game()
     enemyRectArr.push_back(EnemyRectEye);
     enemyRectArr.push_back(EnemyRectBlue);
 
-    boss = new Boss(SPACE_TEXTURE, EnemyRectBoss, sf::Vector2f(PlayerMovingBound.x / 2, 40.0f));
+    boss = new Boss(SpaceTexture, EnemyRectBoss, sf::Vector2f(PlayerMovingBound.x / 2.0f, 40.0f));
     boss->setSpeed(1);
     // "disable" boss
     boss->getSprite().setColor(sf::Color::Color(125, 125, 125));
     //bossHp = -100;
-    shieldSprite = sf::Sprite(SPACE_TEXTURE);
+    shieldSprite = sf::Sprite(SpaceTexture);
     shieldSprite.setTextureRect(ShieldRect);
     setSpriteOriginCenter(shieldSprite);
     shieldSprite.setScale(1.4f, 1.4f);
@@ -519,19 +516,19 @@ void Game::handleKeyInput()
 {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
     {
-        player->move(sf::Vector2f(-SHIP_SPEED[shipType], 0.0f));
+        player->move(sf::Vector2f(-ShipSpeed[shipType], 0.0f));
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
     {
-        player->move(sf::Vector2f(SHIP_SPEED[shipType], 0.0f));
+        player->move(sf::Vector2f(ShipSpeed[shipType], 0.0f));
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
     {
-        player->move(sf::Vector2f(0.0f, -SHIP_SPEED[shipType]));
+        player->move(sf::Vector2f(0.0f, -ShipSpeed[shipType]));
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
     {
-        player->move(sf::Vector2f(0.0f, SHIP_SPEED[shipType]));
+        player->move(sf::Vector2f(0.0f, ShipSpeed[shipType]));
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
     {
@@ -591,10 +588,10 @@ void Game::generatePowerUp()
         switch (randomPowerUpType)
         {
         case HEAL:
-            powerUpArr.push_back(new HealthRestore(SPACE_TEXTURE, sf::Vector2f(randX, randY)));
+            powerUpArr.push_back(new HealthRestore(SpaceTexture, sf::Vector2f(randX, randY)));
             break;
         case SHIELD:
-            powerUpArr.push_back(new Shield(SPACE_TEXTURE, sf::Vector2f(randX, randY)));
+            powerUpArr.push_back(new Shield(SpaceTexture, sf::Vector2f(randX, randY)));
             break;
         default:
             break;
@@ -632,7 +629,7 @@ void Game::updateBoss(BossStates state = BossStates::Stay, sf::Vector2f destinat
     {
         tool->addScore(BossScore);
         boss->getSprite().setColor(sf::Color::Color(125, 125, 125));
-        boss->increaseDifficulty(0.1);
+        boss->increaseDifficulty(0.3);
         ShowBoss = false;
         genBossClock.restart();
     }
@@ -699,7 +696,7 @@ void Game::updateGame()
     if (ShowBoss)
     {
         // change direction when hit 200 or 800
-        if(boss->getPosition().x <= 200 || boss->getPosition().x >= 800)
+        if (boss->getPosition().x <= 200 || boss->getPosition().x >= 800)
         {
             if (bossMoveDir == MoveRight)
                 bossMoveDir = MoveLeft;
@@ -716,11 +713,11 @@ void Game::updateGame()
     updateGameObjectArray(bossProjectileArray);
 
     if (InfinityHpTriggered)
-        player->setHp(PlanetDefenders::SHIP_MAX_HP[shipType]);
+        player->setHp(PlanetDefenders::ShipMaxHp[shipType]);
     player->removeAllEndedPowerUp();
 
     tool->update();
-    tool->updateHpBarSize(player->getHp() / PlanetDefenders::SHIP_MAX_HP[shipType]);
+    tool->updateHpBarSize(player->getHp() / PlanetDefenders::ShipMaxHp[shipType]);
     boss->updateBossHpBarSize();
 }
 
@@ -787,7 +784,7 @@ void Game::resetGame()
 {
     tool->minusScore(tool->getScore());
     tool->restartClock();
-    player->setHp(PlanetDefenders::SHIP_MAX_HP[shipType]);
+    player->setHp(PlanetDefenders::ShipMaxHp[shipType]);
     backgroundMusic.stop();
     backgroundMusic.play();
     enemyProjectileArray.clear();

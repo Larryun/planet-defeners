@@ -3,6 +3,7 @@
 #include <cmath>
 
 using namespace PlanetDefenders;
+using namespace PlanetDefenders::utils;
 
 GameObject::GameObject(const sf::Texture& texture, const sf::IntRect& rect, const sf::Vector2f& pos, const sf::Vector2f& dir, float spd)
 {

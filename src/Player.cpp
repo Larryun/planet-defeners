@@ -50,12 +50,12 @@ Projectile* Player::shoot()
 {
     sf::Time elapse_time = shootClock.getElapsedTime();
     Projectile* newProjectile = nullptr;
-    if (elapse_time >= PlanetDefenders::SHIP_ATTACK_SPEED[shipNum])
+    if (elapse_time >= PlanetDefenders::ShipAttackSpeed[shipNum])
     {
         shootClock.restart();
         newProjectile = new Projectile(
             *objSprite->getTexture(),
-            PlanetDefenders::SHIP_LASER_RECT[shipNum],
+            PlanetDefenders::ShipLaserRect[shipNum],
             // x-axis offset by: 2.0f
             getSprite().getPosition() + sf::Vector2f((getBound().width / 2.0f) - 2.0f, 0.0f)
         );
