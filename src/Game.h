@@ -120,6 +120,7 @@ public:
     void collisionPlayerProjAndEnemy();
     void collisionEnemyProjAndShield();
     void collisionBossProjAndShield();
+    void collisionPlayerAndBoss();
     // Collision between enemyProjectile and player
     void collisionEnemyProjAndPlayer();
     // Check colliision between enemy and player

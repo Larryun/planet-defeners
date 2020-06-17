@@ -105,11 +105,18 @@ namespace PlanetDefenders
     const int MaxProjectileNum = 500;
     const sf::Time PlayerShootTimeDelta = sf::milliseconds(100);
     const sf::Time shootInterval = sf::milliseconds(200);
+
+    // Boss
     const sf::Time BossShootTimeDelta = sf::milliseconds(300);
+    const float BossProjectileDamage = 5;
+    const int BossReviveInterval = 10;
+
 
     const sf::IntRect EnemyRectEye = sf::IntRect(0, 48, 23, 28);
     const sf::IntRect EnemyRectBlue = sf::IntRect(25, 48, 30, 28);
     const sf::IntRect EnemyRectBoss = sf::IntRect(0, 76, 182, 235);
+
+    const sf::Vector2f BossInitialPos = sf::Vector2f(PlayerMovingBound.x / 2.0f - EnemyRectBoss.width / 2.0f, 40.0f);
 
     const sf::IntRect PlayerProjectileRect = sf::IntRect(0, 32, 5, 11);
     const sf::IntRect ProjectileMiniCircle = sf::IntRect(89, 48, 8, 8);
@@ -126,7 +133,6 @@ namespace PlanetDefenders
 
     const unsigned int NumberOfProjectileType = 2;
 
-    const float BossProjectileDamage = 5;
 
     // Game Window size
     const unsigned int WindowWidth = 1280;
@@ -166,7 +172,6 @@ namespace PlanetDefenders
         // for debug purpose
         void drawOutline(sf::Sprite& spr, sf::RenderWindow& window);
     }
-
 }
 #endif
 

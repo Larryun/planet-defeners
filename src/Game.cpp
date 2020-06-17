@@ -240,6 +240,12 @@ void Game::collisionBossProjAndShield()
     }
 }
 
+void Game::collisionPlayerAndBoss()
+{
+    if (player->collide(*dynamic_cast<GameObject*>(boss)))
+        player->takeDamage(0.5);
+}
+
 void Game::collisionEnemyProjAndPlayer()
 {
     for (int i = 0; i < enemyProjectileArray.size(); i++)
@@ -263,8 +269,7 @@ void Game::collisionEnemyAndPlayer()
         if (player->collide(*dynamic_cast<GameObject*>(enemyArr[i])))
         {
             std::cout << "PLAYER COLIDED ENEMY" << std::endl;
-            //player->takeDamage(1);
-            player->takeDamage(1);
+            player->takeDamage(0.5);
             break;
         }
     }
@@ -326,7 +331,6 @@ void Game::bossRandomShoot()
                 // vector with the direction to the player = player position - v1
                 proj->setDirection(normalize(player->getPosition() - v1 + offset));
                 proj->roateToDirection();
-                proj->getSprite().setColor(sf::Color::Green);
             }
             bossProjectileArray.insert(
                 bossProjectileArray.end(),
@@ -490,10 +494,11 @@ Game::Game()
     enemyRectArr.push_back(EnemyRectEye);
     enemyRectArr.push_back(EnemyRectBlue);
 
-    boss = new Boss(SpaceTexture, EnemyRectBoss, sf::Vector2f(PlayerMovingBound.x / 2.0f, 40.0f));
+    boss = new Boss(SpaceTexture, EnemyRectBoss, BossInitialPos);
     boss->setSpeed(1);
     // "disable" boss
-    boss->getSprite().setColor(sf::Color::Color(125, 125, 125));
+    boss->getSprite().setColor(sf::Color::Color(125, 125, 125, 125));
+    //boss->getSprite().setColor(sf::Color::Transparent);
     shieldSprite = sf::Sprite(SpaceTexture);
     shieldSprite.setTextureRect(ShieldRect);
     setSpriteOriginCenter(shieldSprite);
@@ -621,7 +626,8 @@ void Game::updateBoss(BossStates state = BossStates::Stay, sf::Vector2f destinat
     if (boss->isDead())
     {
         tool->addScore(BossScore);
-        boss->getSprite().setColor(sf::Color::Color(125, 125, 125));
+        boss->getSprite().setColor(sf::Color::Color(125, 125, 125, 125));
+        //boss->getSprite().setColor(sf::Color::Transparent);
         boss->increaseDifficulty(0.3);
         ShowBoss = false;
         genBossClock.restart();
@@ -671,6 +677,8 @@ void Game::updateGame()
     {
         collisionEnemyProjAndPlayer();
         collisionEnemyAndPlayer();
+        if(ShowBoss)
+            collisionPlayerAndBoss();
     }
     collisionPowerUpAndPlayer();
     updateGameObjectArray(enemyProjectileArray);
@@ -684,7 +692,7 @@ void Game::updateGame()
     // if it passes the duration
     enemyRandomShoot();
 
-    if (!ShowBoss && static_cast<int>(genBossClock.getElapsedTime().asSeconds() + 1) % 20 == 0)
+    if (!ShowBoss && static_cast<int>(genBossClock.getElapsedTime().asSeconds() + 1) % BossReviveInterval == 0)
         resetBoss();
     if (ShowBoss)
     {
@@ -785,8 +793,13 @@ void Game::resetGame()
     powerUpArr.clear();
     bossProjectileArray.clear();
     restartClocks();
+    boss->setDifficulty(1);
     boss->resetHp();
     ShowBoss = false;
+    boss->getSprite().setColor(sf::Color::Color(125, 125, 125, 125));
+    //boss->getSprite().setColor(sf::Color::Transparent);
+    boss->getSprite().setPosition(BossInitialPos);
+    BackdoorTriggered = false;
 }
 
 void Game::gameLoop() {
