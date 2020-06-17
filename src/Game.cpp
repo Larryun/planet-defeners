@@ -469,9 +469,9 @@ Game::Game()
         throw TextureNotLoaded("toolbar.png");
 
     // Smooth or no smooth?
-    SPACE_TEXTURE.setSmooth(1);
-    BackgroundTexture.setSmooth(1);
-    ToolBarBackgroundTexture.setSmooth(1);
+    //SPACE_TEXTURE.setSmooth(1);
+    //BackgroundTexture.setSmooth(1);
+    //ToolBarBackgroundTexture.setSmooth(1);
 
     GameBackground = sf::Sprite(BackgroundTexture);
     sf::Vector2u TextureSize = BackgroundTexture.getSize();
