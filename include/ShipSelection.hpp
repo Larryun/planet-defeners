@@ -10,10 +10,10 @@
 #define ShipSelection_hpp
 
 #include <stdio.h>
-#include "Menu.h"
 #include "Player.h"
 
-class ShipSelection : public Menu{
+
+class ShipSelection {
     
     int MAX_NUMBER_OF_ITEMS = 4;
     
@@ -33,7 +33,7 @@ class ShipSelection : public Menu{
     std::vector<sf::IntRect> shipRect;
     //std::vector<sf::RectangleShape> selectShap;
     sf::RectangleShape selectShap[4];
-    std::vector<Player*> playerArray;
+    std::vector<PlanetDefenders::Player*> playerArray;
     
     sf::Texture shipTexture;
     sf::Vector2f position;

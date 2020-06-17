@@ -1,11 +1,10 @@
 #ifndef PLANET_DEFENDERS_H
 #define PLANET_DEFENDERS_H
-#include "Collision.h"
-//#include "GameObject.hpp"
 #include <iostream>
 #include <vector>
 #include <map>
 #include <cmath>
+#include "Collision.h"
 /*
     Put constants and function in this namespace
     when you want it to share arcoss header files
@@ -92,7 +91,7 @@ namespace PlanetDefenders
     const float PlayerInitialHealth = 100.0f;
     const float PlayerInitialSpeed = 10.0f;
     const float PlayerMaxSpeed = 50.0f;
-    const float PlayerProjectileDamage = 3.0f;
+    const float PlayerProjectileDamage = 4.0f;
     const sf::Vector2u PlayerMovingBound = sf::Vector2u(1076, 720);
 
     // Enemy
@@ -107,9 +106,11 @@ namespace PlanetDefenders
     const sf::Time shootInterval = sf::milliseconds(200);
 
     // Boss
-    const sf::Time BossShootTimeDelta = sf::milliseconds(300);
+    //const sf::Time BossShootTimeDelta = sf::milliseconds(300);
+    const int BossShootTimeDelta = 300;
     const float BossProjectileDamage = 5;
-    const int BossReviveInterval = 10;
+    //const int BossReviveInterval = 10;
+    const int BossReviveInterval = 5;
 
 
     const sf::IntRect EnemyRectEye = sf::IntRect(0, 48, 23, 28);
@@ -124,7 +125,7 @@ namespace PlanetDefenders
     const sf::IntRect ProjectileRedSharp = sf::IntRect(80, 48, 7, 29);
 
     // Speed
-    const float ProjectileRedCircleSpd = 15;
+    const float ProjectileRedCircleSpd = 12;
     const float ProjectileRedSharpSpd = 6;
 
     // Damage

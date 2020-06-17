@@ -1,3 +1,4 @@
+#include "pch.h"
 #pragma warning(disable: 4244)
 #include <iostream>
 #include <iomanip>
@@ -100,6 +101,7 @@ void ShowHighscore::work(sf::RenderWindow& window, bool& inHighscore, sf::Event&
 	window.draw(s);
 	showHighscore.draw(window);
 	while (inHighscore) {
+        sf::sleep(sf::milliseconds(10));
 		while (window.pollEvent(event)) {
 			switch (event.type) {
 			case sf::Event::KeyReleased:

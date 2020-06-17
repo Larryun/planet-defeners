@@ -9,7 +9,7 @@ class HealthRestore : public PowerUp
     float healAmount;
 
 public:
-    HealthRestore(const sf::Texture& texture, const sf::Vector2f& pos, float duration = 0, float healAmt = 10) :
+    HealthRestore(const sf::Texture& texture, const sf::Vector2f& pos, float duration = 0, float healAmt = 25) :
         PowerUp(
             texture,
             HealthRestoreRect,

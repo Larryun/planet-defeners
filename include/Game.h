@@ -7,13 +7,13 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "ToolBar.hpp"
-#include "Menu.h"
-#include "Options.h"
 #include "ShipSelection.hpp"
 #include "Boss.hpp"
 #include "Projectile.h"
-#include "Endscreen.h"
-#include "InputHighscore.h"
+#include <Menu.h>
+#include <Options.h>
+#include <Endscreen.h>
+#include <InputHighscore.h>
 class Game
 {
     bool GAME_PAUSED = 0;
@@ -74,8 +74,6 @@ class Game
     
     // States
     enum ShipType shipType;
-    int numEnemy;
-    int enemyNum;
     bool ShowBoss = false;
     bool BackdoorTriggered = false;
     bool InfinityHpTriggered = false;

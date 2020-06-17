@@ -23,6 +23,7 @@
     <ProjectGuid>{50024D8B-01CA-4CB7-9BAB-CEAC24668D90}</ProjectGuid>
     <RootNamespace>CIS29Project</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>PlanetDefenders</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -76,13 +77,13 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)sfml\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>F:\Google Drive\De Anza\7th Quarter %282020 Spring%29\CIS 29\CIS29_Project\libs\screens\include;$(SolutionDir)include;$(SolutionDir)libs\exceptions\include;$(SolutionDir)sfml\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalLibraryDirectories>$(SolutionDir)sfml\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-system-d.lib;sfml-graphics-d.lib;sfml-audio-d.lib;sfml-network-d.lib;sfml-window-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>F:\Google Drive\De Anza\7th Quarter %282020 Spring%29\CIS 29\CIS29_Project\lib;$(SolutionDir)sfml\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sfml-system-d.lib;sfml-graphics-d.lib;sfml-audio-d.lib;sfml-network-d.lib;sfml-window-d.lib;pdexceptions.lib;pdscreens.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -104,14 +105,14 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)sfml\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>F:\Google Drive\De Anza\7th Quarter %282020 Spring%29\CIS 29\CIS29_Project\libs\screens\include;$(SolutionDir)include;$(SolutionDir)libs\exceptions\include;$(SolutionDir)sfml\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)sfml\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>F:\Google Drive\De Anza\7th Quarter %282020 Spring%29\CIS 29\CIS29_Project\lib;$(SolutionDir)sfml\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-system.lib;sfml-graphics.lib;sfml-audio.lib;sfml-network.lib;sfml-window.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -141,54 +142,35 @@
     <Image Include="resourses\texture\toolbar.png" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\BaseException.cpp" />
     <ClCompile Include="src\Boss.cpp" />
     <ClCompile Include="src\Collision.cpp" />
-    <ClCompile Include="src\Date.cpp" />
-    <ClCompile Include="src\Endscreen.cpp" />
     <ClCompile Include="src\Enemy.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
-    <ClCompile Include="src\GameText.cpp" />
     <ClCompile Include="src\HealthRestore.cpp" />
-    <ClCompile Include="src\InputHighscore.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\Menu.cpp" />
-    <ClCompile Include="src\Options.cpp" />
     <ClCompile Include="src\PlanetDefenders.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\PowerUp.cpp" />
     <ClCompile Include="src\Projectile.cpp" />
-    <ClCompile Include="src\Score.cpp" />
     <ClCompile Include="src\Shield.cpp" />
-    <ClCompile Include="src\ShowHighscore.cpp" />
-    <ClCompile Include="src\ResourceNotLoaded.cpp" />
+    <ClCompile Include="src\ShipSelection.cpp" />
     <ClCompile Include="src\ToolBar.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\BaseException.h" />
-    <ClInclude Include="src\Boss.hpp" />
-    <ClInclude Include="src\Collision.h" />
-    <ClInclude Include="src\Date.h" />
-    <ClInclude Include="src\Endscreen.h" />
-    <ClInclude Include="src\Enemy.h" />
-    <ClInclude Include="src\Game.h" />
-    <ClInclude Include="src\GameObject.hpp" />
-    <ClInclude Include="src\GameText.hpp" />
-    <ClInclude Include="src\HealthRestore.h" />
-    <ClInclude Include="src\InputHighscore.h" />
-    <ClInclude Include="src\Menu.h" />
-    <ClInclude Include="src\Options.h" />
-    <ClInclude Include="src\PlanetDefenders.h" />
-    <ClInclude Include="src\Player.h" />
-    <ClInclude Include="src\PowerUp.h" />
-    <ClInclude Include="src\Projectile.h" />
-    <ClInclude Include="src\Score.h" />
-    <ClInclude Include="src\Shield.h" />
-    <ClInclude Include="src\ShipSelection.hpp" />
-    <ClInclude Include="src\ShowHighscore.h" />
-    <ClInclude Include="src\ResourceNotLoaded.h" />
-    <ClInclude Include="src\ToolBar.hpp" />
+    <ClInclude Include="include\Boss.hpp" />
+    <ClInclude Include="include\Collision.h" />
+    <ClInclude Include="include\Enemy.h" />
+    <ClInclude Include="include\Game.h" />
+    <ClInclude Include="include\GameObject.hpp" />
+    <ClInclude Include="include\HealthRestore.h" />
+    <ClInclude Include="include\PlanetDefenders.h" />
+    <ClInclude Include="include\Player.h" />
+    <ClInclude Include="include\PowerUp.h" />
+    <ClInclude Include="include\Projectile.h" />
+    <ClInclude Include="include\Shield.h" />
+    <ClInclude Include="include\ShipSelection.hpp" />
+    <ClInclude Include="include\ToolBar.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

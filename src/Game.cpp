@@ -3,6 +3,11 @@
 #include <cmath>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
+#include <ResourceNotLoaded.h>
+#include <Menu.h>
+#include <Options.h>
+#include <Endscreen.h>
+#include <InputHighscore.h>
 #include "Collision.h"
 #include "Game.h"
 #include "Player.h"
@@ -10,11 +15,6 @@
 #include "ToolBar.hpp"
 #include "HealthRestore.h"
 #include "Shield.h"
-#include "Menu.h"
-#include "Options.h"
-#include "ResourceNotLoaded.h"
-#include "Endscreen.h"
-#include "InputHighscore.h"
 
 using namespace PlanetDefenders;
 using namespace PlanetDefenders::utils;
@@ -203,7 +203,7 @@ void Game::collisionPlayerProjAndEnemy()
                 enemyArr[j]->takeDamage(playerProjectileArray[i]->getDamage());
                 if (enemyArr[j]->isDead())
                 {
-                    tool->addScore(roundf(pow(enemyArr[j]->getAttribute(), 2) * RegularEnemyScore));
+                    tool->addScore(roundf(pow(enemyArr[j]->getAttribute(), 3) * RegularEnemyScore));
                     deleteObjectFromVector(enemyArr, j);
                 }
                 deleteObjectFromVector(playerProjectileArray, i);
@@ -312,8 +312,7 @@ void Game::enemyRandomShoot()
 }
 void Game::bossRandomShoot()
 {
-    //int randShoot = random() % 4;
-    int randShoot = 0;
+    int randShoot = rand() % 4;
     std::vector<Projectile*> newProjectile;
     // v1 = boss position + boss bottom middle posision
     const sf::Vector2f v1 =
@@ -321,25 +320,19 @@ void Game::bossRandomShoot()
         boss->getPosition();
     const static sf::Vector2f offset =
         sf::Vector2f(player->getBound().width / 2.0f, player->getBound().height / 2.0f);
-    switch (randShoot) {
-    case 0:
-        for (int i = 0; i < 4; i++) {   // shoot for time each times with i projectile?
-            newProjectile = *boss->shoot(i);
-            //for (auto it = newProjectile.begin(); it != newProjectile.end(); it++)
-            for (auto& proj : newProjectile)
-            {
-                // vector with the direction to the player = player position - v1
-                proj->setDirection(normalize(player->getPosition() - v1 + offset));
-                proj->roateToDirection();
-            }
-            bossProjectileArray.insert(
-                bossProjectileArray.end(),
-                newProjectile.begin(),
-                newProjectile.end()
-            );
-        }
-        break;
+
+    newProjectile = *boss->shoot(randShoot);
+    for (auto& proj : newProjectile)
+    {
+        // vector with the direction to the player = player position - v1
+        proj->setDirection(normalize(player->getPosition() - v1 + offset));
+        proj->roateToDirection();
     }
+    bossProjectileArray.insert(
+        bossProjectileArray.end(),
+        newProjectile.begin(),
+        newProjectile.end()
+    );
 }
 
 // return the first index of the newly added enemy in enemyArr
@@ -386,22 +379,22 @@ void decideSide(Side s, sf::Vector2f& initialPos, sf::Vector2f& direction)
     switch (s)
     {
     case Side::Top:
-        offset = rand() % PlayerMovingBound.x;
+        offset = rand() % (PlayerMovingBound.x - 100);
         initialPos = sf::Vector2f(offset, -400);
         direction = sf::Vector2f(0, 1);
         break;
     case Side::Bottom:
-        offset = rand() % PlayerMovingBound.x;
+        offset = rand() % (PlayerMovingBound.x - 100);
         initialPos = sf::Vector2f(offset, WindowHeight);
         direction = sf::Vector2f(0, -1);
         break;
     case Side::Left:
-        offset = rand() % PlayerMovingBound.y;
+        offset = rand() % (PlayerMovingBound.y - 100);
         initialPos = sf::Vector2f(-400, offset);
         direction = sf::Vector2f(1, 0);
         break;
     case Side::Right:
-        offset = rand() % PlayerMovingBound.y;
+        offset = rand() % (PlayerMovingBound.y - 100);
         initialPos = sf::Vector2f(WindowWidth, offset);
         direction = sf::Vector2f(-1, 0);
         break;
@@ -414,36 +407,45 @@ void decideSide(Side s, sf::Vector2f& initialPos, sf::Vector2f& direction)
     size, speed, damage, projectile size
 */
 void Game::generateEnemy() {
-    int time = genEnemyClock.getElapsedTime().asSeconds();
-    if (time > 1)           // every 1 seconds
+    if (genEnemyClock.getElapsedTime().asMilliseconds() > 3000 - boss->getDifficulty() * 100)           // every 2 - difficulty * 0.015 seconds
     {
-        enemyNum = 3 + rand() % 5;       // num of enemy
         sf::Vector2f initialPos; //where should the layout start
         sf::Vector2f direction; //they all move in the same direction
         int startIndex = 0;
-        float rows = rand() % 4;
-        float cols = rand() % 4;
-        int randNum = rand() % 2;
+        int layoutType = rand() % 3;
         Side s = static_cast<Side>(rand() % 4);
         decideSide(s, initialPos, direction);
-        // 0.6 < x < 2.1
-        float randAttribute = (rand() % 15) / 10.0f + 0.8f;
-        if (randNum % 2 == 0)
+        // 0.8 < x < 1.6
+        float randAttribute = (rand() % 16) / 10.0f + 0.8f;
+        int enemyNum, rows, cols;
+        switch(layoutType)
+        {
+        case 0:
+            enemyNum = 3 + rand() % 5;
             startIndex = generateDiagonalEnemy(enemyNum, initialPos, direction, randAttribute);
-        else
+            break;
+        case 1:
+            rows = 1 + rand() % 4;
+            cols = 1 + rand() % 4;
             startIndex = generateSquqreEnemy(abs(rows), abs(cols), initialPos, direction, randAttribute);
-        genEnemyClock.restart();
+            break;
+        case 2: // horizontal line of enemy
+            enemyNum = 3 + rand() % 5;
+            startIndex = generateSquqreEnemy(enemyNum, 1, initialPos, direction, randAttribute);
+            break;
+        }
         // set the enemy from first index to the last element
         for (int i = startIndex; i < enemyArr.size(); i++) {
             enemyArr[i]->setDirection(direction);
             std::cout << *enemyArr[i] << std::endl;
         }
+        genEnemyClock.restart();
     }
 }
 
 Game::Game()
 {
-    shipType = ShipType::BlueShip; //ADD SOMETHING IN MENU TO SELECT SHIP (0 to 3)
+    shipType = ShipType::GreenShip; //ADD SOMETHING IN MENU TO SELECT SHIP (0 to 3)
     menu = new Menu(WindowWidth, WindowHeight);
     options = new Options(WindowWidth, WindowHeight);
     endscreen = new Endscreen(WindowWidth, WindowHeight);
@@ -563,13 +565,13 @@ void Game::handleBackdoorKeyInput(sf::Keyboard::Key code)
         if (BiggerProjTriggered)
         {
             player->setBackdoorProjScale(5.0f);
-            player->setProjDamage(5.0f);
+            player->setProjDamage(15.0f);
         }
         else
         {
             // TODO Add to resetGame()
             player->setBackdoorProjScale(1.0f);
-            player->setProjDamage(1.0f);
+            player->setProjDamage(PlayerProjectileDamage);
         }
     }
 }
@@ -628,7 +630,7 @@ void Game::updateBoss(BossStates state = BossStates::Stay, sf::Vector2f destinat
         tool->addScore(BossScore);
         boss->getSprite().setColor(sf::Color::Color(125, 125, 125, 125));
         //boss->getSprite().setColor(sf::Color::Transparent);
-        boss->increaseDifficulty(0.3);
+        boss->increaseDifficulty(0.2);
         ShowBoss = false;
         genBossClock.restart();
     }
@@ -677,7 +679,7 @@ void Game::updateGame()
     {
         collisionEnemyProjAndPlayer();
         collisionEnemyAndPlayer();
-        if(ShowBoss)
+        if (ShowBoss)
             collisionPlayerAndBoss();
     }
     collisionPowerUpAndPlayer();
@@ -839,6 +841,7 @@ void Game::gameLoop() {
                     BiggerProjTriggered = false;
                     player->setBackdoorProjScale(1.0f);
                     player->setProjDamage(PlayerProjectileDamage);
+                    player->setSpeed(PlayerInitialSpeed);
                 }
                 break;
             }
@@ -865,11 +868,11 @@ void Game::gameLoop() {
             // leave the game
             if (window->isOpen() == false) break;
             // reset everything in the game
-            resetGame();
             // draw menu again
             backgroundMusic.setBuffer(titleThemeBuffer);
             backgroundMusic.play();
             while (!displayMenu()) { sf::sleep(sf::milliseconds(10)); }
+            resetGame();
             backgroundMusic.setBuffer(backgroundBuffer);
             backgroundMusic.play();
         }

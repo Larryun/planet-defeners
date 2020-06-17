@@ -13,16 +13,17 @@ Boss::~Boss()
 std::vector<Projectile*>* Boss::shoot(int num)
 {
     // for demonstration
-    double shootProbability = 0.8;
-    double betweenZeroAndOne = ((double)rand() / RAND_MAX);
-    sf::Time elapse_time = shootClock.getElapsedTime();
     std::vector<Projectile*>* shootArr = new std::vector<Projectile*>();
-    sf::IntRect spriteRect;
-    float spd = 0, damage;
-    if (elapse_time >= BossShootTimeDelta + sf::milliseconds((betweenZeroAndOne) * 50))
+    double betweenZeroAndOne = ((double)rand() / RAND_MAX);
+    //if (shootClock.getElapsedTime().asMilli<seconds() >= BossShootTimeDelta + betweenZeroAndOne * 50)
+    if (shootClock.getElapsedTime().asMilliseconds() >= 800/difficulty)
+    //if (shootClock.getElapsedTime().asMilliseconds() >= BossShootTimeDelta)
     {
-        shootClock.restart();
-        if (betweenZeroAndOne < shootProbability)        // shoot
+        double shootProbability = 0.8;
+        sf::IntRect spriteRect;
+        float spd = 0, damage;
+        //if (betweenZeroAndOne < shootProbability)        // shoot
+        if(1==1)
         {
             ProjectileType randType = static_cast<ProjectileType>(rand() % NumberOfProjectileType);
             switch (randType)
@@ -51,9 +52,10 @@ std::vector<Projectile*>* Boss::shoot(int num)
                     BossProjectileDamage,
                     randType
                 ));
-
             }
+            std::cout << "ENEMY SHOOT" << std::endl;
         }
+        shootClock.restart();
     }
     return shootArr;
 }

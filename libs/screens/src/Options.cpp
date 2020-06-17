@@ -1,3 +1,4 @@
+#include "pch.h"
 #include <iostream>
 #include "Options.h"
 
@@ -69,6 +70,7 @@ void Options::work(sf::RenderWindow& window, sf::Event& event, Options& options,
     window.draw(s);
     options.draw(window);
     while (inOptions) {
+        sf::sleep(sf::milliseconds(10));
         while (window.pollEvent(event)) {
             switch (event.type) {
             case sf::Event::KeyReleased:

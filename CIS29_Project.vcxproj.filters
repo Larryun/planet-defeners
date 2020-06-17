@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
@@ -19,20 +15,15 @@
     <Filter Include="Header Files\GameObjects">
       <UniqueIdentifier>{9cb6f84a-2f00-4136-8dbe-02be20dca46a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Exceptions">
-      <UniqueIdentifier>{0ceffa51-6a62-44d9-a803-1fae603a22f6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Screens">
       <UniqueIdentifier>{3f32d00b-cdf5-4270-b9d3-934cb712ce9d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
     <Filter Include="Source Files\GameObjects">
       <UniqueIdentifier>{9a4f931f-b61b-4110-aeee-48b3176131a6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Exceptions">
-      <UniqueIdentifier>{b9f6f885-05a4-469f-a916-1907a2eaba92}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Screens">
-      <UniqueIdentifier>{cdba879c-709c-44d1-b7c0-b8238b964cfb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -73,12 +64,6 @@
     <ClCompile Include="src\ToolBar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\BaseException.cpp">
-      <Filter>Source Files\Exceptions</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ResourceNotLoaded.cpp">
-      <Filter>Source Files\Exceptions</Filter>
-    </ClCompile>
     <ClCompile Include="src\Boss.cpp">
       <Filter>Source Files\GameObjects</Filter>
     </ClCompile>
@@ -106,109 +91,49 @@
     <ClCompile Include="src\ToolBar.cpp">
       <Filter>Source Files\GameObjects</Filter>
     </ClCompile>
-    <ClCompile Include="src\Date.cpp">
-      <Filter>Source Files\Screens</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Endscreen.cpp">
-      <Filter>Source Files\Screens</Filter>
-    </ClCompile>
-    <ClCompile Include="src\GameText.cpp">
-      <Filter>Source Files\Screens</Filter>
-    </ClCompile>
-    <ClCompile Include="src\InputHighscore.cpp">
-      <Filter>Source Files\Screens</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Menu.cpp">
-      <Filter>Source Files\Screens</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Options.cpp">
-      <Filter>Source Files\Screens</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ShowHighscore.cpp">
-      <Filter>Source Files\Screens</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Score.cpp">
-      <Filter>Source Files\Screens</Filter>
+    <ClCompile Include="src\ShipSelection.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Collision.h">
+    <ClInclude Include="include\Collision.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game.h">
+    <ClInclude Include="include\Game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\PlanetDefenders.h">
+    <ClInclude Include="include\PlanetDefenders.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ShipSelection.hpp">
+    <ClInclude Include="include\GameObject.hpp">
+      <Filter>Header Files\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Boss.hpp">
+      <Filter>Header Files\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Enemy.h">
+      <Filter>Header Files\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Player.h">
+      <Filter>Header Files\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Projectile.h">
+      <Filter>Header Files\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="include\PowerUp.h">
+      <Filter>Header Files\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Shield.h">
+      <Filter>Header Files\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ToolBar.hpp">
+      <Filter>Header Files\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HealthRestore.h">
+      <Filter>Header Files\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ShipSelection.hpp">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Options.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Menu.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BaseException.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Boss.hpp">
-      <Filter>Header Files\GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Enemy.h">
-      <Filter>Header Files\GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="src\GameObject.hpp">
-      <Filter>Header Files\GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Player.h">
-      <Filter>Header Files\GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="src\PowerUp.h">
-      <Filter>Header Files\GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Projectile.h">
-      <Filter>Header Files\GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Shield.h">
-      <Filter>Header Files\GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="src\HealthRestore.h">
-      <Filter>Header Files\GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BaseException.h">
-      <Filter>Header Files\Exceptions</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ResourceNotLoaded.h">
-      <Filter>Header Files\Exceptions</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Date.h">
-      <Filter>Header Files\Screens</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Endscreen.h">
-      <Filter>Header Files\Screens</Filter>
-    </ClInclude>
-    <ClInclude Include="src\InputHighscore.h">
-      <Filter>Header Files\Screens</Filter>
-    </ClInclude>
-    <ClInclude Include="src\GameText.hpp">
-      <Filter>Header Files\Screens</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Menu.h">
-      <Filter>Header Files\Screens</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Options.h">
-      <Filter>Header Files\Screens</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Score.h">
-      <Filter>Header Files\Screens</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ShowHighscore.h">
-      <Filter>Header Files\Screens</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ToolBar.hpp">
-      <Filter>Header Files\GameObjects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

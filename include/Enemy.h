@@ -21,7 +21,7 @@ namespace PlanetDefenders
         float hp;
     public:
         Enemy(const sf::Texture& texture, const sf::IntRect& rect, const sf::Vector2f& pos,
-            float attribute = 1.0f, float hp = 2.0f) :
+            float attribute = 1.0f, float hp = 2.5f) :
             GameObject(
                 texture,
                 rect,

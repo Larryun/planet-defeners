@@ -40,7 +40,7 @@ namespace PlanetDefenders
         void increaseDifficulty(float d)
         {
             difficulty += d;
-            MaxHp = MaxHp * difficulty;
+            MaxHp += 35 * difficulty;
             eachInterval = HpBarSize.x / (float)MaxHp;
         }
         void setDifficulty(float d)
@@ -49,10 +49,8 @@ namespace PlanetDefenders
             MaxHp = 100 * difficulty;
             eachInterval = HpBarSize.x / (float)MaxHp;
         }
-        void resetHp()
-        {
-            setHp(MaxHp);
-        }
+        float getDifficulty() { return difficulty; }
+        void resetHp() { setHp(MaxHp); }
         void updateBossHpBarSize(int hp);
         void updateBossHpBarSize();
         void setHpText(int hp);
