@@ -41,6 +41,7 @@ namespace PlanetDefenders
         sf::Vector2f direction;
         sf::Vector2f pos;
         sf::Vector2u movingBound;
+        // move destinations for moveTo function
         float speed;
 
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
@@ -61,6 +62,8 @@ namespace PlanetDefenders
 
         void move();
         void move(const sf::Vector2f&);
+        // move obj to a position, return true if arrived else return false
+        bool moveTo(const sf::Vector2f&);
         // rotate the object by the angle the their direction 
         void roateToDirection()
         {
@@ -96,6 +99,7 @@ namespace PlanetDefenders
         bool collide(sf::Sprite& obj);
         bool _isOutOfBound(int margin);
         virtual bool isOutOfBound();
+
         //void drawTo(sf::RenderWindow &window){ window.draw(*objSprite); }
     };
 }

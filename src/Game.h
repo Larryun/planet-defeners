@@ -69,17 +69,19 @@ class Game
     sf::Clock genPowerUpClock;
     sf::Clock genEnemyClock;
     sf::Clock genBossClock;
+    sf::Clock bossMoveClock;
     sf::Clock gameClock;
     
     // States
     enum ShipType shipType;
     int numEnemy;
     int enemyNum;
-    bool BossShown = true;
+    bool ShowBoss = false;
     bool BackdoorTriggered = false;
     bool InfinityHpTriggered = false;
     bool BiggerProjTriggered = false;
 
+    BossStates bossMoveDir = MoveRight;
     
 public:
     Game();
@@ -94,6 +96,7 @@ public:
     void generatePowerUp();
     //void initEnemy(const sf::Vector2u, unsigned int, unsigned int);
     void loadAllMusic();
+    void updateBoss(BossStates state, sf::Vector2f destination);
     void updateGame();
     void drawGame();
     void pauseGame();

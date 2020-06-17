@@ -20,10 +20,10 @@ Projectile* Enemy::shoot()
     double shootProbability = 0.2;
     double betweenZeroAndOne = ((double)rand() / RAND_MAX);
     sf::Time elapse_time = shootClock.getElapsedTime();
-    if (elapse_time >= shootInterval + sf::milliseconds((betweenZeroAndOne) * 50))
+    if (elapse_time >= shootInterval*5.0f)
     {
         shootClock.restart();
-        if (betweenZeroAndOne < shootProbability)        // shoot
+        //if (betweenZeroAndOne < shootProbability)        // shoot
         {
             newProj = new Projectile(
                 *objSprite->getTexture(),

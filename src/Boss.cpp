@@ -44,7 +44,8 @@ std::vector<Projectile*>* Boss::shoot(int num)
                     *objSprite->getTexture(),
                     spriteRect,
                     sf::Vector2f(
-                        getSprite().getPosition().x + getSprite().getGlobalBounds().width / 2 + i * randomPos, getSprite().getGlobalBounds().height),
+                        getSprite().getPosition() + sf::Vector2f(getSprite().getGlobalBounds().width / 2 + i * randomPos, getSprite().getGlobalBounds().height)
+                    ),
                     sf::Vector2f(0, 1.0f),
                     spd,
                     BossProjectileDamage,
@@ -57,14 +58,26 @@ std::vector<Projectile*>* Boss::shoot(int num)
     return shootArr;
 }
 
-void Boss::setBossHpBar(int hp, sf::Color color, sf::Vector2f size, sf::Vector2f pos) {
-    bossHpBar.setFillColor(color);
-    bossHpBar.setSize(size);
-    bossHpBar.setPosition(pos);
+//update the hp bar to horizontal
+void Boss::updateBossHpBarSize(int hp)
+{
+    bossHpBar.setSize(sf::Vector2f((float)hp * eachInterval, 33.f));
+    std::cout << (float)hp << " " << eachInterval << std::endl;
+    setHpText(hp);
+}
+
+void Boss::updateBossHpBarSize()
+{
+    updateBossHpBarSize(getHp());
 }
 
 void Boss::drawTo(sf::RenderWindow& window) {
-
     window.draw(bossHpBar);
-    window.draw(getSprite());
+    window.draw(hpText);
+    window.draw(*objSprite);
 }
+void Boss::setHpText(int hp) {
+    hpText = sf::Text(std::to_string(static_cast<int>(hp)) + "%", font);
+    hpText.setPosition(sf::Vector2f(bossHpBar.getSize().x - 60.0f, -5));
+}
+
