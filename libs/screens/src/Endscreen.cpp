@@ -48,7 +48,6 @@ bool Endscreen::work(sf::RenderWindow& window, Endscreen& endscreen, sf::Sprite&
 	endscreen.draw(window);
 	while (inEndscreen) {
         // prevent drawing to much CPU time  
-        //*****remove this if you have non-static things in this view****
         sf::sleep(sf::milliseconds(10));
 		while (window.pollEvent(event)) {
 			switch (event.type) {

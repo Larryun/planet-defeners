@@ -88,11 +88,12 @@ namespace PlanetDefenders
     const float ShieldHp = 5;
 
     // Player
+    const sf::Vector2u PlayerMovingBound = sf::Vector2u(1076, 720);
     const float PlayerInitialHealth = 100.0f;
     const float PlayerInitialSpeed = 10.0f;
     const float PlayerMaxSpeed = 50.0f;
     const float PlayerProjectileDamage = 4.0f;
-    const sf::Vector2u PlayerMovingBound = sf::Vector2u(1076, 720);
+    const sf::Vector2f PlayerInitialPos = sf::Vector2f(PlayerMovingBound.x / 2.0f, PlayerMovingBound.y * 0.8f);
 
     // Enemy
     const float EnemyMaxScale = 3.0f;

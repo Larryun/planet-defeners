@@ -487,7 +487,7 @@ Game::Game()
     assert(tool);           // Make sure tool is not null
 
     //player = new Player(SpaceTexture, ShipTextureRect[(int)shipType], sf::Vector2f(100, 100), shipType);
-    player = new Player(SpaceTexture, ShipTextureRect[(int)shipType], sf::Vector2f(PlayerMovingBound.x/2.0f, PlayerMovingBound.y/2.0f), shipType);
+    player = new Player(SpaceTexture, ShipTextureRect[(int)shipType], PlayerInitialPos, shipType);
     player->setMovingBoundary(PlayerMovingBound);
     player->getSprite().scale(sf::Vector2f(1, 1) * 1.5f);
     tool->updateHpBarSize(player->getHp() / ShipMaxHp[(int)shipType]); //send percentage of health
@@ -805,6 +805,7 @@ void Game::resetGame()
     enemyArr.clear();
     powerUpArr.clear();
     bossProjectileArray.clear();
+    playerProjectileArray.clear();
 
     tool->minusScore(tool->getScore());
     tool->restartClock();
@@ -812,6 +813,7 @@ void Game::resetGame()
     
     shipType = static_cast<ShipType>(rand() % 4);
     player->changeType(shipType);
+    player->getSprite().setPosition(PlayerInitialPos);
     boss->setDifficulty(1);
     boss->resetHp();
     boss->getSprite().setColor(sf::Color::Color(125, 125, 125, 125));

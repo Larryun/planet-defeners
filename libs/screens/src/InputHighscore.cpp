@@ -182,18 +182,28 @@ void InputHighscore::work(sf::RenderWindow& window, InputHighscore& inputHighsco
     inputHighscore.draw(window);
     while (inInputHighscore) {
         // prevent drawing to much CPU time  
-        //*****remove this if you have non-static things in this view****
         sf::sleep(sf::milliseconds(10));
         while (window.pollEvent(event)) {
             switch (event.type) {
-            case sf::Event::TextEntered:
-                if (event.key.code == 13) { // 13  = return/enter
+            case sf::Event::KeyReleased:
+                if (event.key.code == sf::Keyboard::Enter) { 
                     if (userInput.getSize() == 0) {
                         noName = true;
                     }
                     inInputHighscore = false;
                 }
-                else if (event.key.code == 8) { // 8 = backspace
+                break;
+            case sf::Event::TextEntered:
+                if (event.key.code == 13) { // 13  = return/enter
+                    break;
+                }
+                //else if (event.key.code == 8) { // 8 = backspace
+                //    if (userInput.getSize() > 0) {
+                //        userInput.erase(userInput.getSize() - 1);
+                //        userInputPrint.setString(userInput);
+                //    }
+                //}
+                if (event.key.code == 8) { // 8 = backspace
                     if (userInput.getSize() > 0) {
                         userInput.erase(userInput.getSize() - 1);
                         userInputPrint.setString(userInput);
