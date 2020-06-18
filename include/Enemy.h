@@ -34,13 +34,13 @@ namespace PlanetDefenders
             setSpeed(4 / attribute);                     // larger the attribute, slower it moves
             setProjectileDamage(attribute * 1);
             setProjectileSpeed(6 / attribute);
-            setProjectileScale(attribute * 1.1);
+            setProjectileScale(attribute * 1.1f);
             setShootInterval(EnemyShootEachProjInterval + sf::milliseconds(pow((attribute * 10), 2)));
             this->hp = hp * attribute;
         }
         ~Enemy();
         //sf::Vector2f getPosition
-        bool isOutOfBound() { return false; }
+        //bool isOutOfBound() { return false; }
         bool isDead() { return hp <= 0; }
         bool isAlive() { return hp > 0; }
 

@@ -36,7 +36,7 @@ namespace PlanetDefenders
 
     //ship info
     const int ShipMaxHp[4] = { 100, 50, 200, 80 };
-    const float ShipSpeed[4] = { 0.5, 0.8, 0.3, 0.65 };
+    const float ShipSpeed[4] = { 0.5f, 0.8f, 0.3f, 0.65f };
     const sf::Time ShipAttackSpeed[4] = { sf::milliseconds(150), sf::milliseconds(100), sf::milliseconds(200), sf::milliseconds(125) };
     const sf::IntRect ShipTextureRect[4] = { sf::IntRect(0, 0, 31, 30), sf::IntRect(33, 0, 27, 21), sf::IntRect(62, 0, 39, 25), sf::IntRect(103, 0, 29, 30) };
     const sf::IntRect ShipLaserRect[4] = { sf::IntRect(0, 33, 5, 11), sf::IntRect(33, 33, 7, 14), sf::IntRect(62, 33, 11, 11), sf::IntRect(103, 33, 3, 12) };
@@ -109,8 +109,7 @@ namespace PlanetDefenders
     //const sf::Time BossShootTimeDelta = sf::milliseconds(300);
     const int BossShootTimeDelta = 300;
     const float BossProjectileDamage = 5;
-    //const int BossReviveInterval = 10;
-    const int BossReviveInterval = 5;
+    const int BossReviveInterval = 10;
 
 
     const sf::IntRect EnemyRectEye = sf::IntRect(0, 48, 23, 28);
@@ -146,6 +145,10 @@ namespace PlanetDefenders
     const sf::Keyboard::Key AccelerateKey = sf::Keyboard::RBracket;
     const sf::Keyboard::Key DeaccelerateKey = sf::Keyboard::LBracket;
     const sf::Keyboard::Key BiggerProjectile = sf::Keyboard::Quote;
+    const sf::Keyboard::Key ChangeShipTypeBlue = sf::Keyboard::Num1;
+    const sf::Keyboard::Key ChangeShipTypeRed = sf::Keyboard::Num2;
+    const sf::Keyboard::Key ChangeShipTypeGreen = sf::Keyboard::Num3;
+    const sf::Keyboard::Key ChangeShipTypeBee = sf::Keyboard::Num4;
 
 
     // utilites functions

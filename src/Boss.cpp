@@ -13,44 +13,39 @@ Boss::~Boss()
 std::vector<Projectile*>* Boss::shoot(int num)
 {
     std::vector<Projectile*>* shootArr = new std::vector<Projectile*>();
-    double betweenZeroAndOne = ((double)rand() / RAND_MAX);
     if (shootClock.getElapsedTime().asMilliseconds() >= 800/difficulty)
     {
-        double shootProbability = 0.8;
-        sf::IntRect spriteRect;
-        float spd = 0, damage;
-        if(1)
+    sf::IntRect spriteRect;
+    float spd = 0, damage;
+        ProjectileType randType = static_cast<ProjectileType>(rand() % NumberOfProjectileType);
+        switch (randType)
         {
-            ProjectileType randType = static_cast<ProjectileType>(rand() % NumberOfProjectileType);
-            switch (randType)
-            {
-            case ProjectileType::RedCircle:
-                spriteRect = ProjectileRedCircle;
-                spd = ProjectileRedCircleSpd;
-                damage = ProjectileRedCircleDamage;
-                break;
-            case ProjectileType::RedSharp:
-                spriteRect = ProjectileRedSharp;
-                spd = ProjectileRedSharpSpd;
-                damage = ProjectileRedSharpDamage;
-                break;
-            }
-            for (int i = 0; i < num; i++) {
-                float randomPos = rand() % 100 - 50;
-                shootArr->push_back(new Projectile(
-                    *objSprite->getTexture(),
-                    spriteRect,
-                    sf::Vector2f(
-                        getSprite().getPosition() + sf::Vector2f(getSprite().getGlobalBounds().width / 2 + i * randomPos, getSprite().getGlobalBounds().height)
-                    ),
-                    sf::Vector2f(0, 1.0f),
-                    spd,
-                    BossProjectileDamage,
-                    randType
-                ));
-            }
-            std::cout << "ENEMY SHOOT" << std::endl;
+        case ProjectileType::RedCircle:
+            spriteRect = ProjectileRedCircle;
+            spd = ProjectileRedCircleSpd;
+            damage = ProjectileRedCircleDamage;
+            break;
+        case ProjectileType::RedSharp:
+            spriteRect = ProjectileRedSharp;
+            spd = ProjectileRedSharpSpd;
+            damage = ProjectileRedSharpDamage;
+            break;
         }
+        for (int i = 0; i < num; i++) {
+            float randomPos = rand() % 100 - 50;
+            shootArr->push_back(new Projectile(
+                *objSprite->getTexture(),
+                spriteRect,
+                sf::Vector2f(
+                    getSprite().getPosition() + sf::Vector2f(getSprite().getGlobalBounds().width / 2 + i * randomPos, getSprite().getGlobalBounds().height)
+                ),
+                sf::Vector2f(0, 1.0f),
+                spd,
+                BossProjectileDamage,
+                randType
+            ));
+        }
+        //std::cout << "BOSS SHOOT" << std::endl;
         shootClock.restart();
     }
     return shootArr;

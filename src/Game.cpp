@@ -89,16 +89,16 @@ bool Game::menuHandleMouseClicked(sf::Event& event)
 {
     if (menu->inY(event, *window)) {
         if (menu->inXPlay(event, *window)) {
-            std::cout << "PLAY";
+            std::cout << "PLAY" << std::endl;
             return true;
         }
         else if (menu->inXOptions(event, *window)) {
-            std::cout << "Options";
+            std::cout << "Options" << std::endl;
             // to options view
             options->work(*window, event, *options, GameBackground, backgroundMusic);
         }
         else if (menu->inXExit(event, *window)) {
-            std::cout << "Exit";
+            std::cout << "Exit" << std::endl;
             window->close();
             return true;
         }
@@ -132,7 +132,7 @@ bool Game::displayMenu()
     sf::Event event;
     while (window->pollEvent(event)) {
         switch (event.type) {
-        case sf::Event::KeyPressed:
+        case sf::Event::KeyReleased:
             if (menuHandleKeyboard(event))
                 return true;
             //Clicking on a button
@@ -148,9 +148,9 @@ bool Game::displayMenu()
             return true;
             break;
         }
-        window->draw(GameBackground);
-        menu->draw(*window);
     }
+    window->draw(GameBackground);
+    menu->draw(*window);
     return false;
 }
 
@@ -159,13 +159,12 @@ void Game::collisionPlayerProjAndBoss()
     // Collision between playerProjectile and enemy
     for (int i = 0; i < playerProjectileArray.size(); i++)
     {
-        //if (checkCollision(playerProjectileArray[i], boss))
         if (playerProjectileArray[i]->collide(*dynamic_cast<GameObject*>(boss)))
         {
             enemyHurtSound.play();
             tool->addScore(1);
             boss->takeDamage(playerProjectileArray[i]->getDamage());
-            std::cout << "PROJECTILE COLIDED BOSS" << std::endl;
+            //std::cout << "PROJECTILE COLIDED BOSS" << std::endl;
             deleteObjectFromVector(playerProjectileArray, i);
             break;
         }
@@ -182,7 +181,7 @@ void Game::collisionBossProjAndPlayer()
             //enemyHurtSound.play();  playerHurtSound?
             player->takeDamage(bossProjectileArray[i]->getDamage());
 
-            std::cout << "BOSS PROJECTILE COLIDED PLAYER" << std::endl;
+            //std::cout << "BOSS PROJECTILE COLIDED PLAYER" << std::endl;
             deleteObjectFromVector(bossProjectileArray, i);
             break;
         }
@@ -207,7 +206,7 @@ void Game::collisionPlayerProjAndEnemy()
                     deleteObjectFromVector(enemyArr, j);
                 }
                 deleteObjectFromVector(playerProjectileArray, i);
-                std::cout << "PROJECTILE COLIDED ENEMY" << std::endl;
+                //std::cout << "PROJECTILE COLIDED ENEMY" << std::endl;
                 break;
             }
         }
@@ -268,7 +267,7 @@ void Game::collisionEnemyAndPlayer()
         //if (checkCollision(player, enemyArr[i]))
         if (player->collide(*dynamic_cast<GameObject*>(enemyArr[i])))
         {
-            std::cout << "PLAYER COLIDED ENEMY" << std::endl;
+            //std::cout << "PLAYER COLIDED ENEMY" << std::endl;
             player->takeDamage(0.5);
             break;
         }
@@ -282,7 +281,7 @@ void Game::collisionPowerUpAndPlayer()
         //if (checkCollision(player, powerUpArr[i]))
         if (player->collide(*dynamic_cast<GameObject*>(powerUpArr[i])))
         {
-            std::cout << "PLAYER COLIDED POWERUP" << std::endl;
+            //std::cout << "PLAYER COLIDED POWERUP" << std::endl;
             // do not delete powerUp in GameLoop
             player->addPowerUp(dynamic_cast<PowerUp*>(powerUpArr[i]));
             tool->setPowerUp(
@@ -445,7 +444,8 @@ void Game::generateEnemy() {
 
 Game::Game()
 {
-    shipType = ShipType::GreenShip; //ADD SOMETHING IN MENU TO SELECT SHIP (0 to 3)
+    srand(static_cast<unsigned int>(time(0)));
+    shipType = static_cast<ShipType>(rand() % 4);
     menu = new Menu(WindowWidth, WindowHeight);
     options = new Options(WindowWidth, WindowHeight);
     endscreen = new Endscreen(WindowWidth, WindowHeight);
@@ -453,7 +453,6 @@ Game::Game()
 
     // window setup
     window = new sf::RenderWindow(sf::VideoMode(WindowWidth, WindowHeight), GameTitle, sf::Style::Close | sf::Style::Resize);
-    //std::cout << window->getSize().x << " " << window->getSize().y << std::endl;
     window->setFramerateLimit(FrameRateLimit);
 
     // sounds setup
@@ -487,8 +486,8 @@ Game::Game()
     tool = new ToolBar(sf::Vector2f(980, 0));
     assert(tool);           // Make sure tool is not null
 
-    player = new Player(SpaceTexture, ShipTextureRect[(int)shipType], sf::Vector2f(100, 100), shipType);
-
+    //player = new Player(SpaceTexture, ShipTextureRect[(int)shipType], sf::Vector2f(100, 100), shipType);
+    player = new Player(SpaceTexture, ShipTextureRect[(int)shipType], sf::Vector2f(PlayerMovingBound.x/2.0f, PlayerMovingBound.y/2.0f), shipType);
     player->setMovingBoundary(PlayerMovingBound);
     player->getSprite().scale(sf::Vector2f(1, 1) * 1.5f);
     tool->updateHpBarSize(player->getHp() / ShipMaxHp[(int)shipType]); //send percentage of health
@@ -554,7 +553,6 @@ void Game::handleBackdoorKeyInput(sf::Keyboard::Key code)
         InfinityHpTriggered = !InfinityHpTriggered;
         break;
     case AccelerateKey:
-        // TODO reset player speed in restGame()
         player->accelerate(5);
         break;
     case DeaccelerateKey:
@@ -569,10 +567,26 @@ void Game::handleBackdoorKeyInput(sf::Keyboard::Key code)
         }
         else
         {
-            // TODO Add to resetGame()
             player->setBackdoorProjScale(1.0f);
             player->setProjDamage(PlayerProjectileDamage);
         }
+        break;
+    case ChangeShipTypeBlue:
+        player->changeType(ShipType::BlueShip);
+        shipType = ShipType::BlueShip;
+        break;
+    case ChangeShipTypeRed:
+        player->changeType(ShipType::RedShip);
+        shipType = ShipType::RedShip;
+        break;
+    case ChangeShipTypeGreen:
+        player->changeType(ShipType::GreenShip);
+        shipType = ShipType::GreenShip;
+        break;
+    case ChangeShipTypeBee:
+        player->changeType(ShipType::BeeShip);
+        shipType = ShipType::BeeShip;
+        break;
     }
 }
 
@@ -720,7 +734,7 @@ void Game::updateGame()
     player->removeAllEndedPowerUp();
 
     tool->update();
-    tool->updateHpBarSize(player->getHp() / PlanetDefenders::ShipMaxHp[(int)shipType]);
+    tool->updateHpBarSize(player->getHp() / ShipMaxHp[(int)shipType]);
     boss->updateBossHpBarSize();
 }
 
@@ -785,22 +799,24 @@ void Game::resetBoss()
 
 void Game::resetGame()
 {
-    tool->minusScore(tool->getScore());
-    tool->restartClock();
-    player->setHp(PlanetDefenders::ShipMaxHp[(int)shipType]);
     backgroundMusic.stop();
     backgroundMusic.play();
     enemyProjectileArray.clear();
     enemyArr.clear();
     powerUpArr.clear();
     bossProjectileArray.clear();
+
+    tool->minusScore(tool->getScore());
+    tool->restartClock();
     restartClocks();
+    
+    shipType = static_cast<ShipType>(rand() % 4);
+    player->changeType(shipType);
     boss->setDifficulty(1);
     boss->resetHp();
-    ShowBoss = false;
     boss->getSprite().setColor(sf::Color::Color(125, 125, 125, 125));
-    //boss->getSprite().setColor(sf::Color::Transparent);
     boss->getSprite().setPosition(BossInitialPos);
+    ShowBoss = false;
     BackdoorTriggered = false;
 }
 
@@ -832,17 +848,24 @@ void Game::gameLoop() {
                     pauseGame();
                 }
                 if (e.key.code == BackdoorTriggerKey)
+                {
                     BackdoorTriggered = !BackdoorTriggered;
+                    if (!BackdoorTriggered)
+                    {
+                        InfinityHpTriggered = false;
+                        BiggerProjTriggered = false;
+                        player->setBackdoorProjScale(1.0f);
+                        player->setProjDamage(PlayerProjectileDamage);
+                        player->setSpeed(PlayerInitialSpeed);
+                        std::cout << "BACKDOOR OFF" << std::endl;
+                    }
+                    else
+                    {
+                        std::cout << "BACKDOOR ON" << std::endl;
+                    }
+                }
                 if (BackdoorTriggered)
                     handleBackdoorKeyInput(e.key.code);
-                else
-                {
-                    InfinityHpTriggered = false;
-                    BiggerProjTriggered = false;
-                    player->setBackdoorProjScale(1.0f);
-                    player->setProjDamage(PlayerProjectileDamage);
-                    player->setSpeed(PlayerInitialSpeed);
-                }
                 break;
             }
         }
@@ -871,7 +894,7 @@ void Game::gameLoop() {
             // draw menu again
             backgroundMusic.setBuffer(titleThemeBuffer);
             backgroundMusic.play();
-            while (!displayMenu()) { sf::sleep(sf::milliseconds(10)); }
+            while (!displayMenu()) { sf::sleep(sf::milliseconds(5)); }
             resetGame();
             backgroundMusic.setBuffer(backgroundBuffer);
             backgroundMusic.play();

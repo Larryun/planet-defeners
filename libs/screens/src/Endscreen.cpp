@@ -52,13 +52,7 @@ bool Endscreen::work(sf::RenderWindow& window, Endscreen& endscreen, sf::Sprite&
         sf::sleep(sf::milliseconds(10));
 		while (window.pollEvent(event)) {
 			switch (event.type) {
-            // press any key to retry?? 
-			// case sf::Event::TextEntered:        
-			//	std::cout << "Retry" << std::endl;
-			//	flag = true;
-			//	inEndscreen = false;
-			//	break;
-			case sf::Event::KeyPressed:
+			case sf::Event::KeyReleased:
 				switch (event.key.code) {
 				case sf::Keyboard::Left:
 					endscreen.MoveLeft();
