@@ -1,4 +1,3 @@
-#include "pch.h"
 #pragma warning(disable: 4244)
 #include <iostream>
 #include <iomanip>
