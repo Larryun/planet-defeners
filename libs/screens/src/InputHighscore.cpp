@@ -197,12 +197,6 @@ void InputHighscore::work(sf::RenderWindow& window, InputHighscore& inputHighsco
                 if (event.key.code == 13) { // 13  = return/enter
                     break;
                 }
-                //else if (event.key.code == 8) { // 8 = backspace
-                //    if (userInput.getSize() > 0) {
-                //        userInput.erase(userInput.getSize() - 1);
-                //        userInputPrint.setString(userInput);
-                //    }
-                //}
                 if (event.key.code == 8) { // 8 = backspace
                     if (userInput.getSize() > 0) {
                         userInput.erase(userInput.getSize() - 1);

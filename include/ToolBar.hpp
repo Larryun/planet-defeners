@@ -42,19 +42,13 @@ namespace PlanetDefenders
         sf::Sprite addProtect;
         sf::Sprite deleteProtect;
 
-        std::vector<GameObject*> shipNum;
-        std::vector<GameObject*> thingNum;
 
         sf::Texture ToolBarTexture;
         sf::RectangleShape hpBar;
         sf::Clock timeClock;
         sf::Clock* powerUpClock;
         unsigned int powerUpDuration;
-        sf::Font font;
 
-        std::string countdownString;
-        //GameText *timeText;
-        int shipCount = 3;
         int protectTime;
         bool isProtect = false;
         unsigned int scoreCounter = 0;
@@ -64,23 +58,24 @@ namespace PlanetDefenders
         void initializeHpBar(int hp);
         void updateScore();
         void updateTime();
-        void updateShip();
         void updateActivatedPowerUp();
         void initializeSprites();
 
     public:
-        ToolBar(const sf::Vector2f& pos)
+        ToolBar(const sf::Vector2f& pos, sf::Texture& toolbarTexture) : ToolBarTexture(toolbarTexture)
         {
-            if (!ToolBarTexture.loadFromFile(TextureBasePath + "toolbar.png"))
-                std::cout << "cannot laod toolbar.png" << std::endl;
             initializeSprites();
-
         }
+        ~ToolBar() 
+        { 
+            delete powerUpClock;
+            delete activatedPowerUp;
+        }
+
 
         void restartClock() { timeClock.restart(); }
 
         const sf::Clock getTime() { return timeClock; }
-        const int getShipCount() { return shipCount; }
         const sf::Vector2f getSize() { return sf::Vector2f(BAR_WIDTH, BAR_HEIGHT); }
         const unsigned int getScore() { return scoreCounter; }
 

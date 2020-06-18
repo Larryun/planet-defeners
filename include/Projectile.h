@@ -4,7 +4,6 @@
 #include "GameObject.hpp"
 #include "PlanetDefenders.h"
 
-//using PlanetDefenders::ProjectileType;
 
 namespace PlanetDefenders
 {

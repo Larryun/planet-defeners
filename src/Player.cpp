@@ -10,15 +10,17 @@ Player::~Player()
     delete objSprite;
 }
 
-
-void Player::applyPowerUp(PowerUp& powerUp)
+/*
+    apply power up effect to player
+*/
+void Player::applyPowerUp(PowerUp* powerUp)
 {
-    switch (powerUp.getType())
+    switch (powerUp->getType())
     {
     case (PlanetDefenders::PowerUpType::HEAL):
-        heal(static_cast<HealthRestore*>(&powerUp)->getHealAmount());
+        heal(static_cast<HealthRestore*>(powerUp)->getHealAmount());
         std::cout << "HEAL POWERUPPP" << std::endl;
-        if (activePowerUp.erase(&powerUp) >= 1)
+        if (activePowerUp.erase(powerUp) >= 1)
             std::cout << "HEAL POWERUPPP ERASED" << std::endl;
         break;
     case (PlanetDefenders::PowerUpType::SHIELD):
@@ -27,13 +29,16 @@ void Player::applyPowerUp(PowerUp& powerUp)
     }
 }
 
+/*
+    consume the power up and apply to the player
+*/
 void Player::addPowerUp(PowerUp* p) {
     std::cout << "ADD POWER UP" << std::endl;
     if (!hasPowerUp(p))
     {
         activePowerUp.insert(p);
         p->startClock();
-        applyPowerUp(*p);
+        applyPowerUp(p);
     }
     else
     {

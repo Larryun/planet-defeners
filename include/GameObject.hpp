@@ -41,7 +41,6 @@ namespace PlanetDefenders
         sf::Vector2f direction;
         sf::Vector2f pos;
         sf::Vector2u movingBound;
-        // move destinations for moveTo function
         float speed;
 
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;

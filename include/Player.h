@@ -21,7 +21,7 @@ namespace PlanetDefenders
 
         std::set<PowerUp*> activePowerUp;
         // apply power up effect to player
-        void applyPowerUp(PowerUp& powerUp);
+        void applyPowerUp(PowerUp* powerUp);
 
     public:
         Player(const sf::Texture& texture, const sf::IntRect& rect, const sf::Vector2f& pos, ShipType num) :

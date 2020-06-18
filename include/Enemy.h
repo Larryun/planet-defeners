@@ -21,7 +21,7 @@ namespace PlanetDefenders
         float hp;
     public:
         Enemy(const sf::Texture& texture, const sf::IntRect& rect, const sf::Vector2f& pos,
-            float attribute = 1.0f, float hp = 2.5f) :
+            float attribute = 1.0f, float hp = 2.3f) :
             GameObject(
                 texture,
                 rect,
@@ -31,12 +31,13 @@ namespace PlanetDefenders
             ), projectileScale(1), projectileDamage(1), projectileSpeed(5), attribute(attribute)
         {
             getSprite().scale(attribute, attribute);
-            setSpeed(4 / attribute);                     // larger the attribute, slower it moves
-            setProjectileDamage(attribute * 1);
-            setProjectileSpeed(6 / attribute);
-            setProjectileScale(attribute * 1.1f);
+            setSpeed(4 / attribute);                     // big attribute, small speed
+            setProjectileDamage(attribute * 1);          // big attribute, big damage
+            setProjectileSpeed(6 / attribute);           // big attribute, small proj spd
+            setProjectileScale(attribute * 1.1f);        // big attribute, big proj size
+            // bass interval + (attribute*10)^2
             setShootInterval(EnemyShootEachProjInterval + sf::milliseconds(pow((attribute * 10), 2)));
-            this->hp = hp * attribute;
+            this->hp = hp * (attribute);                   // big attribute, small hp
         }
         ~Enemy();
         //sf::Vector2f getPosition

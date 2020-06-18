@@ -34,17 +34,34 @@ void Game::loadAllMusic()
         laserSound.setBuffer(laserSoundBuffer);
         laserSound.setVolume(120);
     }
-
     if (!powerupSoundBuffer.loadFromFile(AudioBasePath + "enemy_hurt.ogg"))
         throw MusicNotLoaded("enemy_hurt.ogg");
     else
         enemyHurtSound.setBuffer(powerupSoundBuffer);
-
     if (!enemyHurtSoundBuffer.loadFromFile(AudioBasePath + "powerup.ogg"))
         throw MusicNotLoaded("powerup.ogg");
     else {
         powerupSound.setBuffer(enemyHurtSoundBuffer);
         powerupSound.setVolume(40);
+    }
+}
+
+template<class T>
+void Game::updateGameObjectArray(std::vector<T*>& arr)
+{
+    for (auto& v : arr)
+        v->move();
+}
+
+template<class T>
+void Game::drawGameObjectArray(std::vector<T*>& arr)
+{
+    for (int i = 0; i < arr.size(); i++)
+    {
+        if (arr[i]->isOutOfBound() == false)
+            window->draw(arr[i]->getSprite());
+        else
+            deleteObjectFromVector(arr, i);
     }
 }
 
@@ -178,7 +195,6 @@ void Game::collisionBossProjAndPlayer()
         //if (checkCollision(bossProjectileArray[i], player))
         if (bossProjectileArray[i]->collide(*dynamic_cast<GameObject*>(player)))
         {
-            //enemyHurtSound.play();  playerHurtSound?
             player->takeDamage(bossProjectileArray[i]->getDamage());
 
             //std::cout << "BOSS PROJECTILE COLIDED PLAYER" << std::endl;
@@ -195,7 +211,6 @@ void Game::collisionPlayerProjAndEnemy()
     {
         for (int j = 0; j < enemyArr.size(); j++)
         {
-            //if (checkCollision(playerProjectileArray[i], enemyArr[j]))
             if (playerProjectileArray[i]->collide(*dynamic_cast<GameObject*>(enemyArr[j])))
             {
                 enemyHurtSound.play();
@@ -218,7 +233,6 @@ void Game::collisionEnemyProjAndShield()
     // Collision between enemyProjectile player shield
     for (int i = 0; i < enemyProjectileArray.size(); i++)
     {
-        //if (checkCollision(&enemyProjectileArray[i]->getSprite(), &shieldSprite))
         if (enemyProjectileArray[i]->collide(shieldSprite))
         {
             deleteObjectFromVector(enemyProjectileArray, i);
@@ -249,7 +263,6 @@ void Game::collisionEnemyProjAndPlayer()
 {
     for (int i = 0; i < enemyProjectileArray.size(); i++)
     {
-        //if (checkCollision(enemyProjectileArray[i], player))
         if (player->collide(*dynamic_cast<GameObject*>(enemyProjectileArray[i])))
         {
             player->takeDamage(enemyProjectileArray[i]->getDamage());
@@ -264,7 +277,6 @@ void Game::collisionEnemyAndPlayer()
 {
     for (int i = 0; i < enemyArr.size(); i++)
     {
-        //if (checkCollision(player, enemyArr[i]))
         if (player->collide(*dynamic_cast<GameObject*>(enemyArr[i])))
         {
             //std::cout << "PLAYER COLIDED ENEMY" << std::endl;
@@ -278,7 +290,6 @@ void Game::collisionPowerUpAndPlayer()
 {
     for (int i = 0; i < powerUpArr.size(); i++)
     {
-        //if (checkCollision(player, powerUpArr[i]))
         if (player->collide(*dynamic_cast<GameObject*>(powerUpArr[i])))
         {
             //std::cout << "PLAYER COLIDED POWERUP" << std::endl;
@@ -414,7 +425,7 @@ void Game::generateEnemy() {
         int layoutType = rand() % 3;
         Side s = static_cast<Side>(rand() % 4);
         decideSide(s, initialPos, direction);
-        // 0.8 < x < 1.6
+        // 0.8 < x < 2.6
         float randAttribute = (rand() % 16) / 10.0f + 0.8f;
         int enemyNum, rows, cols;
         switch(layoutType)
@@ -445,7 +456,7 @@ void Game::generateEnemy() {
 Game::Game()
 {
     srand(static_cast<unsigned int>(time(0)));
-    shipType = static_cast<ShipType>(rand() % 4);
+    // screens setup
     menu = new Menu(WindowWidth, WindowHeight);
     options = new Options(WindowWidth, WindowHeight);
     endscreen = new Endscreen(WindowWidth, WindowHeight);
@@ -470,9 +481,6 @@ Game::Game()
     if (!ToolBarBackgroundTexture.loadFromFile(TextureBasePath + "toolbar.png"))
         throw TextureNotLoaded("toolbar.png");
 
-    //BackgroundTexture.setSmooth(1);
-    //ToolBarBackgroundTexture.setSmooth(1);
-
     GameBackground = sf::Sprite(BackgroundTexture);
     sf::Vector2u TextureSize = BackgroundTexture.getSize();
     sf::Vector2u WindowSize = window->getSize();
@@ -480,17 +488,19 @@ Game::Game()
     float ScaleY = (float)WindowSize.y / TextureSize.y;
     GameBackground.setScale(ScaleX, ScaleY);
 
-    // ToolBar
-    ToolBarBackground = sf::Sprite(ToolBarBackgroundTexture, sf::IntRect(0, 0, 204, 720));
-    ToolBarBackground.setPosition(sf::Vector2f(1076, 0));
-    tool = new ToolBar(sf::Vector2f(980, 0));
-    assert(tool);           // Make sure tool is not null
-
-    //player = new Player(SpaceTexture, ShipTextureRect[(int)shipType], sf::Vector2f(100, 100), shipType);
+    // Player
+    shipType = static_cast<ShipType>(rand() % 4);
     player = new Player(SpaceTexture, ShipTextureRect[(int)shipType], PlayerInitialPos, shipType);
     player->setMovingBoundary(PlayerMovingBound);
     player->getSprite().scale(sf::Vector2f(1, 1) * 1.5f);
+
+    // ToolBar
+    ToolBarBackground = sf::Sprite(ToolBarBackgroundTexture, sf::IntRect(0, 0, 204, 720));
+    ToolBarBackground.setPosition(sf::Vector2f(1076, 0));
+    tool = new ToolBar(sf::Vector2f(980, 0), ToolBarBackgroundTexture);
     tool->updateHpBarSize(player->getHp() / ShipMaxHp[(int)shipType]); //send percentage of health
+    assert(tool);           // Make sure tool is not null
+
 
     enemyRectArr.push_back(EnemyRectEye);
     enemyRectArr.push_back(EnemyRectBlue);
@@ -499,7 +509,8 @@ Game::Game()
     boss->setSpeed(1);
     // "disable" boss
     boss->getSprite().setColor(sf::Color::Color(125, 125, 125, 125));
-    //boss->getSprite().setColor(sf::Color::Transparent);
+    
+    // Shield
     shieldSprite = sf::Sprite(SpaceTexture);
     shieldSprite.setTextureRect(ShieldRect);
     setSpriteOriginCenter(shieldSprite);
@@ -528,12 +539,6 @@ void Game::handleKeyInput()
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
     {
         player->move(sf::Vector2f(0.0f, ShipSpeed[(int)shipType]));
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
-    {
-        // demo
-        // press R the accerlerate
-        player->accelerate(1.1f);
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
     {
@@ -616,34 +621,13 @@ void Game::generatePowerUp()
     }
 }
 
-// hmm...
-template<class T>
-void Game::updateGameObjectArray(std::vector<T*>& arr)
-{
-    for (auto& v : arr)
-        v->move();
-}
-
-// hmm...
-template<class T>
-void Game::drawGameObjectArray(std::vector<T*>& arr)
-{
-    for (int i = 0; i < arr.size(); i++)
-    {
-        if (arr[i]->isOutOfBound() == false)
-            window->draw(arr[i]->getSprite());
-        else
-            deleteObjectFromVector(arr, i);
-    }
-}
 
 void Game::updateBoss(BossStates state = BossStates::Stay, sf::Vector2f destination = sf::Vector2f(0, 0))
 {
     if (boss->isDead())
     {
-        tool->addScore(BossScore);
+        tool->addScore(BossScore * boss->getDifficulty());
         boss->getSprite().setColor(sf::Color::Color(125, 125, 125, 125));
-        //boss->getSprite().setColor(sf::Color::Transparent);
         boss->increaseDifficulty(0.2);
         ShowBoss = false;
         genBossClock.restart();
@@ -746,8 +730,6 @@ void Game::drawGame() {
     drawGameObjectArray(enemyArr);
     drawGameObjectArray(powerUpArr);
     drawGameObjectArray(bossProjectileArray);
-    // Demo, put to a function later
-    // draw shield if player has SHIELD power up
     if (player->hasPowerUp(PowerUpType::SHIELD))
     {
         shieldSprite.setPosition(
@@ -756,7 +738,6 @@ void Game::drawGame() {
         );
         window->draw(shieldSprite);
     }
-
     window->draw(ToolBarBackground);
     tool->drawTo(*window);
     if (ShowBoss)
@@ -892,11 +873,11 @@ void Game::gameLoop() {
             } while (!endscreen->work(*window, *endscreen, GameBackground, backgroundMusic));
             // leave the game
             if (window->isOpen() == false) break;
-            // reset everything in the game
-            // draw menu again
             backgroundMusic.setBuffer(titleThemeBuffer);
             backgroundMusic.play();
+            // draw menu again
             while (!displayMenu()) { sf::sleep(sf::milliseconds(5)); }
+            // reset everything in the game
             resetGame();
             backgroundMusic.setBuffer(backgroundBuffer);
             backgroundMusic.play();
